@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">D.A.D.</string>
+    <string name="app_name">The SoulDefendHER™</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -90,7 +90,7 @@
 
     <string name="fragment_create_account_tv_hint_user_name"><i>Ange namnet som dina kontaktpersoner känner dig under.</i></string>
     <string name="fragment_create_account_custom_et_phone_no_hint">telefon nr</string>
-    <string name="fragment_create_account_custom_tv_phone_no_hint"><i>telefonnummer där du vill få gruppnotiser via sms från andra D.A.D.®-användare</i></string>
+    <string name="fragment_create_account_custom_tv_phone_no_hint"><i>telefonnummer där du vill få gruppnotiser via sms från andra The SoulDefendHER™-användare</i></string>
     <string name="fragment_create_account_custom_tv_email_id_hint"><i>Din e-postadress kommer att bli ditt användarnamn, och kommer att ta emot begäran om återställning om lösenord och PIN-kod </i></string>
     <string name="fragment_create_account_custom_et_email_id">e-post</string>
     <string name="fragment_create_account_et_user_name">Namn</string>
@@ -134,7 +134,7 @@
 
     <!--Contact fragment string has been start-->
     <string name="fragment_contact_tv_title">Kontaktpersoner</string>
-    <string name="fragment_dad_licence_tv_title">D.A.D. Licens</string>
+    <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ Licens</string>
     <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
     <string name="error_bluetooth_not_supported">Bluetooth stöds inte.</string>
     <string name="change_password"><u>Ändra lösenord</u></string>
@@ -215,7 +215,7 @@
     <string name="fragment_add_more_et_last_name_hint">Efternamn</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Kontaktpersonens efternamn, ej obligatoriskt</i></string>
     <string name="fragment_add_more_et_email_hint">e-post</string>
-    <string name="fragment_add_more_tv_email_hint"><i>Ange en D.A.D. app-användarens registreringsadress, så att de kommer att få appanmälan med ett unikt ljud. Andra kontakter får endast e-postmeddelanden.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Ange en The SoulDefendHER™ app-användarens registreringsadress, så att de kommer att få appanmälan med ett unikt ljud. Andra kontakter får endast e-postmeddelanden.</i></string>
     <string name="fragment_add_more_tv_cance">Avbryt</string>
     <string name="fragment_add_more_tv_addressbook">Adressbok</string>
     <string name="fragment_add_more_tv_save">Spara</string>
@@ -274,7 +274,7 @@ Dette tester enheten og hele leveringsprosessen, er den eneste forskjellen mello
     <string name="dialog_delete_alert_msg">You have deleted an ALert.</string>
 
     <string name="dialog_crowd_alert_title">Crowd Alerts Status Updated</string>
-    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All D.A.D. owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
+    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All The SoulDefendHER™ owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
 
     <string name="dialog_eula_title">Slutanvändaravtalet har inte accepterats</string>
     <string name="dialog_eula_msg">

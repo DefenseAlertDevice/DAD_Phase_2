@@ -89,14 +89,14 @@
     <string name="fragment_registration_create_tv_hide">"<u>Hide</u>"</string>
 
     <string name="fragment_create_account_tv_hint_user_name"><i>Enter the name your contacts know you by.</i></string>
-    <string name="fragment_create_account_custom_et_phone_no_hint">Phone No</string>
+    <string name="fragment_create_account_custom_et_phone_no_hint">Phone</string>
     <string name="fragment_create_account_custom_tv_phone_no_hint"><i>phone number where you want to receive crowd text alerts from other D.A.D users</i></string>
     <string name="fragment_create_account_custom_tv_email_id_hint"><i>Your email will be your Login username, and will receive password and pin reset requests</i></string>
-    <string name="fragment_create_account_custom_et_email_id">Email ID</string>
-    <string name="fragment_create_account_et_user_name">User Name</string>
+    <string name="fragment_create_account_custom_et_email_id">Email Address</string>
+    <string name="fragment_create_account_et_user_name">Name</string>
     <string name="fragment_login_to_your_account_et_pwd">Password</string>
     <string name="fragment_login_to_your_account_tv_pwd_hint"><i>We recommend 7 characters using numbers, upper and lowercase letters. HOWEVER we only enforce 7 character minimum</i></string>
-    <string name="fragment_login_to_your_account_et_re_password">Re Enter Password</string>
+    <string name="fragment_login_to_your_account_et_re_password">Verify Password</string>
     <string name="fragment_login_to_your_account_tv_re_password_hint"><i>Enter the password again to verify correct typing</i></string>
     <string name="TAG_FIRSTNAME_EMPTYMSG">User name is required.</string>
     <string name="TAG_PHONE_NO_EMPTYMSG">Phone no is required.</string>
@@ -134,7 +134,7 @@
 
     <!--Contact fragment string has been start-->
     <string name="fragment_contact_tv_title">Contacts</string>
-    <string name="fragment_dad_licence_tv_title">D.A.D. License</string>
+    <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ License</string>
     <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
     <string name="change_password"><u>Change Password</u></string>
@@ -215,7 +215,7 @@
     <string name="fragment_add_more_et_last_name_hint">Last Name</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Contact last name, not required</i></string>
     <string name="fragment_add_more_et_email_hint">Email</string>
-    <string name="fragment_add_more_tv_email_hint"><i>Enter a D.A.D. app user’s registration email address so they will receive app notifications with unique sound.  Other contacts will receive only email alerts.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Enter a The SoulDefendHER™ app user’s registration email address so they will receive app notifications with unique sound.  Other contacts will receive only email alerts.</i></string>
     <string name="fragment_add_more_tv_cance">Cancel</string>
     <string name="fragment_add_more_tv_addressbook">Address Book</string>
     <string name="fragment_add_more_tv_save">Save</string>
@@ -272,7 +272,7 @@
     <string name="dialog_delete_alert_msg">You have deleted an ALert.</string>
 
     <string name="dialog_crowd_alert_title">Crowd Alerts Status Updated</string>
-    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All D.A.D. owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
+    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All The SoulDefendHER™ owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
 
     <string name="dialog_eula_title">EULA Not Accepted</string>
     <string name="dialog_eula_msg">The EULA must be accepted to use this app. If you do not want to accept the EULA please quit the app. Otherwise you will be returned to the EULA screen.</string>
@@ -402,6 +402,7 @@
     <string name="nice">Nice</string>
     <string name="gcm_defaultSenderId" translatable="false">32989397760</string>
     <string name="default_notification_channel_id" translatable="false">default</string>
+    <string name="toggle_password_visibility">Show Password</string>
 
 
 </resources>

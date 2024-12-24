@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">D.A.D.</string>
+    <string name="app_name">The SoulDefendHER™</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -90,7 +90,7 @@
 
     <string name="fragment_create_account_tv_hint_user_name"><i>Indtast det navn, dine kontakter kender dig under</i></string>
     <string name="fragment_create_account_custom_et_phone_no_hint">Telefon Nej</string>
-    <string name="fragment_create_account_custom_tv_phone_no_hint"><i>Indtast det telefonnummer, hvor du ønsker at modtage gruppevarsler (Crowd Alerts) fra andre D.A.D. brugere. </i></string>
+    <string name="fragment_create_account_custom_tv_phone_no_hint"><i>Indtast det telefonnummer, hvor du ønsker at modtage gruppevarsler (Crowd Alerts) fra andre The SoulDefendHER™ brugere. </i></string>
     <string name="fragment_create_account_custom_tv_email_id_hint"><i>Din e-mailadresse er også dit brugernavn, og adgangskoder og anmodninger om nulstilling af pinkoder sendes til denne e-mailadresse </i></string>
     <string name="fragment_create_account_custom_et_email_id">e-mail</string>
     <string name="fragment_create_account_et_user_name">Navn</string>
@@ -134,7 +134,7 @@
 
     <!--Contact fragment string has been start-->
     <string name="fragment_contact_tv_title">Kontaktpersoner</string>
-    <string name="fragment_dad_licence_tv_title">D.A.D. License</string>
+    <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ License</string>
     <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
     <string name="error_bluetooth_not_supported">Bluetooth understøttes ikke.</string>
     <string name="change_password"><u>Skift adgangskode</u></string>
@@ -215,7 +215,7 @@
     <string name="fragment_add_more_et_last_name_hint">Efternavn</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Kontaktpersonens efternavn - ikke påkrævet</i></string>
     <string name="fragment_add_more_et_email_hint">e-mail</string>
-    <string name="fragment_add_more_tv_email_hint"><i>Indtast en D.A.D. App-brugerens registrerings-emailadresse, så de vil modtage app-underretninger med enestående lyd. Andre kontakter modtager kun e-mail-advarsler.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Indtast en The SoulDefendHER™ App-brugerens registrerings-emailadresse, så de vil modtage app-underretninger med enestående lyd. Andre kontakter modtager kun e-mail-advarsler.</i></string>
     <string name="fragment_add_more_tv_cance">Annuller</string>
     <string name="fragment_add_more_tv_addressbook">Adressebog</string>
     <string name="fragment_add_more_tv_save">Gem</string>
@@ -223,7 +223,7 @@
     <string name="hide">Skjul</string>
     <string name="enter_you_pin">Enter Your PIN</string>
     <string name="contacts">Contacts</string>
-    <string name="crowd_alerts_msg"> "Gruppevarsler (Crowd Alerts) advarer andre D.A.D. brugere inden for 1,5 km, når du sender en \"Jeg er i FARE\"  eller \"Jeg er OK\" besked.</string>
+    <string name="crowd_alerts_msg"> "Gruppevarsler (Crowd Alerts) advarer andre The SoulDefendHER™ brugere inden for 1,5 km, når du sender en \"Jeg er i FARE\"  eller \"Jeg er OK\" besked.</string>
     <string name="send_danger">"Send \"Jeg er i FARE\"\ "meddelelse</string>
     <string name="receive_crowd_alerts">Modtag gruppevarsler</string>
     <string name="empty_alerts">No Alerts Found</string>
@@ -271,7 +271,7 @@
     <string name="dialog_delete_alert_msg">You have deleted an ALert.</string>
 
     <string name="dialog_crowd_alert_title">Crowd Alerts Status Updated</string>
-    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All D.A.D. owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
+    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All The SoulDefendHER™ owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
 
     <string name="dialog_eula_title"> Licensaftale ikke accepteret </string>
     <string name="dialog_eula_msg">Licensaftalen skal accepteres for at anvende appen. Hvis du ikke ønsker at acceptere licensaftalen, bedes du lukke appen. I modsat fald vil du blive sendt tilbage til skærmen med licensaftalen. </string>

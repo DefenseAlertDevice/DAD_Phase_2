@@ -23,7 +23,7 @@
                 android:layout_centerInParent="true"
                 android:padding="@dimen/_5sdp"
                 android:text="@string/fragment_create_account_tv_new_account"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/color_black"
                 android:textSize="@dimen/_18sdp" />
 
             <net.tigerlight.dad.util.CustomTextViewBold
@@ -37,7 +37,7 @@
                 android:gravity="center_vertical"
                 android:padding="@dimen/_5sdp"
                 android:text="@string/fragment_create_account_tv_cancel"
-                android:textColor="@color/color_alert_red"
+                android:textColor="@color/color_blue_new"
                 android:textSize="@dimen/_14sdp" />
 
             <net.tigerlight.dad.util.CustomTextViewBold
@@ -55,20 +55,11 @@
 
         </RelativeLayout>
 
-        <net.tigerlight.dad.util.CustomTextViewBold
-            android:id="@+id/fragment_create_account_tv_check_entries"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:text="@string/fragment_create_account_tv_check_entries"
-            android:textColor="@color/color_alert_orange"
-            android:textSize="@dimen/_14sdp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_13sdp"
             android:layout_marginStart="@dimen/_10sdp"
             android:weightSum="1">
 
@@ -88,9 +79,10 @@
                     android:layout_marginEnd="@dimen/_20sdp"
                     android:background="@drawable/drawable_grey_rounded_margin_et"
                     android:hint="@string/fragment_create_account_et_user_name"
+                    android:textColorHint="@color/color_gray"
                     android:inputType="text"
                     android:padding="@dimen/_10sdp"
-                    android:textColor="@color/color_black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="bold" />
 
@@ -102,9 +94,8 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:maxLines="1"
                     android:text="@string/fragment_create_account_tv_hint_user_name"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/_10sdp"
-                    android:textStyle="italic" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_10sdp" />
 
             </LinearLayout>
 
@@ -118,7 +109,6 @@
                     android:id="@+id/fragment_create_account_custom_iv_user_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="96dp"
-                    android:layout_toEndOf="@id/ll"
                     android:src="@drawable/ic_pf_pic" />
             </LinearLayout>
 
@@ -139,7 +129,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/fragment_create_account_custom_et_phone_no_hint"
                 android:inputType="phone"
-                android:textColor="@color/color_black"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_gray"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
 
@@ -148,9 +139,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_create_account_custom_tv_phone_no_hint"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="italic" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
@@ -170,7 +160,8 @@
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:hint="@string/fragment_create_account_custom_et_email_id"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/color_black"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_gray"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
 
@@ -179,9 +170,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_create_account_custom_tv_email_id_hint"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="italic" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
@@ -190,57 +180,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <EditText
+                android:id="@+id/fragment_login_to_your_account_et_pwd"
+                style="@style/style_et_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:baselineAligned="false">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
-                    android:orientation="vertical">
-
-                    <EditText
-                        android:id="@+id/fragment_login_to_your_account_et_pwd"
-                        style="@style/style_et_login"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:hint="@string/fragment_login_to_your_account_et_pwd"
-                        android:inputType="textPassword"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/_10sdp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.2">
-
-                    <CheckBox
-                        android:id="@+id/fragment_create_account_toggle_cb"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_15sdp"
-                        android:button="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="@string/show"
-                        android:textColor="@color/colorParot"
-                        android:textOff="@string/show"
-                        android:textOn="@string/hide"
-                        android:textSize="@dimen/_14sdp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+                android:drawableEnd="@drawable/ic_eye_off"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:hint="@string/fragment_login_to_your_account_et_pwd"
+                android:inputType="textPassword"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_gray"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
 
             <net.tigerlight.dad.util.CustomTextViewSemiBold
                 android:id="@+id/fragment_login_to_your_account_tv_pwd_hint"
@@ -248,9 +205,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="@string/fragment_login_to_your_account_tv_pwd_hint"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="italic" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
@@ -270,7 +226,8 @@
                 android:hint="@string/fragment_login_to_your_account_et_re_password"
                 android:inputType="textPassword"
                 android:textAlignment="viewStart"
-                android:textColor="@color/color_black"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_gray"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
 
@@ -279,9 +236,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_login_to_your_account_tv_re_password_hint"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="italic" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 

@@ -18,6 +18,8 @@ import net.tigerlight.dad.simplecropping.CameraUtil;
 import net.tigerlight.dad.simplecropping.Constants;
 import net.tigerlight.dad.util.Preference;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -27,7 +29,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,11 +39,17 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
+import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -59,8 +69,7 @@ import java.io.InputStream;
 public class CreateAccountFragment extends BaseFragment {
 
     private static final String TAG = "CreateAccountFragment";
-
-    private String userChoosenTask;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
 
     //TO check whether image taken or not
     private boolean isImageUpdated;
@@ -72,10 +81,8 @@ public class CreateAccountFragment extends BaseFragment {
     private double log;
     boolean result = true;
 
-    private View view;
     private TextView tvCancel;
     private TextView tvSave;
-    private TextView tvCheckEnteries;
     private ImageView imProfile;
 
     private EditText etUserName;
@@ -83,27 +90,23 @@ public class CreateAccountFragment extends BaseFragment {
     private EditText etEmailId;
     private EditText etPassword;
     private EditText etRePassword;
-    private CheckBox cbToggle;
 
     private AsyncTaskSignUp asyncTaskSignUp;
     private ProgressDialog progressDialog;
     String croppedFile;
 
-    private String deviceToken;
-    private String tempPath;
     private File imageFile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_create_account, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_create_account, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void initView(View view) {
         tvCancel = (TextView) view.findViewById(R.id.fragment_create_account_tv_cancel);
         tvSave = (TextView) view.findViewById(R.id.fragment_create_account_tv_save);
-        tvCheckEnteries = (TextView) view.findViewById(R.id.fragment_create_account_tv_check_entries);
         etUserName = (EditText) view.findViewById(R.id.fragment_create_account_et_user_name);
         etEmailId = (EditText) view.findViewById(R.id.fragment_create_account_custom_et_email_id);
         etPhoneNo = (EditText) view.findViewById(R.id.fragment_create_account_custom_et_phone_no);
@@ -112,34 +115,30 @@ public class CreateAccountFragment extends BaseFragment {
         imProfile = (ImageView) view.findViewById(R.id.fragment_create_account_custom_iv_user_profile);
         imProfile.setImageResource(R.drawable.ic_pf_pic);
 
-        cbToggle = (CheckBox) view.findViewById(R.id.fragment_create_account_toggle_cb);
-
-        cbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                int start, end;
-                Log.d("inside checkbox chnge", "" + isChecked);
-
-                if (!isChecked) {
-                    cbToggle.setText(getString(R.string.show));
-                    start = etPassword.getSelectionStart();
-                    end = etPassword.getSelectionEnd();
-                    etPassword.setTransformationMethod(new PasswordTransformationMethod());
-                    etPassword.setSelection(start, end);
-                } else {
-                    cbToggle.setText(getString(R.string.hide));
-                    start = etPassword.getSelectionStart();
-                    end = etPassword.getSelectionEnd();
-                    etPassword.setTransformationMethod(null);
-                    etPassword.setSelection(start, end);
+        etPassword.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // Check if the touch was on the drawableEnd
+                if (event.getRawX() >= (etPassword.getRight() - etPassword.getCompoundDrawables()[2].getBounds().width())) {
+                    if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                        // Show password
+                        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_on, 0); // Change icon to "eye open"
+                    } else {
+                        // Hide password
+                        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_off, 0); // Change icon to "eye closed"
+                    }
+                    // Move cursor to the end
+                    etPassword.setSelection(etPassword.length());
+                    return true;
                 }
             }
+            return false;
         });
 
         imProfile.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         tvSave.setOnClickListener(this);
-        tvCheckEnteries.setOnClickListener(this);
     }
 
     @Override
@@ -162,8 +161,6 @@ public class CreateAccountFragment extends BaseFragment {
             validateFragment();
         } else if (v.getId() == tvCancel.getId()) {
             getActivity().onBackPressed();
-        } else if (v.getId() == tvCheckEnteries.getId()) {
-            // Handle tvCheckEnteries click event
         } else if (v.getId() == imProfile.getId()) {
             selectImage();
         }
@@ -240,10 +237,8 @@ public class CreateAccountFragment extends BaseFragment {
             public void onClick(DialogInterface dialog, int item) {
 
                 if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
-                    userChoosenTask = getString(R.string.TAG_TAKE_PHOTO);
                     gotoCamera();
                 } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
-                    userChoosenTask = getString(R.string.TAG_CHOOSE_FROM_GALLERY);
                     gotoGallery();
                 } else if (items[item].equals(getString(R.string.fragment_create_account_tv_cancel))) {
                     dialog.dismiss();
@@ -253,16 +248,49 @@ public class CreateAccountFragment extends BaseFragment {
         builder.show();
     }
 
-    public void gotoCamera() {
-        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private void startCameraActivity() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            imageFile = CameraUtil.getOutputMediaFile(1);
-            final Uri mImageCaptureUri = Uri.fromFile(imageFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, Constants.REQUEST_CODE_TAKE_PICTURE);
+            imageFile = CameraUtil.getOutputMediaFile(1); // Your method to create the file
+            if (imageFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(
+                        getActivity(),
+                        getActivity().getApplicationContext().getPackageName() + ".provider",
+                        imageFile
+                );
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION); // Grant URI permissions
+                startActivityForResult(intent, Constants.REQUEST_CODE_TAKE_PICTURE);
+            }
         } catch (ActivityNotFoundException e) {
-            Log.d("TAG", "cannot take picture", e);
+            Log.e(TAG, "Cannot take picture", e);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, start the camera activity
+                startCameraActivity();
+            } else {
+                Toast.makeText(getContext(), "Camera permission is required to take a photo", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void gotoCamera() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    CAMERA_PERMISSION_REQUEST_CODE
+            );
+        } else {
+            // Start the camera activity
+            startCameraActivity();
         }
     }
 
@@ -469,7 +497,7 @@ public class CreateAccountFragment extends BaseFragment {
         dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
-                getFragmentManager().popBackStack();
+                getSupportFragmentManager().popBackStack();
             }
         });
         dialog.show();
