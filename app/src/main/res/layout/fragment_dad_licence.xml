@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorOrange_new">
+        android:background="@color/colorGray">
 
         <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"

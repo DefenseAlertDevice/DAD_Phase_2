@@ -11,21 +11,41 @@ import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.Util;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
+
+import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends BaseActivity {
 
+    private static final int REQUEST_ENABLE_BT = 10;
     private boolean isLogin;
     private boolean isFirstAccount;
 
+    public static byte[] hexStringToByteArray(String hexString) {
+        int length = hexString.length();
+        byte[] data = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+                    + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +119,50 @@ public class MainActivity extends BaseActivity {
 //                replaceAlertDetailFragment(alertDetailFragment);
 //            }
 //        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.BLUETOOTH_ADVERTISE},
+                    REQUEST_ENABLE_BT
+            );
+        }
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        }
+        BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+        if (advertiser == null) {
+            Log.e("BLE", "BLE advertising not supported on this device");
+            return;
+        }
 
+// UUID in byte format
+        String uuidString = "FD8C0AA6D40411E5AB30625662870761";
+        byte[] uuidBytes = hexStringToByteArray(uuidString);
 
+        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+                .setConnectable(false)
+                .build();
+
+        AdvertiseData data = new AdvertiseData.Builder()
+                .addManufacturerData(0x004C, uuidBytes) // 0x004C is Apple's manufacturer ID, for example
+                .build();
+
+        advertiser.startAdvertising(settings, data, new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                Log.i("BLE", "Advertising started successfully");
+            }
+
+            @Override
+            public void onStartFailure(int errorCode) {
+                Log.e("BLE", "Advertising failed with error code: " + errorCode);
+            }
+        });
     }
 
     private BroadcastReceiver temp = new BroadcastReceiver() {

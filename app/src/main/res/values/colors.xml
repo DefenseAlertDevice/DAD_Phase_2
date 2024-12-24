@@ -12,6 +12,7 @@
     <color name="colorInckNevyLight">#104E8B</color>
     <color name="colorOrange">#AD390A</color>
     <color name="colorOrange_new">#D54801</color>
+    <color name="colorGray">#444444</color>
 
     <color name="color_hint">#666666</color>
         <color name="tab_background_selected">#00BFFF</color>

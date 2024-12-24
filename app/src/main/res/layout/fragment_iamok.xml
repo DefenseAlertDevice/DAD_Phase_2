@@ -8,15 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
-        android:background="@color/colorOrange_new"
+        android:background="@color/colorGray"
         android:gravity="center">
 
         <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorOrange_new"
             android:text="@string/TAG_I_AM_ON"
-            android:textColor="@color/color_black"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/_20sdp" />
 
     </LinearLayout>
