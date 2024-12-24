@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import java.util.Locale;
 
@@ -31,8 +34,8 @@ public class RegistartionFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-        final TextView tvCreateAccount = (TextView) view.findViewById(R.id.fragment_registration_tv_create_account);
-        final TextView tvLoginToYourAccount = (TextView) view.findViewById(R.id.fragment_registration_tv_login_to_your_account);
+        final Button tvCreateAccount = (Button) view.findViewById(R.id.fragment_registration_tv_create_account);
+        final Button tvLoginToYourAccount = (Button) view.findViewById(R.id.fragment_registration_tv_login_to_your_account);
         final TextView tvShowEula = (TextView) view.findViewById(R.id.fragment_registration_tv_show_eula);
         tvCreateAccount.setOnClickListener(this);
         tvLoginToYourAccount.setOnClickListener(this);
@@ -44,6 +47,7 @@ public class RegistartionFragment extends BaseFragment {
             PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
 
             tvBuildVersion.setText(String.format(Locale.US, getString(R.string.build_no), packageInfo.versionCode, packageInfo.versionName));
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorBlack));
         }
         catch (PackageManager.NameNotFoundException e)
         {
