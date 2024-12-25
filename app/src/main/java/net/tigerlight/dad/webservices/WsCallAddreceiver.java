@@ -10,6 +10,8 @@ import net.tigerlight.dad.util.WsConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+
 /**
  * Created by M.T. on 7 Oct, 2016.
  * This class is making api call for user login
@@ -89,7 +91,7 @@ public class WsCallAddreceiver {
         builder.append("&" + wsConstants.PARAMS_FIRST_NAME + "=" + first_name);
         builder.append("&" + wsConstants.PARAMS_LAST_NAME + "=" + last_name);
         builder.append("&" + wsConstants.PARAMS_NICK_NAME + "=" + nick_name);
-        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + email);
+        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + URLEncoder.encode(email));
         builder.append("&" + wsConstants.PARAMS_PHONE + "=" + phone);
         builder.append("&" + wsConstants.PARAMS_ADDRESS + "=" + address);
         builder.append("&" + wsConstants.PARAMS_USER_ID + "=" + preference.mSharedPreferences.getString(mConstants.USER_ID, ""));

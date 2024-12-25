@@ -439,14 +439,14 @@
 ////                    float major = (float) 2.9;
 ////                    if (minor >= -3.0 && major >= 2.5) {
 ////
-////                        tvMsgLeve.setText("GOOD D.A.D BATTERY");
+////                        tvMsgLeve.setText("GOOD The SoulDefendHER™ BATTERY");
 ////                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
 ////                    } else if (minor >= -2.499 && major >= 2.0) {
 ////
-////                        tvMsgLeve.setText("LOW D.A.D BATTERY");
+////                        tvMsgLeve.setText("LOW The SoulDefendHER™ BATTERY");
 ////                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
 ////                    } else {
-////                        tvMsgLeve.setText("REPLACE D.A.D BATTERY");
+////                        tvMsgLeve.setText("REPLACE The SoulDefendHER™ BATTERY");
 ////                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
 ////                    }
 //
@@ -455,14 +455,14 @@
 //
 //                    if (temp >= -3.0 && temp >= 2.5) {
 //
-//                        tvMsgLeve.setText("GOOD D.A.D BATTERY");
+//                        tvMsgLeve.setText("GOOD The SoulDefendHER™ BATTERY");
 //                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
 //                    } else if (temp >= -2.499 && temp >= 2.0) {
 //
-//                        tvMsgLeve.setText("LOW D.A.D BATTERY");
+//                        tvMsgLeve.setText("LOW The SoulDefendHER™ BATTERY");
 //                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
 //                    } else if (temp < 2.0) {
-//                        tvMsgLeve.setText("REPLACE D.A.D BATTERY");
+//                        tvMsgLeve.setText("REPLACE The SoulDefendHER™ BATTERY");
 //                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
 //                    }
 //

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -16,7 +18,11 @@ import androidx.core.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import net.tigerlight.dad.R;
@@ -46,26 +52,129 @@ public class Utills {
     public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.png";
 
 
+    public static void displayDialogWithCallbacks(
+            final Activity context,
+            final String title,
+            final String msg,
+            final String positiveText,
+            final DialogInterface.OnClickListener positiveCallback,
+            final String negativeText,
+            final DialogInterface.OnClickListener negativeCallback,
+            final String neutralText,
+            final DialogInterface.OnClickListener neutralCallback) {
+
+        // Create an AlertDialog.Builder
+        LayoutInflater inflater = context.getLayoutInflater();
+        View customView = inflater.inflate(R.layout.custom_dialog_v2, null);
+
+        // Create the AlertDialog.Builder
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setView(customView); // Set custom layout
+        dialogBuilder.setCancelable(true);
+
+        AlertDialog dialog = dialogBuilder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        // Find and configure buttons in the custom layout
+        TextView titleText = customView.findViewById(R.id.dialog_title);
+        titleText.setText(title);
+        TextView msgText = customView.findViewById(R.id.dialog_message);
+        msgText.setText(msg);
+        Button positiveButton = customView.findViewById(R.id.dialog_action1);
+        Button negativeButton = customView.findViewById(R.id.dialog_action2);
+        Button neutralButton = customView.findViewById(R.id.dialog_action3);
+        View positiveDivider = customView.findViewById(R.id.dialog_divider1);
+        View negativeDivider = customView.findViewById(R.id.dialog_divider2);
+        View neutralDivider = customView.findViewById(R.id.dialog_divider3);
+
+        if (positiveText != null && positiveCallback != null) {
+            positiveButton.setText(positiveText);
+            positiveButton.setVisibility(View.VISIBLE);
+            positiveButton.setOnClickListener(v -> {
+                positiveCallback.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                dialog.dismiss(); // Optional: dismiss dialog here
+            });
+        } else {
+            positiveDivider.setVisibility(View.GONE);
+            positiveButton.setVisibility(View.GONE);
+        }
+
+        if (negativeText != null && negativeCallback != null) {
+            negativeButton.setText(negativeText);
+            negativeButton.setVisibility(View.VISIBLE);
+            negativeButton.setOnClickListener(v -> {
+                negativeCallback.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+                dialog.dismiss(); // Optional: dismiss dialog here
+            });
+        } else {
+            negativeDivider.setVisibility(View.GONE);
+            negativeButton.setVisibility(View.GONE);
+        }
+
+        if (neutralText != null && neutralCallback != null) {
+            neutralButton.setText(neutralText);
+            neutralButton.setVisibility(View.VISIBLE);
+            neutralButton.setOnClickListener(v -> {
+                neutralCallback.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+                dialog.dismiss(); // Optional: dismiss dialog here
+            });
+        } else {
+            neutralDivider.setVisibility(View.GONE);
+            neutralButton.setVisibility(View.GONE);
+        }
+
+        // Show the dialog
+        dialog.show();
+    }
+
+    public static void displayDefaultDialog(
+            final Activity context,
+            final String title,
+            final String msg,
+            final String positiveText,
+            final DialogInterface.OnClickListener positiveCallback,
+            final String negativeText,
+            final DialogInterface.OnClickListener negativeCallback,
+            final String neutralText,
+            final DialogInterface.OnClickListener neutralCallback) {
+
+        // Create an AlertDialog.Builder
+        // Create the AlertDialog.Builder
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(title);
+        dialogBuilder.setMessage(msg);
+        dialogBuilder.setCancelable(true);
+
+        if (positiveText != null && positiveCallback != null) {
+            dialogBuilder.setPositiveButton(positiveText, positiveCallback);
+        }
+
+        if (negativeText != null && negativeCallback != null) {
+            dialogBuilder.setNegativeButton(negativeText, negativeCallback);
+        }
+
+        if (neutralCallback != null && neutralText != null) {
+            dialogBuilder.setNeutralButton(neutralText, neutralCallback);
+        }
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
     public static void displayDialog(final Activity context, final String title, final String msg, final String strPositiveText, final String strNegativeText,
                                      final boolean isNagativeBtn, final boolean isFinish) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(title);
         dialog.setCancelable(false);
         dialog.setMessage(msg);
-        dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                if (isFinish) {
-                    context.finish();
-                }
+        dialog.setPositiveButton(strPositiveText, (dialog12, id) -> {
+            dialog12.dismiss();
+            if (isFinish) {
+                context.finish();
             }
         });
         if (isNagativeBtn) {
-            dialog.setNegativeButton(strNegativeText, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            dialog.setNegativeButton(strNegativeText, (dialog1, id) -> dialog1.dismiss());
         }
         dialog.show();
     }

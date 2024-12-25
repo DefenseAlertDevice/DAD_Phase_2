@@ -11,6 +11,8 @@ import net.tigerlight.dad.util.WsConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+
 /**
  * Created by M.T. on 7 Oct, 2016.
  * This class is making api call for user login
@@ -109,7 +111,7 @@ public class WsCallRegistrer {
         final Preference preference = Preference.getInstance();
         StringBuilder builder = new StringBuilder();
         builder.append(wsConstants.PARAMS_COMMAND + "=" + WsConstants.METHOD_REGISTER);
-        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + email);
+        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + URLEncoder.encode(email));
         builder.append("&" + wsConstants.PARAMS_PASSWORD + "=" + password);
         builder.append("&" + wsConstants.PARAMS_NAME + "=" + name);
         builder.append("&" + wsConstants.PARAMS_USER_NAME + "=" + name);

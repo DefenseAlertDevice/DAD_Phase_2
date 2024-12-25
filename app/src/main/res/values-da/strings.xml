@@ -113,7 +113,7 @@
     <string name="TAG_PHONE_NO_MIN_TEN_MSG">Enter 10 Digit Number.</string>
     <string name="account_created">\"Your Account Is created\"</string>
     <string name="account_updated">\"Your Account Is updated\"</string>
-    <string name="reday_to_use">You are ready to use D.A.D</string>
+    <string name="reday_to_use">You are ready to use The SoulDefendHER™</string>
 
     <!--Create Account fragment string has been finished start-->
 
@@ -173,7 +173,7 @@
     <string name="fragment_edit_profile_tv_title">Rediger konto</string>
     <string name="fragment_edit_profil_tv_save">Gem</string>
     <string name="fragment_edit_profile_msg">Enter the name your contacts known by you.</string>
-    <string name="fragment_edit_profile_tv_phone_alert_msg">Phome number where you want to receive crowd text alerts from the other D.A.D users.</string>
+    <string name="fragment_edit_profile_tv_phone_alert_msg">Phome number where you want to receive crowd text alerts from the other The SoulDefendHER™ users.</string>
     <string name="fragment_edit_profile_title_Password">Password.</string>
     <string name="fragment_edit_profile_title_password_update">Opdatering af adgangskode</string>
     <string name="fragment_edit_profile_title_Current">Nuværende adgangskode</string>
@@ -385,8 +385,8 @@ Har været på</string>
     <string name="custom_dialog_eng_lang">English</string>
     <string name="dial_112">Ring 112</string>
     <string name="custom_progess_dialog_tv_msg">Send en advarsel om "fare" til dine kontakter.</string>
-    <string name="battery_level_good">GOOD D.A.D BATTERY</string>
-    <string name="battery_level_low">LAV D.A. BATTERI</string>
+    <string name="battery_level_good">GOOD BATTERY</string>
+    <string name="battery_level_low">LAV BATTERI</string>
     <string name="battery_level_replace">Udskift D.A.D BATTERI</string>
     <string name="test_message_title">Testmeddelelse sendt</string>
     <string name="test_message_body">Testmeddelelser er blevet sendt tilbage til dig via e-mail, sms og app notifikation</string>

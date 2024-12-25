@@ -14,35 +14,39 @@ import net.tigerlight.dad.registration.webservices.WsCallLogin;
 import net.tigerlight.dad.webservices.WsGetUserData;
 import net.tigerlight.dad.util.Preference;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import androidx.appcompat.widget.AppCompatCheckBox;
+
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class LoginToYourAccountFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener {
 
+    private static final String ARG_EMAIL_ID = "email_id";
+    private static final String ARG_PASSWORD = "password";
     private static final String TAG = LoginToYourAccountFragment.class.getSimpleName();
     private View view;
     private EditText etUserName;
     private EditText etPassword;
-    private TextView tvLogin;
-    private TextView tvForgotPwd;
-    private AppCompatCheckBox cbRememberMe;
     boolean isChecked;
     private AsyncTaskLocalLogin asyncTaskLocalLogin;
     private ProgressDialog progressDialog;
@@ -69,6 +73,15 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 //    private String SENDER_ID = "308732044105";
     private String SENDER_ID = "32989397760";
 
+    public static LoginToYourAccountFragment newInstance(String emailId, String password) {
+        LoginToYourAccountFragment fragment = new LoginToYourAccountFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_EMAIL_ID, emailId);
+        args.putString(ARG_PASSWORD, password);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragemnt_login_to_your_account, container, false);
@@ -77,19 +90,22 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
     @Override
     public void initView(View view) {
-        etUserName = (EditText) view.findViewById(R.id.fragment_login_to_your_account_et_user_name);
-        etPassword = (EditText) view.findViewById(R.id.fragment_login_to_your_account_et_password);
-        tvLogin = (TextView) view.findViewById(R.id.fragment_login_to_your_account_tv_login);
-        tvCancel = (TextView) view.findViewById(R.id.fragment_login_to_your_account_tv_cancel);
-        tvForgotPwd = (TextView) view.findViewById(R.id.fragment_login_to_your_account_tv_forgot_pwd);
-        cbRememberMe = (AppCompatCheckBox) view.findViewById(R.id.fragment_login_to_your_account_cb_remember_me);
+        etUserName = view.findViewById(R.id.fragment_login_to_your_account_et_user_name);
+        etPassword = view.findViewById(R.id.fragment_login_to_your_account_et_password);
+        Button tvLogin = view.findViewById(R.id.fragment_login_to_your_account_tv_login);
+        tvCancel = view.findViewById(R.id.fragment_login_to_your_account_tv_cancel);
+        Button tvForgotPwd = view.findViewById(R.id.fragment_login_to_your_account_tv_forgot_pwd);
         //Set the click lister
         tvLogin.setOnClickListener(this);
         tvForgotPwd.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
 
-        lat = ((BaseActivity) getActivity()).getLatitude();
-        log = ((BaseActivity) getActivity()).getLongitude();
+        if (getActivity() != null) {
+            lat = ((BaseActivity) getActivity()).getLatitude();
+            log = ((BaseActivity) getActivity()).getLongitude();
+        }
+
+        setupPasswordField();
 
 //        startRefreshTimeTimer();
 
@@ -114,15 +130,46 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 //            }
 //        });
 
-        cbRememberMe.setOnCheckedChangeListener(this);
+        if (getArguments() != null) {
+            String emailId = getArguments().getString(ARG_EMAIL_ID);
+            String password = getArguments().getString(ARG_PASSWORD);
+            if (emailId != null) {
+                etUserName.setText(emailId);
+            }
+            if (password != null) {
+                etPassword.setText(password);
+            }
+        }
+    }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupPasswordField() {
+        etPassword.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // Check if the touch was on the drawableEnd
+                if (event.getRawX() >= (etPassword.getRight() - etPassword.getCompoundDrawables()[2].getBounds().width())) {
+                    if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                        // Show password
+                        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_on, 0); // Change icon to "eye open"
+                    } else {
+                        // Hide password
+                        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_off, 0); // Change icon to "eye closed"
+                    }
+                    // Move cursor to the end
+                    etPassword.setSelection(etPassword.length());
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     private void setLogIndetails() {
         if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_REMEMBER, false)) {
             etUserName.setText(Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, ""));
             etPassword.setText(Preference.getInstance().mSharedPreferences.getString(Constant.KEY_PASSWORD, ""));
-            cbRememberMe.setChecked(true);
         }
     }
 
@@ -174,11 +221,11 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         if (fragmentId == R.id.fragment_login_to_your_account_tv_login) {
             validateFields();
         } else if (fragmentId == R.id.fragment_login_to_your_account_tv_forgot_pwd) {
-            ((MainActivity) getActivity()).getSupportFragmentManager().beginTransaction()
-                    .add(R.id.activity_registartion_fl_container, new ForgotPasswordFragment(), ForgotPasswordFragment.class.getSimpleName())
-                    .hide(this)
-                    .addToBackStack(ForgotPasswordFragment.class.getSimpleName())
-                    .commit();
+            if (getActivity() instanceof MainActivity) {
+                String email = etUserName.getText().toString();
+                ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(email);
+                ((MainActivity) getActivity()).addFragment(fragment, LoginToYourAccountFragment.this);
+            }
         } else if (fragmentId == R.id.fragment_login_to_your_account_tv_cancel) {
             getLocalFragmentManager().popBackStack();
         }
@@ -327,9 +374,50 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 //                        }
 //                    }
 
-                } else {
+                } else if (getActivity() != null) {
                     progressDialog.dismiss();
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), wsLogin.getMessage(), getString(R.string.TAG_OK), "", false, false);
+                    String message = getString(R.string.alert_something_wrong);
+                    String positiveText = null;
+                    String negativeText = getString(R.string.TAG_TRY_AGAIN);
+                    DialogInterface.OnClickListener negativeCallback = (dialog, which) -> {
+                        dialog.dismiss();
+                    };
+                    DialogInterface.OnClickListener positiveCallback = null;
+                    if (wsLogin.getMessage().equals("email")) {
+                        message = getString(R.string.TAG_EMAIL_NOT_FOUND);
+                        positiveText = getString(R.string.fragment_registration_create_account);
+                        positiveCallback = (dialog, which) -> {
+                            Activity activity = getActivity();
+                            if (activity instanceof MainActivity) {
+                                ((MainActivity) activity).addFragment(new CreateAccountFragment());
+                            }
+                            dialog.dismiss();
+                        };
+                    } else if (wsLogin.getMessage().equals("password")) {
+                        message = getString(R.string.TAG_INVALID_LOGIN_PASSWORD);
+                        positiveText = getString(R.string.TAG_RESETPASSWORD_TXT);
+                        positiveCallback = (dialog, which) -> {
+                            Activity activity = getActivity();
+                            if (activity instanceof MainActivity) {
+                                ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(userName);
+                                ((MainActivity) activity).addFragment(fragment);
+                            }
+                            dialog.dismiss();
+                        };
+                    } else {
+                        message = getString(R.string.alert_something_wrong);
+                    }
+                    Utills.displayDefaultDialog(
+                            getActivity(),
+                            getString(R.string.fragment_login_to_your_tv_login),
+                            message,
+                            positiveText,
+                            positiveCallback,
+                            negativeText,
+                            negativeCallback,
+                            null,
+                            null
+                    );
                 }
 
 

@@ -120,7 +120,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private void createNotificationChannel() {
         NotificationChannel serviceChannel = new NotificationChannel(
                 CHANNEL_ID,
-                "D.A.D App",
+                "The SoulDefendHER™ App",
                 NotificationManager.IMPORTANCE_DEFAULT
         );
         NotificationManager manager = getSystemService(NotificationManager.class);
@@ -151,7 +151,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("D.A.D App")
+                .setContentTitle("The SoulDefendHER™ App")
                 .setContentText("Running location services")
                 .setSmallIcon(R.drawable.app_icon)
                 .setContentIntent(pendingIntent);

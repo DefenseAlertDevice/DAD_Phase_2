@@ -61,10 +61,12 @@
     <application
         android:name=".DADApplication"
         android:allowBackup="true"
-        android:icon="@drawable/app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:enableOnBackInvokedCallback="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="tiramisu">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -182,6 +184,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
+
+<!--        <meta-data-->
+<!--            android:name="android.app.default_searchable"-->
+<!--            android:value="@xml/asset_statements" />-->
 
         <receiver
             android:name=".recievers.AlertSentReceiver"

@@ -11,6 +11,8 @@ import net.tigerlight.dad.util.WsConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+
 /**
  * Created by M.T. on 7 Oct, 2016.
  * This class is making api call for user login
@@ -97,7 +99,7 @@ public class WsCallGetAlertCount {
         final Preference preference = Preference.getInstance();
         StringBuilder builder = new StringBuilder();
         builder.append(wsConstants.PARAMS_COMMAND + "=" + WsConstants.METHOD_GET_ALERT_COUNT);
-        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + email);
+        builder.append("&" + wsConstants.PARAMS_EMAIL + "=" + URLEncoder.encode(email));
         builder.append("&" + wsConstants.PARAMS_HOURS + "=" + hours);
         builder.append("&" + wsConstants.PARAMS_TAG + "=" + wsConstants.PARAMS_TAG_VALUE);
         builder.append("&" + wsConstants.PARAMS_DEVICE_TOKEN + "=" + preference.mSharedPreferences.getString(preference.KEY_DEVICE_TOKEN, ""));

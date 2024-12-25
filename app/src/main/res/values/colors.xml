@@ -18,7 +18,7 @@
         <color name="tab_background_selected">#00BFFF</color>
     <color name="tab_background_unselected">#9E9E9E</color>
     <color name="colorSkyBlue">#440AD1</color>
-    <color name="colorLightGrey">#9e9e9e</color>
+    <color name="colorLightGrey">#413B31</color>
 
     <color name="view_color">#59ffffff</color>
     <color name="color_gray">#86888B</color>
@@ -45,6 +45,9 @@
     <color name="color_alert_red">#f60101</color>
     <color name="color_alert_purple">#cb67fe</color>
     <color name="color_allert_bg"> #FEFCBA</color>
+    <color name="dialog_bg">#FF41392A</color>
+    <color name="dialog_divider">#534937</color>
+    <color name="dialog_action_btn">#FF4589E6</color>
 
 
 

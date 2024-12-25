@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,11 +21,20 @@ import net.tigerlight.dad.registration.webservices.WsCallForgotPassword;
 public class ForgotPasswordFragment extends BaseFragment {
 
     private static final String TAG = "LoginToYourAccountFragment";
+    private static final String ARG_EMAIL_ID = "email_id";
     private View view;
     private EditText etEmailId;
-    private TextView tvSubmit;
+    private Button tvSubmit;
     private TextView tvCancel;
     private AsyncTaskForgotPassword asyncTaskResetPassword;
+
+    public static ForgotPasswordFragment newInstance(String emailId) {
+        ForgotPasswordFragment fragment = new ForgotPasswordFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_EMAIL_ID, emailId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,11 +45,21 @@ public class ForgotPasswordFragment extends BaseFragment {
     @Override
     public void initView(View view) {
 
-        etEmailId = (EditText) view.findViewById(R.id.fragment_forgot_password_et_email_id);
-        tvSubmit = (TextView) view.findViewById(R.id.fragment_forgot_password_tv_submit);
-        tvCancel = (TextView) view.findViewById(R.id.fragment_forgot_password_tv_cancel);
+        etEmailId = view.findViewById(R.id.fragment_forgot_password_et_email_id);
+        tvSubmit = view.findViewById(R.id.fragment_forgot_password_tv_submit);
+        tvCancel = view.findViewById(R.id.fragment_forgot_password_tv_cancel);
         tvSubmit.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
+
+        if (getArguments() != null) {
+            String emailId = getArguments().getString(ARG_EMAIL_ID);
+            if (emailId != null && !emailId.isEmpty()) {
+                etEmailId.setText(emailId);
+                if (Utills.isValidEmail(emailId.trim())) {
+                    resetPassword();
+                }
+            }
+        }
 //       double lat= ((BaseActivity) getActivity()).getLatitude();
 //       double lon=((BaseActivity) getActivity()).getLongitude();
 //
@@ -64,7 +84,7 @@ public class ForgotPasswordFragment extends BaseFragment {
         if (v.getId() == tvSubmit.getId()) {
             validateFields();
 
-        } else if (v.getId() == tvCancel.getId()) {
+        } else if (v.getId() == tvCancel.getId() && getActivity() != null) {
             getActivity().onBackPressed();
         }
 
@@ -79,7 +99,7 @@ public class ForgotPasswordFragment extends BaseFragment {
         } else if (!Utills.isValidEmail(etEmailId.getText().toString().trim())) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_VALID_EMAIL), getString(R.string.ok), "", false, false);
             etEmailId.requestFocus();
-        } else {
+        } else if (getActivity() != null) {
             if (Utills.isOnline(getActivity(), true)) {
                 resetPassword();
                 //  Utils.displayDialog(this, getString(R.string.app_name), "We've sent a password reset link to email address", getString(android.R.string.ok), "", false, true);
@@ -90,7 +110,7 @@ public class ForgotPasswordFragment extends BaseFragment {
     }
 
     private void resetPassword() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskResetPassword != null && asyncTaskResetPassword.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskResetPassword.execute();
             } else if (asyncTaskResetPassword == null || asyncTaskResetPassword.getStatus() == AsyncTask.Status.FINISHED) {
@@ -136,7 +156,7 @@ public class ForgotPasswordFragment extends BaseFragment {
                     displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_EMAIL_SENT), getString(R.string.TAG_OK));
 
                 } else {
-                    if (wsForgetPassword.getMessage().trim().length() > 0) {
+                    if (!wsForgetPassword.getMessage().trim().isEmpty()) {
                         Utills.displayDialog(getActivity(), getString(R.string.app_name), wsForgetPassword.getMessage(), getString(R.string.TAG_OK), "", false, false);
                     } else {
                         Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.SOME_WENT_WRONG_MSG), getString(R.string.TAG_OK), "", false, false);
@@ -154,7 +174,9 @@ public class ForgotPasswordFragment extends BaseFragment {
             dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
-                    getActivity().onBackPressed();
+                    if (getActivity() != null) {
+                        getActivity().onBackPressed();
+                    }
                 }
             });
             dialog.show();

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
     android:orientation="vertical"
+    android:paddingVertical="@dimen/_30sdp"
     android:padding="@dimen/_10sdp">
+
+    <ImageView
+        android:id="@+id/fragment_login_to_your_account_iv_logo"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/img_logo_white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_30sdp"
         android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/fragment_login_to_your_account_iv_logo"
-            android:layout_width="match_parent"
-            android:layout_height="128dp"
-            android:scaleType="fitCenter"
-            android:layout_gravity="center"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/img_logo_white" />
+        android:padding="@dimen/_30sdp"
+        android:orientation="vertical"
+        android:gravity="bottom">
 
         <TextView
             android:id="@+id/fragment_login_to_your_account_tv_title_login_credentials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_30sdp"
             android:text="@string/fragment_login_to_your_tv_title_login_credentials"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/_20sdp"
@@ -45,6 +45,7 @@
             android:hint="@string/fragment_login_to_your_et_hint_email_id"
             android:inputType="textEmailAddress"
             android:textAlignment="viewStart"
+            android:autofillHints="emailAddress"
             android:textColor="@color/colorBlack" />
         <!--android:drawableEnd="@drawable/ic_highlight_off_black_24dp"-->
 
@@ -52,86 +53,54 @@
             android:id="@+id/fragment_login_to_your_account_et_password"
             style="@style/style_et_login"
             android:layout_width="match_parent"
+            android:drawableEnd="@drawable/ic_eye_off"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/fragment_login_to_your_et_hint_pwd"
             android:inputType="textPassword"
+            android:autofillHints="password"
             android:textAlignment="viewStart"
             android:textColor="@color/colorBlack" />
 
-        <RelativeLayout
-            android:id="@+id/fragment_login_to_your_account_rl_remember"
+        <Button
+            android:id="@+id/fragment_login_to_your_account_tv_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp">
-
-            <!--<CheckBox-->
-            <!--android:id="@+id/fragment_login_to_your_account_cb_remember_me"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="@string/fragment_login_to_your_tv_remember_me"-->
-            <!--android:textColor="@color/color_blue_light"-->
-            <!--android:textSize="@dimen/_15sdp"-->
-            <!--android:textStyle="bold" />-->
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/fragment_login_to_your_account_cb_remember_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/fragment_login_to_your_tv_remember_me"
-                android:textColor="@color/color_alert_orange"
-                android:textSize="@dimen/_15sdp"
-                android:textStyle="bold"
-                android:theme="@style/checkbox" />
-
-            <net.tigerlight.dad.util.CustomTextViewBold
-                android:id="@+id/fragment_login_to_your_account_tv_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:paddingEnd="@dimen/_5sdp"
-                android:paddingStart="@dimen/_5sdp"
-                android:text="@string/fragment_login_to_your_tv_login"
-                android:textColor="@color/colorParot"
-                android:textSize="@dimen/_15sdp" />
-        </RelativeLayout>
-
-        <net.tigerlight.dad.util.CustomTextViewBold
-            android:id="@+id/fragment_login_to_your_account_tv_forgot_pwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_2sdp"
-            android:drawablePadding="@dimen/_5sdp"
-            android:drawableStart="@drawable/img_forgot_pwd"
-            android:gravity="center_vertical"
-            android:padding="@dimen/_2sdp"
-            android:text="@string/fragment_login_to_your_tv_forgot_pws"
-            android:textColor="@color/colorParot"
+            android:text="@string/fragment_login_to_your_tv_login"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/button_bg_orange"
+            android:textAllCaps="false"
+            android:layout_marginTop="@dimen/_10sdp"
             android:textSize="@dimen/_15sdp" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom|start"
-        android:layout_weight="0.1">
+        <Button
+            android:id="@+id/fragment_login_to_your_account_tv_forgot_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/_5sdp"
+            android:drawableStart="@drawable/ic_lock_outline"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/colorOrange_new"
+            android:background="@drawable/button_bg_white"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:text="@string/fragment_login_to_your_tv_forgot_pws"
+            android:textSize="@dimen/_15sdp" />
 
         <TextView
             android:id="@+id/fragment_login_to_your_account_tv_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_2sdp"
-            android:padding="@dimen/_2sdp"
-            android:text="@string/cancel_ul"
+            android:text="@string/back"
             android:textAllCaps="false"
-            android:textColor="@color/color_blue_light"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/font_15sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
+            app:drawableStartCompat="@drawable/ic_arrow_back_ios_24" />
     </LinearLayout>
 
 </LinearLayout>

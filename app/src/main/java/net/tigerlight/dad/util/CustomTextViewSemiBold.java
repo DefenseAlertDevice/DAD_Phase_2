@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
+
 import net.tigerlight.dad.R;
 
-public class CustomTextViewSemiBold extends TextView {
+public class CustomTextViewSemiBold extends androidx.appcompat.widget.AppCompatTextView {
 
     public CustomTextViewSemiBold(Context context) {
         super(context);

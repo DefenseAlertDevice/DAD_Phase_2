@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -211,9 +212,9 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getLocalFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             Util.getInstance().hideSoftKeyboard(this);
-            getLocalFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         } else {
             buildAlertMessageExit();
         }
@@ -245,12 +246,12 @@ public class MainActivity extends BaseActivity {
      */
     public void addFragment(final BaseFragment newFragment, final BaseFragment hideFragment) {
         Util.getInstance().hideSoftKeyboard(this);
-        newFragment.setTargetFragment(hideFragment, 1);
-        getLocalFragmentManager()
+
+        getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.activity_registartion_fl_container, newFragment, newFragment.getClass().getSimpleName())
                 .hide(hideFragment)
-                .addToBackStack(hideFragment.getClass().getSimpleName())
+                .addToBackStack(newFragment.getClass().getSimpleName()) // Add the new fragment to the back stack
                 .commit();
     }
 

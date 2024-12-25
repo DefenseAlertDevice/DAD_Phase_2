@@ -5,27 +5,20 @@
     android:background="@drawable/login_bg"
     android:padding="@dimen/_10sdp">
 
-    <LinearLayout
+    <ImageView
         android:id="@+id/fragment_registration_iv_logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="128dp"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/img_logo_white" />
-
-    </LinearLayout>
+        android:layout_height="128dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/img_logo_white" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fragment_registration_iv_logo">
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:layout_below="@+id/fragment_registration_iv_logo"
+    >
 
         <TextView
             android:id="@+id/fragment_registration_tv_show_eula"

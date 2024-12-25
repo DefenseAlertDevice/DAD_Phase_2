@@ -27,11 +27,9 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,14 +44,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,6 +58,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Locale;
 
 /**
  * CreateAccountFragment : new user can register
@@ -82,7 +79,7 @@ public class CreateAccountFragment extends BaseFragment {
     boolean result = true;
 
     private TextView tvCancel;
-    private TextView tvSave;
+    private Button tvSave;
     private ImageView imProfile;
 
     private EditText etUserName;
@@ -105,14 +102,14 @@ public class CreateAccountFragment extends BaseFragment {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void initView(View view) {
-        tvCancel = (TextView) view.findViewById(R.id.fragment_create_account_tv_cancel);
-        tvSave = (TextView) view.findViewById(R.id.fragment_create_account_tv_save);
-        etUserName = (EditText) view.findViewById(R.id.fragment_create_account_et_user_name);
-        etEmailId = (EditText) view.findViewById(R.id.fragment_create_account_custom_et_email_id);
-        etPhoneNo = (EditText) view.findViewById(R.id.fragment_create_account_custom_et_phone_no);
-        etPassword = (EditText) view.findViewById(R.id.fragment_login_to_your_account_et_pwd);
-        etRePassword = (EditText) view.findViewById(R.id.fragment_login_to_your_account_et_re_password);
-        imProfile = (ImageView) view.findViewById(R.id.fragment_create_account_custom_iv_user_profile);
+        tvCancel = view.findViewById(R.id.fragment_create_account_tv_back);
+        tvSave = view.findViewById(R.id.fragment_create_account_tv_save);
+        etUserName = view.findViewById(R.id.fragment_create_account_et_user_name);
+        etEmailId = view.findViewById(R.id.fragment_create_account_custom_et_email_id);
+        etPhoneNo = view.findViewById(R.id.fragment_create_account_custom_et_phone_no);
+        etPassword = view.findViewById(R.id.fragment_login_to_your_account_et_pwd);
+        etRePassword = view.findViewById(R.id.fragment_login_to_your_account_et_re_password);
+        imProfile = view.findViewById(R.id.fragment_create_account_custom_iv_user_profile);
         imProfile.setImageResource(R.drawable.ic_pf_pic);
 
         etPassword.setOnTouchListener((v, event) -> {
@@ -160,7 +157,10 @@ public class CreateAccountFragment extends BaseFragment {
         if (v.getId() == tvSave.getId()) {
             validateFragment();
         } else if (v.getId() == tvCancel.getId()) {
-            getActivity().onBackPressed();
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                ((MainActivity) activity).replaceFragment(new RegistartionFragment());
+            }
         } else if (v.getId() == imProfile.getId()) {
             selectImage();
         }
@@ -174,16 +174,19 @@ public class CreateAccountFragment extends BaseFragment {
         switch (requestCode) {
             case Constants.REQUEST_CODE_GALLERY:
                 try {
-                    final InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
-                    final FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-                    CameraUtil.copyStream(inputStream, fileOutputStream);
-                    fileOutputStream.close();
-                    if (inputStream != null) {
-                        inputStream.close();
+                    Activity activity = getActivity();
+                    if (activity != null && data.getData() != null) {
+                        final InputStream inputStream = activity.getContentResolver().openInputStream(data.getData());
+                        final FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+                        if (inputStream != null) {
+                            CameraUtil.copyStream(inputStream, fileOutputStream);
+                            inputStream.close();
+                        }
+                        fileOutputStream.close();
+                        startCropImage();
                     }
-                    startCropImage();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.d("CreateAccountFragment", "onActivityResult:exception:" + e.getMessage());
                 }
                 break;
             case Constants.REQUEST_CODE_TAKE_PICTURE:
@@ -232,17 +235,14 @@ public class CreateAccountFragment extends BaseFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.TAG_ADD_Photo));
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
+        builder.setItems(items, (dialog, item) -> {
 
-                if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
-                    gotoCamera();
-                } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
-                    gotoGallery();
-                } else if (items[item].equals(getString(R.string.fragment_create_account_tv_cancel))) {
-                    dialog.dismiss();
-                }
+            if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
+                gotoCamera();
+            } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
+                gotoGallery();
+            } else if (items[item].equals(getString(R.string.fragment_create_account_tv_cancel))) {
+                dialog.dismiss();
             }
         });
         builder.show();
@@ -252,9 +252,10 @@ public class CreateAccountFragment extends BaseFragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             imageFile = CameraUtil.getOutputMediaFile(1); // Your method to create the file
-            if (imageFile != null) {
+            Activity activity = getActivity();
+            if (activity != null && imageFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(
-                        getActivity(),
+                        activity,
                         getActivity().getApplicationContext().getPackageName() + ".provider",
                         imageFile
                 );
@@ -281,12 +282,18 @@ public class CreateAccountFragment extends BaseFragment {
     }
 
     public void gotoCamera() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    CAMERA_PERMISSION_REQUEST_CODE
-            );
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        CAMERA_PERMISSION_REQUEST_CODE
+                );
+            } else {
+                // Start the camera activity
+                startCameraActivity();
+            }
         } else {
             // Start the camera activity
             startCameraActivity();
@@ -323,7 +330,7 @@ public class CreateAccountFragment extends BaseFragment {
         } else if (etPhoneNo.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PHONE_NO_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
             etPhoneNo.requestFocus();
-        } else if (etEmailId.getText().toString().trim().equals("")) {
+        } else if (etEmailId.getText().toString().trim().isEmpty()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_EMAIL_ID), getString(R.string.TAG_OK), "", false, false);
             etEmailId.requestFocus();
         } else if (!Utills.isValidEmail(etEmailId.getText().toString().trim())) {
@@ -341,10 +348,13 @@ public class CreateAccountFragment extends BaseFragment {
         } else if (!etPassword.getText().toString().trim().equalsIgnoreCase("") && !etRePassword.getText().toString().trim().equalsIgnoreCase("")) {
             if (checkPassWordAndConfirmPassword(etPassword.getText().toString().trim(), etRePassword.getText().toString().trim())) {
                 Log.d("From here", "Call service");
-                if (Utills.isOnline(getActivity(), true)) {
-                    signUp();
-                } else {
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
+                Activity activity = getActivity();
+                if (activity != null) {
+                    if (Utills.isOnline(activity, true)) {
+                        signUp();
+                    } else {
+                        Utills.displayDialog(activity, getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
+                    }
                 }
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PWD_RE_PWD_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
@@ -354,7 +364,8 @@ public class CreateAccountFragment extends BaseFragment {
     }
 
     private void signUp() {
-        if (Utills.isInternetAvailable(getActivity())) {
+        Activity activity = getActivity();
+        if (activity != null && Utills.isInternetAvailable(activity)) {
             if (asyncTaskSignUp != null && asyncTaskSignUp.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskSignUp.execute();
             } else if (asyncTaskSignUp == null || asyncTaskSignUp.getStatus() == AsyncTask.Status.FINISHED) {
@@ -379,10 +390,10 @@ public class CreateAccountFragment extends BaseFragment {
     private class AsyncTaskSignUp extends AsyncTask<Void, Void, Void> {
 
         private WsCallRegistrer wsCreateAccount;
-        private String etUserNameStr = etUserName.getText().toString().trim();
-        private String etPhoneNoStr = etPhoneNo.getText().toString().trim();
-        private String etEmailIdStr = etEmailId.getText().toString().trim();
-        private String etPasswordStr = etPassword.getText().toString().trim();
+        private final String etUserNameStr = etUserName.getText().toString().trim();
+        private final String etPhoneNoStr = etPhoneNo.getText().toString().trim();
+        private final String etEmailIdStr = etEmailId.getText().toString().trim();
+        private final String etPasswordStr = etPassword.getText().toString().trim();
 
         @Override
         protected void onPreExecute() {
@@ -430,13 +441,62 @@ public class CreateAccountFragment extends BaseFragment {
                         new updateProfilePicture().execute();
                     } else {
                         Toast.makeText(getActivity(), getString(R.string.TAG_REG_SUC_MSG), Toast.LENGTH_SHORT).show();
-                        ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
+                        Activity activity = getActivity();
+                        if (activity instanceof MainActivity) {
+                            ((MainActivity) activity).replaceFragment(new DashBoardWithSwipableFragment());
+                        }
                     }
-                } else {
+                } else if (getActivity() != null) {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_UNABLE_CREATE_ACCOUNT), getString(R.string.ok), "", false, false);
+                    if (wsCreateAccount.getMessage().contains("email already exists")) {
+                        Utills.displayDefaultDialog(
+                            getActivity(),
+                            getString(R.string.fragment_create_account_tv_new_account),
+                            String.format(Locale.US, getString(R.string.TAG_EMAIL_IN_USE), etEmailIdStr),
+                            getString(R.string.TAG_RESETPASSWORD_TXT),
+                                (dialog, which) -> {
+                                    // do password reset
+                                    Activity activity = getActivity();
+                                    if (activity instanceof MainActivity) {
+                                        ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(etEmailIdStr);
+                                        ((MainActivity) activity).addFragment(fragment);
+                                    }
+                                    dialog.dismiss();
+                                },
+                                getString(R.string.TAG_GO_TO_LOGIN),
+                                (dialog, which) -> {
+                                    Activity activity = getActivity();
+                                    if (activity instanceof MainActivity) {
+                                        LoginToYourAccountFragment fragment = LoginToYourAccountFragment.newInstance(etEmailIdStr, etPasswordStr);
+                                        ((MainActivity) activity).addFragment(fragment);
+                                    }
+                                    dialog.dismiss();
+                                },
+
+                                getString(R.string.TAG_TRY_AGAIN),
+                                (dialog, which) -> dialog.dismiss()
+                        );
+                    } else {
+                        Utills.displayDefaultDialog(
+                                getActivity(),
+                                getString(R.string.fragment_create_account_tv_new_account),
+                                getString(R.string.TAG_UNABLE_CREATE_ACCOUNT),
+                                null,
+                                null,
+                                getString(R.string.TAG_GO_TO_LOGIN),
+                                (dialog, which) -> {
+                                    Activity activity = getActivity();
+                                    if (activity instanceof MainActivity) {
+                                        ((MainActivity) activity).addFragment(new RegistartionFragment());
+                                    }
+                                    dialog.dismiss();
+                                },
+                                getString(R.string.TAG_TRY_AGAIN),
+                                (dialog, which) -> dialog.dismiss()
+                        );
+                    }
                 }
             }
         }
@@ -466,7 +526,8 @@ public class CreateAccountFragment extends BaseFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (Utills.isInternetConnected(getActivity())) {
+            Activity activity = getActivity();
+            if (activity != null && Utills.isInternetConnected(activity)) {
                 wsUploadImage.executeService(path);
             }
             return null;
@@ -482,32 +543,24 @@ public class CreateAccountFragment extends BaseFragment {
 
             if (!isCancelled()) {
                 if (wsUploadImage.isSuccess()) {
-                    ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
+                    Activity activity = getActivity();
+                    if (activity instanceof MainActivity) {
+                        ((MainActivity) activity).replaceFragment(new DashBoardWithSwipableFragment());
+                    }
                 }
             }
         }
     }
 
-    private void displayDialog(final Activity context, final String title, final String msg, final String strPositiveText) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(title);
-        dialog.setCancelable(false);
-        dialog.setMessage(msg);
-        dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
-        dialog.show();
-    }
-
     private static final long SCAN_PERIOD = 1000;
 
     private void startBackgroundThreadForBLE() {
-        AlarmManager alarmManagerForBLE = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getActivity(), BleReceiver.class);
-        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * SCAN_PERIOD, broadcastIntentBle);
+        Activity activity = getActivity();
+        if (activity != null) {
+            AlarmManager alarmManagerForBLE = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(activity, BleReceiver.class);
+            PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * SCAN_PERIOD, broadcastIntentBle);
+        }
     }
 }
