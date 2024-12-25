@@ -12,9 +12,10 @@ import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.Util;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.BluetoothLeAdvertiser;
@@ -34,8 +35,6 @@ import androidx.core.app.ActivityCompat;
 public class MainActivity extends BaseActivity {
 
     private static final int REQUEST_ENABLE_BT = 10;
-    private boolean isLogin;
-    private boolean isFirstAccount;
 
     public static byte[] hexStringToByteArray(String hexString) {
         int length = hexString.length();
@@ -53,24 +52,23 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_registration);
 
         final boolean isAccepted = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ACCEPT, false);
-        isLogin = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_LOGIN, false);
-        isFirstAccount = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_FIRST_ACCOUNT, false);
+        boolean isLogin = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_LOGIN, false);
 
         final Intent intent = getIntent();
         String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
-        boolean openAlertFragmentDirectly = intent.getBooleanExtra("OPEN_ALERT_FRAGMENT_DIRECTLY", false);
+        // boolean openAlertFragmentDirectly = intent.getBooleanExtra("OPEN_ALERT_FRAGMENT_DIRECTLY", false);
         Log.d("notification", "oncreate ----json object:" + intent.getStringExtra(Constant.JSON_OBJECT));
         if (jsonObject != null) {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 Log.d("notification", "oncreate if " + intent.getStringExtra(Constant.JSON_OBJECT));
                 // Get the Back Entry
-                final FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1);
+                final FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1);
                 // Find the Fragment from the Back Entry by it's Tag
-                final Fragment fragment = getFragmentManager().findFragmentByTag(backEntry.getName());
+                final Fragment fragment = getSupportFragmentManager().findFragmentByTag(backEntry.getName());
                 if (fragment != null) {
                     Log.d("notification", "fragment " + fragment);
                     // Fetch the Fragment currently added in the Stack
-                    final BaseFragment currentFragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
+                    final BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
                     if (currentFragment != null) {
                         Log.d("notification", "currentFragment " + fragment);
                         addFragment(new AlertDetailFragment(), currentFragment);
@@ -103,7 +101,7 @@ public class MainActivity extends BaseActivity {
 
 //        if(jsonObject!=null){
 //            Log.e("notification","oncreate inside"+intent.getStringExtra(Constant.JSON_OBJECT));
-//            BaseFragment fragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
+//            BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
 //            if(fragment!=null){
 //                Log.e("notification","if oncreate inside inside"+intent.getStringExtra(Constant.JSON_OBJECT));
 //                final Bundle  bundle = new Bundle();
@@ -120,35 +118,55 @@ public class MainActivity extends BaseActivity {
 //            }
 //        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.BLUETOOTH_ADVERTISE},
-                    REQUEST_ENABLE_BT
-            );
+            // Check for necessary permissions
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                // Request permissions if not already granted
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT},
+                        REQUEST_ENABLE_BT
+                );
+            } else {
+                // Initialize Bluetooth
+                initializeBluetooth();
+            }
+        } else {
+            // For API < 31, initialize directly
+            initializeBluetooth();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, initialize Bluetooth
+                initializeBluetooth();
+            } else {
+                Log.e("MainActivity", "Bluetooth permissions not granted. Unable to start Bluetooth operations.");
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void initializeBluetooth() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            return;
         }
+
         BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
         if (advertiser == null) {
             Log.e("BLE", "BLE advertising not supported on this device");
             return;
         }
 
-// UUID in byte format
         String uuidString = "FD8C0AA6D40411E5AB30625662870761";
         byte[] uuidBytes = hexStringToByteArray(uuidString);
 
@@ -175,37 +193,11 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private BroadcastReceiver temp = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("onrecive", "called");
-
-
-//            if (getFragmentManager().getBackStackEntryCount() > 0) {
-//
-//                // Get the Back Entry
-//                final FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1);
-//
-//                // Find the Fragment from the Back Entry by it's Tag
-//                final Fragment fragment = getFragmentManager().findFragmentByTag(backEntry.getName());
-//                if (fragment != null) {
-//                    Log.e("HomeActivity", "Fragment By TAG : " + fragment);
-//                    // Fetch the Fragment currently added in the Stack
-//                    final BaseFragment currentFragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
-//                    if (currentFragment != null) {
-//                        addFragment(new AlertDetailFragment(),currentFragment);
-//                    }
-//                }
-//            }
-        }
-    };
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.d("notification", "called" + intent.getStringExtra(Constant.JSON_OBJECT));
-        // BaseFragment fragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
+        // BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
         //if (fragment != null) {
         final AlertDetailFragment alertDetailFragment = new AlertDetailFragment();
         String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
@@ -218,6 +210,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (getLocalFragmentManager().getBackStackEntryCount() > 0) {
             Util.getInstance().hideSoftKeyboard(this);
             getLocalFragmentManager().popBackStack();
@@ -231,15 +224,7 @@ public class MainActivity extends BaseActivity {
      */
     private void buildAlertMessageExit() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.TAG_EXIT_WARN_MSG)).setCancelable(false).setPositiveButton(getString(R.string.TAG_YES), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                callToFinish();
-            }
-        }).setNegativeButton(getString(R.string.TAG_NO), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                dialog.cancel();
-            }
-        });
+        builder.setMessage(getString(R.string.TAG_EXIT_WARN_MSG)).setCancelable(false).setPositiveButton(getString(R.string.TAG_YES), (dialog, id) -> callToFinish()).setNegativeButton(getString(R.string.TAG_NO), (dialog, id) -> dialog.cancel());
         final AlertDialog alert = builder.create();
         alert.show();
     }
@@ -291,20 +276,5 @@ public class MainActivity extends BaseActivity {
                 .replace(R.id.activity_registartion_fl_container, newFragment, newFragment.getClass().getSimpleName())
                 .commit();
     }
-
-    /**
-     * removes all fragment from container and add with the new Fragment recieves in parameter
-     *
-     * @param newFragment a fragment object that replaces current fragment
-     */
-    public void replaceFragmentPopBackstack(final Fragment newFragment) {
-        Util.getInstance().hideSoftKeyboard(this);
-        getLocalFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        getLocalFragmentManager()
-                .beginTransaction()
-                .replace(R.id.activity_registartion_fl_container, newFragment, newFragment.getClass().getSimpleName())
-                .commitAllowingStateLoss();
-    }
-
 
 }

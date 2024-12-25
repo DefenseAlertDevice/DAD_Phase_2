@@ -4,7 +4,6 @@ import net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.activity.MainActivity;
 
-import android.app.FragmentManager;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -18,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.Locale;
 
@@ -80,10 +80,6 @@ public class RegistartionFragment extends BaseFragment {
             } else if (fragmentId == R.id.fragment_registration_tv_show_eula) {
                 ((MainActivity) getActivity()).replaceFragment(new DADLicenseFragment());
             }
-        } else if (fragmentId == R.id.fragment_registration_tv_show_eula) {
-            final FragmentManager fm = getSupportFragmentManager();
-            final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
-            termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
         }
     }
 

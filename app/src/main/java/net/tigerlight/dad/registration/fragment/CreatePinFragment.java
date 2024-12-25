@@ -195,7 +195,7 @@ public class CreatePinFragment extends BaseFragment {
     }
 
     private void closefragment() {
-        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
 

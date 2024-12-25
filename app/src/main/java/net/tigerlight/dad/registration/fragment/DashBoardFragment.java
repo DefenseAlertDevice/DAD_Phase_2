@@ -52,14 +52,14 @@
 //            @Override
 //            public void onTabSelected(TabLayout.Tab tab) {
 //                if (tabLayout.getSelectedTabPosition() == 0) {
-//                    getFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new ContactFragment(), ContactFragment.class.getSimpleName()).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new ContactFragment(), ContactFragment.class.getSimpleName()).commit();
 //                } else if (tabLayout.getSelectedTabPosition() == 1) {
-//                    getFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new AlertFragment(), AlertFragment.class.getSimpleName()).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new AlertFragment(), AlertFragment.class.getSimpleName()).commit();
 //
 //                } else if (tabLayout.getSelectedTabPosition() == 2) {
-//                    getFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new ImOkFragment(), ImOkFragment.class.getSimpleName()).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new ImOkFragment(), ImOkFragment.class.getSimpleName()).commit();
 //                } else if (tabLayout.getSelectedTabPosition() == 3) {
-//                    getFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new AccountFragment(), AccountFragment.class.getSimpleName()).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_dashboard_fl_container, new AccountFragment(), AccountFragment.class.getSimpleName()).commit();
 //                }
 //            }
 //

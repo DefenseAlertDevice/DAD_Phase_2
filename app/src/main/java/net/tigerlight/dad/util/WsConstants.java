@@ -8,7 +8,7 @@ public class WsConstants {
     public final static int CONNECTION_TIMEOUT = 30;
     public final static int SUCCESS_1 = 1;
     public static final String DOMAIN = "https://dev.api.defensealertdevice.com/";
-    public static final String ASSETS_DOMAIN = "https://dev.assets.defensealertdevice.com.s3-website-us-west-2.amazonaws.com/";
+    public static final String ASSETS_DOMAIN = "https://dev.assets.defensealertdevice.com/";
     //Prod
     //public static final String DOMAIN = "https://devbean.defensealertdevice.com/"; //Test
     //public static final String DOMAIN = "http://develop.defensealertdevice.com:8080/";

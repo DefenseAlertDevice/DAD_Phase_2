@@ -12,7 +12,6 @@ import net.tigerlight.dad.util.Preference;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import java.util.Locale;
 
@@ -107,9 +108,9 @@ public class AccountFragment extends BaseFragment {
         } else if (fragmentId == R.id.fragment_settings_tvLogin) {
             displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
         } else if (fragmentId == R.id.fragment_settings_tvShowEula) {
-            final FragmentManager fm = getFragmentManager();
-            final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
-            termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).replaceFragment(new DADLicenseFragment());
+            }
         }
     }
 

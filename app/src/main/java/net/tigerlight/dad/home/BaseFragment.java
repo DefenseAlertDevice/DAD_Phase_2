@@ -1,10 +1,11 @@
 package net.tigerlight.dad.home;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import net.tigerlight.dad.util.Constants;
 import net.tigerlight.dad.util.Util;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -12,8 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by B.S on 19/04/16.
- * Base Fragment of all fragment that is used in application
+ * Base Fragment for all fragments used in the application.
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
     private long mLastClickTime = 0;
@@ -38,31 +38,29 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     /**
-     * Gets the fragment manager object of activity required for fragment transaction
-     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link FragmentManager}</p>
+     * Gets the fragment manager object of activity required for fragment transaction.
      *
-     * @return object of {@link FragmentManager} or {@link FragmentManager}
+     * @return object of {@link androidx.fragment.app.FragmentManager}.
      */
     public FragmentManager getLocalFragmentManager() {
-        return this.getActivity().getFragmentManager();
+        return requireActivity().getSupportFragmentManager();
     }
 
     /**
-     * Gets the child fragment manager object of fragment required for fragment transaction
-     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link FragmentManager}</p>
+     * Gets the child fragment manager object of the fragment required for fragment transaction.
      *
-     * @return object of {@link FragmentManager} or {@link FragmentManager}
+     * @return object of {@link androidx.fragment.app.FragmentManager}.
      */
     public FragmentManager getLocalChildFragmentManager() {
-        return this.getChildFragmentManager();
+        return getChildFragmentManager();
     }
 
     @Override
     public void onClick(View v) {
-        Util.getInstance().hideSoftKeyboard(getActivity());
+        Util.getInstance().hideSoftKeyboard(requireActivity());
         /**
-         * Logic to Prevent the Launch of the Fragment Twice if User makes
-         * the Tap(Click) very Fast.
+         * Logic to prevent the launch of the fragment twice if the user makes
+         * the tap (click) very fast.
          */
         if (SystemClock.elapsedRealtime() - mLastClickTime < Constants.MAX_CLICK_INTERVAL) {
             return;
@@ -71,37 +69,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     /**
-     * removes current fragment from container and replace with the new Fragment recieves in parameter
+     * Removes the current fragment from the container and replaces it with the new fragment received as a parameter.
      *
-     * @param newFragment  a fragment object that replaces current fragment
-     * @param container_id id of container in which you want to replace fragment
+     * @param newFragment  a fragment object that replaces the current fragment
+     * @param containerId  ID of the container in which you want to replace the fragment
      */
-    public void replaceChildFragment(final Fragment newFragment, final int container_id) {
-        getLocalChildFragmentManager().beginTransaction().replace(container_id, newFragment, newFragment.getClass().getSimpleName()).commit();
+    public void replaceChildFragment(final Fragment newFragment, final int containerId) {
+        getLocalChildFragmentManager()
+                .beginTransaction()
+                .replace(containerId, newFragment, newFragment.getClass().getSimpleName())
+                .commit();
     }
-
-
-   /* @Override
-    public void onPause() {
-        super.onPause();
-        CheckForeground.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        CheckForeground.onResume(getActivity());
-    }*/
-
-    //    @Override
-    //    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    //        long currentTime = AnimationUtils.currentAnimationTimeMillis();
-    //        if (currentTime - mLastClickTime > DEFAULT_MIN_INTERVAL) {
-    //            mListener.onItemClick(parent, view, position, id);
-    //            mLastClickTime = currentTime;
-    //        }
-    //    }
-    //}
-
-
 }

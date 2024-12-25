@@ -221,7 +221,7 @@ public class AddMoreFragment extends BaseFragment {
         if (fragmentId == R.id.fragment_add_more_tv_save) {
             validateFragment();
         } else if (fragmentId == R.id.fragment_add_more_tv_cancel) {
-            getFragmentManager().popBackStack();
+            requireActivity().getSupportFragmentManager().popBackStack();
         } else if (fragmentId == R.id.fragment_add_more_iv_user_profile) {
             selectImage();
         } else if (fragmentId == R.id.fragment_add_more_tv_addressbook) {
@@ -655,7 +655,7 @@ public class AddMoreFragment extends BaseFragment {
                 wsCallUpdateContact.executeService(userId, firstName, lastName, nickname, email, phone, "");
                 if (wsCallUpdateContact.isSuccess()) {
                     ContactFragment.isServiceCall = true;
-                    getFragmentManager().popBackStack();
+                    requireActivity().getSupportFragmentManager().popBackStack();
                     return KEY_SUCCESS;
                 } else {
                     response = 2;
@@ -745,7 +745,7 @@ public class AddMoreFragment extends BaseFragment {
                 if (wsCallAddreceiver.isSuccess()) {
 //                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CONT_ADDED_SUCCESS), getString(android.R.string.ok), "", false, false);
                     ContactFragment.isServiceCall = true;
-                    getFragmentManager().popBackStack();
+                    requireActivity().getSupportFragmentManager().popBackStack();
 
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CONT_UNABLE_ADDED), getString(android.R.string.ok), "", false, false);

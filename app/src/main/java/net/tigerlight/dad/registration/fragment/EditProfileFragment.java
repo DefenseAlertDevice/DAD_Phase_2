@@ -933,7 +933,7 @@ public class EditProfileFragment extends BaseFragment {
                 Intent intent = new Intent();
                 intent.putExtra(net.tigerlight.dad.util.Constants.Extras.FORCE_LOGOUT, true);
                                 getTargetFragment().onActivityResult(net.tigerlight.dad.util.Constants.REQUEST_CODES.FORCE_LOGOUT, RESULT_OK, intent);
-                getFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
         dialog.show();

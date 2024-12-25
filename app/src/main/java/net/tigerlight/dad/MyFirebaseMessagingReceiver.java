@@ -56,10 +56,6 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
     }
 
     private void updateInFront(Context context, Intent intent) {
-//        int alertCount = Preference.getInstance().mSharedPreferences.getInt("alert_count", 0);
-//        alertCount += 1;
-//        Preference.getInstance().savePreferenceData("alert_count", alertCount);
-
         Bundle extras = intent.getExtras();
         data = extras.getString("gcm.notification.data");
         if (data == null) {
@@ -72,30 +68,18 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
             return;
         }
         try {
-            jsonobjectToChange = null;
             jsonobjectToChange = new JSONObject(data);
         } catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
 
-        final AlertDetailFragment alertDetailFragment = new AlertDetailFragment();
-        final Bundle bundle = new Bundle();
-        final String jsonObject = jsonobjectToChange.toString();
-        bundle.putString(Constant.JSON_OBJECT, jsonObject);
-        alertDetailFragment.setArguments(bundle);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                CheckForeground.getActivity().getFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.activity_registartion_fl_container,
-                                alertDetailFragment,
-                                alertDetailFragment.getClass().getSimpleName())
-                        .addToBackStack(alertDetailFragment.getClass().getSimpleName())
-                        .commit();
-            }
-        }, DELAY_MILLIS);
+        // Pass the data to MainActivity
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        activityIntent.putExtra(Constant.JSON_OBJECT, jsonobjectToChange.toString());
+        activityIntent.putExtra("SHOW_ALERT_FRAGMENT", true);
+        activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(activityIntent);
     }
 
     private JSONObject bundleToJson(Bundle extras) {
@@ -138,7 +122,7 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "default_channel_id")
                 .setSmallIcon(R.drawable.app_icon)
-                .setContentTitle("D.A.D. Danger Alert")
+                .setContentTitle("The SoulDefendHER™ Danger Alert")
                 .setContentText(safeDangerString)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);

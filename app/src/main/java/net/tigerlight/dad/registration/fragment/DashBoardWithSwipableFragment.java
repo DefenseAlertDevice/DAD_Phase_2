@@ -1,5 +1,7 @@
 package net.tigerlight.dad.registration.fragment;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.adapter.ViewPagerAdapter;
@@ -12,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,7 +96,7 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
 
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         adapter.addFragment(new ContactFragment(), getString(R.string.dashbord_contact));
         adapter.addFragment(new AlertFragment(), getString(R.string.dashbord_alert));
         adapter.addFragment(new ImOkFragment(), getString(R.string.dashbord_i_m_ok));

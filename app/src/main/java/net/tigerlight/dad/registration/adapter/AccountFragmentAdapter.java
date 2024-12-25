@@ -13,8 +13,8 @@ import net.tigerlight.dad.webservices.WsLogout;
 import net.tigerlight.dad.util.Preference;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -138,29 +138,20 @@ public class AccountFragmentAdapter extends RecyclerView.Adapter<AccountFragment
 
     }
 
-    private void addFragment(Fragment fragment, String str) {
-
-        final android.app.FragmentManager manager = ((MainActivity) context).getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.activity_registartion_fl_container, fragment, str);
-//        transaction.hide(fragment);
-        transaction.addToBackStack(str);
-        transaction.commit();
-
-
+    private void addFragment(Fragment fragment, String tag) {
+        FragmentManager manager = ((MainActivity) context).getSupportFragmentManager();
+        manager.beginTransaction()
+                .add(R.id.activity_registartion_fl_container, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
     }
 
-    private void replaceFragment(Fragment fragment, String str) {
-
-        final android.app.FragmentManager manager = ((MainActivity) context).getFragmentManager();
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentManager manager = ((MainActivity) context).getSupportFragmentManager();
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.activity_registartion_fl_container, fragment, str);
-//        transaction.hide(fragment);
-//        transaction.addToBackStack(str);
-        transaction.commit();
-
-
+        manager.beginTransaction()
+                .replace(R.id.activity_registartion_fl_container, fragment, tag)
+                .commit();
     }
 
 

@@ -174,7 +174,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         if (fragmentId == R.id.fragment_login_to_your_account_tv_login) {
             validateFields();
         } else if (fragmentId == R.id.fragment_login_to_your_account_tv_forgot_pwd) {
-            getFragmentManager().beginTransaction()
+            ((MainActivity) getActivity()).getSupportFragmentManager().beginTransaction()
                     .add(R.id.activity_registartion_fl_container, new ForgotPasswordFragment(), ForgotPasswordFragment.class.getSimpleName())
                     .hide(this)
                     .addToBackStack(ForgotPasswordFragment.class.getSimpleName())
@@ -204,22 +204,6 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
             }
         }
-    }
-
-    /**
-     * To load Fragment.
-     */
-    private void openDashBoardFragment() {
-        final android.app.FragmentManager manager = getFragmentManager();
-        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.activity_registartion_fl_container, new DashBoardWithSwipableFragment());
-        transaction.hide(this);
-//        transaction.addToBackStack(str);
-        transaction.commit();
-
-
-//        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE).beginTransaction().add(R.id.activity_registartion_fl_container, new DashBoardWithSwipableFragment(), DashBoardWithSwipableFragment.class.getSimpleName()).hide(this).addToBackStack(DashBoardWithSwipableFragment.class.getSimpleName()).commit();
     }
 
     private void startLocalLoginTask(String email, String password) {

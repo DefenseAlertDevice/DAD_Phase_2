@@ -6,8 +6,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,21 +29,18 @@ import net.tigerlight.dad.util.Preference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.GestureDetector;
@@ -290,7 +287,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             return;
         }
 
-        final MapFragment mapFragment = MapFragment.newInstance();
+        final SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_alert_detail_flMapContainer, mapFragment);
         fragmentTransaction.commit();
@@ -364,8 +361,8 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             });
             dialog.show();
         } else if (fragmentId == R.id.fragment_alert_detail_tvBackAlerts) {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStack();
+            if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                requireActivity().getSupportFragmentManager().popBackStack();
             } else {
                 // Open AlertFragment directly
                 MainActivity activity = (MainActivity) getActivity();
@@ -391,9 +388,9 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 //    }
 
     void showDialog() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        DialogFragment newFragment = MyDialogFragment.newInstance();
-        newFragment.show(ft, "");
+        MyDialogFragment newFragment = MyDialogFragment.newInstance();
+        // Use the FragmentManager from the parent activity to show the DialogFragment
+        newFragment.show(requireActivity().getSupportFragmentManager(), "dialog");
     }
 
     @Override
@@ -495,46 +492,33 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 
     public static class MyDialogFragment extends DialogFragment {
 
-
-        private ImageView ivProifile;
+        private ImageView ivProfile;
 
         static MyDialogFragment newInstance() {
-            MyDialogFragment f = new MyDialogFragment();
-            return f;
+            return new MyDialogFragment();
         }
 
         @Override
-        public Dialog onCreateDialog(final Bundle savedInstanceState) {
-
-            // the content
-            final RelativeLayout root = new RelativeLayout(getActivity());
-            root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-            // creating the fullscreen dialog
-            final Dialog dialog = new Dialog(getActivity());
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Dialog dialog = super.onCreateDialog(savedInstanceState);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(root);
+            dialog.setContentView(R.layout.fragment_dialog);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return dialog;
-        }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_dialog, container, false);
-            ivProifile = (ImageView) v.findViewById(R.id.fragment_dialog_iv_profile);
-            final String imagePathpart = jsonobjectToChange.optString(TAG_IMAGE);
+            ivProfile = dialog.findViewById(R.id.fragment_dialog_iv_profile);
+            String imagePathPart = jsonobjectToChange.optString(TAG_IMAGE);
+
             Glide.with(this)
-                    .load(imagePathpart).diskCacheStrategy(DiskCacheStrategy.NONE).fitCenter()
+                    .load(imagePathPart)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .fitCenter()
                     .skipMemoryCache(true)
                     .placeholder(R.drawable.pf_pic)
-                    .into(ivProifile);
+                    .into(ivProfile);
 
-
-            return v;
+            return dialog;
         }
-
     }
 
 
