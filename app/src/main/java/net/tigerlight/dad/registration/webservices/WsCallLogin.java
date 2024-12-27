@@ -1,6 +1,7 @@
 package net.tigerlight.dad.registration.webservices;
 
 import android.content.Context;
+import android.util.Log;
 
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.util.Constant;
@@ -18,6 +19,7 @@ import java.net.URLEncoder;
  * This class is making api call for user login
  */
 public class WsCallLogin {
+    private static final String TAG = "WsCallLogin";
     private Context context;
     private String message;
     private boolean success;
@@ -71,7 +73,7 @@ public class WsCallLogin {
      * @return {@link JSONArray} for success or failure response of request
      */
     private JSONObject parseResponse(final String response) {
-        if (response != null && response.trim().length() > 0) {
+        if (response != null && !response.trim().isEmpty()) {
             try {
                 final JSONObject jsonObject = new JSONObject(response);
                 final WsConstants wsConstants = new WsConstants();
@@ -81,20 +83,14 @@ public class WsCallLogin {
                     accessToken = jsonObject.optString(Constant.ACCESS_TOKEN);
                     refreshToken = jsonObject.optString(Constant.REFRESH_TOKEN);
                     expiresIn = jsonObject.optLong(Constant.EXPIRES_IN);
-                    if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("0")) {
-                        message = context.getString(R.string.alert_invalid_login);
-                    } else if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("2")) {
-                        message = context.getString(R.string.alert_not_registered);
-                    } else {
-                        message = jsonObject.optString(wsConstants.PARAMS_MESSAGE);
-                    }
+                    message = jsonObject.optString(wsConstants.PARAMS_MESSAGE);
 
                     if (success) {
                         return jsonObject;
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "WsCallLogin error");
             }
         }
 

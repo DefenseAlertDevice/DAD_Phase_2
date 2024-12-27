@@ -71,7 +71,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
      * from the API Console, as described in "Getting Started."
      */
 //    private String SENDER_ID = "308732044105";
-    private String SENDER_ID = "32989397760";
+    private final String SENDER_ID = "32989397760";
 
     public static LoginToYourAccountFragment newInstance(String emailId, String password) {
         LoginToYourAccountFragment fragment = new LoginToYourAccountFragment();
@@ -195,12 +195,12 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
             alarmManager.cancel(broadcast);
         }
         int refreshTimeInterval = Preference.getInstance().mSharedPreferences.getInt(Constant.KEY_REFRESH_LOC, 5000);
-        if (refreshTimeInterval != 0) {
+        if (refreshTimeInterval != 0 && getActivity() != null) {
             alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(getActivity(), AlarmReceiver.class);
             broadcast = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
             if (alarmManager != null) {
-                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), refreshTimeInterval * 60 * 1000, broadcast);
+                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), (long) refreshTimeInterval * 60 * 1000, broadcast);
             }
         }
     }
@@ -234,18 +234,18 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     private void validateFields() {
         String email = etUserName.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        if (email.trim().equals("")) {
+        if (getActivity() != null && email.trim().isEmpty()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_VALID_USERNAME), getString(R.string.TAG_OK), "", false, false);
             etUserName.requestFocus();
         } else if (!Utills.isValidEmail(etUserName.getText().toString().trim())) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_VALID_EMAIL), getString(R.string.TAG_OK), "", false, false);
             etUserName.requestFocus();
-        } else if (password.trim().equals("")) {
+        } else if (password.trim().isEmpty()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_VALID_PASSWORD), getString(R.string.TAG_OK), "", false, false);
             etPassword.requestFocus();
         } else if (Utills.isValidEmail(etUserName.getText().toString().trim())) {
             Log.d("LoginSuceess", "start logintask from here");
-            if (Utills.isOnline(getActivity(), true)) {
+            if (getActivity() != null &&  Utills.isOnline(getActivity(), true)) {
                 startLocalLoginTask(email, password);
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
@@ -254,7 +254,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     }
 
     private void startLocalLoginTask(String email, String password) {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskLocalLogin != null && asyncTaskLocalLogin.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskLocalLogin.execute();
             } else if (asyncTaskLocalLogin == null || asyncTaskLocalLogin.getStatus() == AsyncTask.Status.FINISHED) {
@@ -278,10 +278,11 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskLocalLogin extends AsyncTask<String, Void, String> {
-        private WsCallLogin wsLogin;
-        private String userName;
-        private String password;
+        private final WsCallLogin wsLogin;
+        private final String userName;
+        private final String password;
 
 
         public AsyncTaskLocalLogin(String userName, String password) {

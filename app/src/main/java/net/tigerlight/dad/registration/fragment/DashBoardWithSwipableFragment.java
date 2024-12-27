@@ -19,6 +19,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -172,6 +174,14 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
+        FragmentManager fragmentManager = getLocalFragmentManager();
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (!(fragment instanceof ContactFragment || fragment instanceof AlertFragment
+                    || fragment instanceof AmOkFragmentI || fragment instanceof AccountFragment)) {
+                fragmentManager.beginTransaction().remove(fragment).commit();
+            }
+        }
+
         setCurrentTabFragment(tab.getPosition());
     }
 

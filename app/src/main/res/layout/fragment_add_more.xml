@@ -23,7 +23,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@android:color/white">
 
         <LinearLayout
@@ -34,7 +35,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_top_15dp"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:background="@color/colorWhite"
                 android:orientation="vertical">
 
@@ -42,40 +43,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_bottom_5dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
                     android:orientation="horizontal"
-
+                    android:gravity="center_vertical"
                     android:weightSum="1">
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/img_smile" />
-
-                            <View
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true" />
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="30dp"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.7"
+                        android:layout_marginEnd="@dimen/_10sdp"
                         android:orientation="vertical">
 
 
@@ -93,353 +70,120 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_user_name_gine"
-                            android:textColor="@color/color_black"
-                            android:textStyle="italic" />
+                            android:textSize="@dimen/font_12sp"
+                            android:textStyle="normal"
+                            />
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/fragment_add_more_iv_user_profile"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:layout_gravity="center"
-                        android:layout_weight="0.3">
-
-                        <ImageView
-                            android:id="@+id/fragment_add_more_iv_user_profile"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@drawable/user" />
-
-                    </LinearLayout>
+                        android:layout_weight="0.3"
+                        android:src="@drawable/user" />
 
                 </LinearLayout>
 
-                <LinearLayout
+                <EditText
+                    android:id="@+id/fragment_add_more_et_phone_no"
+                    style="@style/style_et_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_bottom_15dp"
-                    android:orientation="horizontal"
+                    android:hint="@string/fragment_add_more_tv_phone_no"
+                    android:inputType="phone"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    />
 
-                    android:weightSum="1">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/img_phone" />
-
-                            <View
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true" />
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_right_20dp"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-
-                        <EditText
-                            android:id="@+id/fragment_add_more_et_phone_no"
-                            style="@style/style_et_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/fragment_create_account_custom_et_phone_no_hint"
-                            android:inputType="phone"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold" />
-
-                        <net.tigerlight.dad.util.CustomTextViewBold
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fragment_add_more_tv_phone_no_hint_"
-                            android:textColor="#FE0000"
-                            android:textStyle="italic" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
+                <EditText
+                    android:id="@+id/fragment_add_more_et_first_name"
+                    style="@style/style_et_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_top_25dp"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:hint="@string/fragment_add_more_et_first_name_hint"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:inputType="text"
+                    android:textColor="@color/colorBlack"
+                    />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
-                            >
-
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/img_contactname" />
-
-                            <View
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true" />
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_right_20dp"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-
-                        <EditText
-                            android:id="@+id/fragment_add_more_et_first_name"
-                            style="@style/style_et_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/fragment_add_more_et_first_name_hint"
-                            android:inputType="text"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold" />
-
-                        <net.tigerlight.dad.util.CustomTextViewBold
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fragment_add_more_tv_first_name_hint"
-                            android:textColor="@color/color_black"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
+                <EditText
+                    android:id="@+id/fragment_add_more_et_last_name"
+                    style="@style/style_et_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_top_25dp"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:hint="@string/fragment_add_more_et_last_name_hint"
+                    android:inputType="text"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/img_contactname" />
-
-                            <View
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true" />
-
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_right_20dp"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-
-                        <EditText
-                            android:id="@+id/fragment_add_more_et_last_name"
-                            style="@style/style_et_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/fragment_add_more_et_last_name_hint"
-                            android:inputType="text"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold" />
-
-                        <net.tigerlight.dad.util.CustomTextViewBold
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fragment_add_more_tv_last_name_hint"
-                            android:textColor="@color/color_black"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
+                <EditText
+                    android:id="@+id/fragment_add_more_et_email"
+                    style="@style/style_et_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_top_25dp"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:src="@drawable/img_mail" />
-
-                            <View
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true" />
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_right_20dp"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-
-                        <EditText
-                            android:id="@+id/fragment_add_more_et_email"
-                            style="@style/style_et_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/fragment_add_more_et_email_hint"
-                            android:inputType="textEmailAddress"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold" />
-
-                        <net.tigerlight.dad.util.CustomTextViewBold
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fragment_add_more_tv_email_hint"
-                            android:textColor="@color/color_black"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/colorWhite">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <net.tigerlight.dad.util.CustomTextViewBold
-                        android:id="@+id/fragment_add_more_tv_addressbook"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerInParent="true"
-                        android:padding="@dimen/_5sdp"
-                        android:text="@string/fragment_add_more_tv_addressbook"
-                        android:textColor="#440AD0"
-                        android:textStyle="bold" />
-
-                    <net.tigerlight.dad.util.CustomTextViewBold
-                        android:id="@+id/fragment_add_more_tv_save"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="@dimen/_15sdp"
-                        android:padding="@dimen/_5sdp"
-                        android:text="@string/fragment_add_more_tv_save"
-                        android:textColor="#440AD0"
-                        android:textStyle="bold" />
-
-                    <net.tigerlight.dad.util.CustomTextViewBold
-                        android:id="@+id/fragment_add_more_tv_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="@dimen/_15sdp"
-                        android:padding="@dimen/_5sdp"
-                        android:text="@string/fragment_add_more_tv_cance"
-                        android:textColor="#440AD0"
-                        android:textStyle="bold" />
-
-                </RelativeLayout>
+                    android:hint="@string/fragment_add_more_et_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/colorBlack"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    />
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorGray"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginBottom="?android:attr/actionBarSize"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/fragment_add_more_tv_save"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/contacts"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/font_20sp"
-            android:textStyle="bold" />
-
+            android:text="@string/fragment_add_more_tv_save"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_15sdp"
+            android:background="@drawable/button_bg_orange"
+        />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_10sdp"
+        >
+            <net.tigerlight.dad.util.CustomTextViewSemiBold
+                android:id="@+id/fragment_add_more_tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_arrow_back_ios_24"
+                android:drawableTint="@color/colorOrange_new"
+                android:text="@string/back"
+                android:textAllCaps="false"
+                android:textColor="@color/colorOrange_new"
+                android:textSize="@dimen/font_15sp"
+                android:layout_alignParentStart="true"
+            />
+            <net.tigerlight.dad.util.CustomTextViewBold
+                android:id="@+id/fragment_add_more_tv_addressbook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_add_more_tv_addressbook"
+                android:textColor="@color/colorOrange_new"
+                android:textSize="@dimen/font_15sp"
+                android:layout_alignParentEnd="true"
+                android:drawableEnd="@drawable/baseline_contact_phone_24"
+                android:drawableTint="@color/colorOrange_new"
+                android:drawablePadding="@dimen/_10sdp"
+            />
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

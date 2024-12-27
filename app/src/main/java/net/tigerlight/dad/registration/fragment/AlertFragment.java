@@ -149,9 +149,14 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     {
         super.onAttach(context);
 
-        if (!mIsSentAlertReceiverRegistered)
-        {
-            context.registerReceiver(mAlertSentReceiver, new IntentFilter(Constants.Actions.SENT_ALERT_ACTION));
+        if (!mIsSentAlertReceiverRegistered) {
+            IntentFilter intentFilter = new IntentFilter(Constants.Actions.SENT_ALERT_ACTION);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 and above
+                context.registerReceiver(mAlertSentReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+            } else { // For earlier versions
+                context.registerReceiver(mAlertSentReceiver, intentFilter);
+            }
             mIsSentAlertReceiverRegistered = true;
         }
     }
@@ -161,7 +166,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     {
         super.onDetach();
 
-        if (mIsSentAlertReceiverRegistered)
+        if (getActivity() != null && mIsSentAlertReceiverRegistered)
         {
             getActivity().unregisterReceiver(mAlertSentReceiver);
             mIsSentAlertReceiverRegistered = false;
