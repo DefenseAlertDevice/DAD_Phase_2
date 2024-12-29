@@ -40,6 +40,7 @@ public class WsConstants {
     public final static String METHOD_UPDATE_ACCOUNT = "UpdateAccount";
     public final static String METHOD_UPDATE_PASSWORD = "UpdatePassword";
     public final static String METHOD_CREATE_PIN = "CreatePin";
+    public final static String METHOD_HAS_PIN = "HasPin";
     public final static String METHOD_RESET_COUNT = "ResetBadgeNumber";
     public final static String METHOD_UPDATE_PIN = "UpdatePin";
     public final static String METHOD_FORGOT_PIN = "ForgotPin";

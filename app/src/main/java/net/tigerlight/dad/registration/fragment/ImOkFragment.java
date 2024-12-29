@@ -16,12 +16,12 @@ import net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.webservices.WsCreatePin;
+import net.tigerlight.dad.webservices.WsHasPin;
 
 
 public class ImOkFragment extends BaseFragment {
 
     private View view;
-    private boolean isPinCreated = false;
     private ViewFlipper viewFlipper;
 
     //Here id first view
@@ -38,6 +38,7 @@ public class ImOkFragment extends BaseFragment {
     private TextView tvSavePin;
     private AsyncTaskCreatePinn asyncTaskCreatePinn;
     private AsyncTaskForgotPin asyncTaskForgotPin;
+    private AsyncTaskHasPin asyncTaskHasPin;
 
 
     @Override
@@ -53,33 +54,22 @@ public class ImOkFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-        viewFlipper = (ViewFlipper) view.findViewById(R.id.viewFlipper);
-
-
-        if (isPinCreated) {
-            viewFlipper.setDisplayedChild(0);
-            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(view.findViewById(R.id.first)));
-        } else {
-            viewFlipper.setDisplayedChild(1);
-            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(view.findViewById(R.id.second)));
-        }
-
+        viewFlipper = view.findViewById(R.id.viewFlipper);
         //first view binding
-        etPin = (EditText) view.findViewById(R.id.fragment_i_m_ok_send_pin_et_pinn);
-        etNewPin = (EditText) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_et_new_pin);
-        etConfirmPin = (EditText) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_et_confirm_pin);
-        tvSendImOkMessage = (TextView) view.findViewById(R.id.fragment_i_m_ok_send_pin_tv_sendd);
-        tvResetPin = (TextView) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_reset_pin);
-        tvForgotPin = (TextView) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_forgot_pin);
-        tvValidatePin = (TextView) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin);
-        tvSavePin = (TextView) view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_save_pin);
+        etPin = view.findViewById(R.id.fragment_i_m_ok_send_pin_et_pinn);
+        etNewPin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_et_new_pin);
+        etConfirmPin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_et_confirm_pin);
+        tvSendImOkMessage = view.findViewById(R.id.fragment_i_m_ok_send_pin_tv_sendd);
+        tvResetPin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_reset_pin);
+        tvForgotPin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_forgot_pin);
+        tvValidatePin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin);
+        tvSavePin = view.findViewById(R.id.fragment_i_m_ok_requiew_pin_tv_save_pin);
         tvSendImOkMessage.setOnClickListener(this);
         tvResetPin.setOnClickListener(this);
         tvForgotPin.setOnClickListener(this);
         tvValidatePin.setOnClickListener(this);
         tvSavePin.setOnClickListener(this);
-
-
+        callHasPinService();
     }
 
     @Override
@@ -182,6 +172,23 @@ public class ImOkFragment extends BaseFragment {
         }
     }
 
+    private void callHasPinService() {
+        if (getActivity() == null) {
+            return;
+        }
+        if (Utills.isInternetAvailable(getActivity())) {
+            if (asyncTaskHasPin != null && asyncTaskHasPin.getStatus() == AsyncTask.Status.PENDING) {
+                asyncTaskHasPin.execute();
+            } else if (asyncTaskHasPin == null || asyncTaskHasPin.getStatus() == AsyncTask.Status.FINISHED) {
+                asyncTaskHasPin = new AsyncTaskHasPin();
+                asyncTaskHasPin.execute();
+            }
+        } else {
+
+            Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
+        }
+    }
+
 
     private void createPin() {
 
@@ -201,6 +208,57 @@ public class ImOkFragment extends BaseFragment {
         } else {
 
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
+        }
+    }
+
+    private void setupInitialView(Boolean hasPin) {
+        if (hasPin) {
+            viewFlipper.setDisplayedChild(0);
+            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(view.findViewById(R.id.first)));
+        } else {
+            viewFlipper.setDisplayedChild(1);
+            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(view.findViewById(R.id.second)));
+        }
+    }
+
+    private class AsyncTaskHasPin extends AsyncTask<String, Void, String> {
+        private WsHasPin wsHasPin;
+        private ProgressDialog progressDialog;
+
+
+        public AsyncTaskHasPin() {
+            wsHasPin = new WsHasPin(getActivity());
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
+
+
+            progressDialog.show();
+//            progressDialog.setContentView(R.layout.progress_layout);
+            progressDialog.setCancelable(false);
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            wsHasPin.executeService();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            if (!isCancelled()) {
+                setupInitialView(wsHasPin.isSuccess());
+            }
         }
     }
 

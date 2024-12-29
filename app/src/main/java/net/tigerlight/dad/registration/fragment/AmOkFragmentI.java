@@ -1,11 +1,12 @@
 package net.tigerlight.dad.registration.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -13,12 +14,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +35,7 @@ import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.webservices.WsCallSendOk;
 import net.tigerlight.dad.webservices.WsCreatePin;
 import net.tigerlight.dad.webservices.WsForgotPin;
-import net.tigerlight.dad.webservices.WsResetCount;
+import net.tigerlight.dad.webservices.WsHasPin;
 import net.tigerlight.dad.util.DisplayDialog;
 import net.tigerlight.dad.util.GPSTracker;
 import net.tigerlight.dad.util.Preference;
@@ -41,10 +46,6 @@ import org.json.JSONObject;
 public class AmOkFragmentI extends BaseFragment {
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
-    private TextView tvResetPin;
-    private TextView tvSendImOkMessage;
-    private TextView tvForgotPin;
-    private TextView tvCancel;
 
     private EditText etPin;
     private EditText etOldPin;
@@ -52,27 +53,24 @@ public class AmOkFragmentI extends BaseFragment {
     private EditText etReEnterPin;
     private EditText etMainNewPin;
     private EditText etMainConfirmPin;
+    private ImageView etPinIcon;
 
     private LinearLayout llMain;
     private LinearLayout llFirst;
     private LinearLayout llSecond;
 
-    private TextView tvValidatePin;
-    private TextView tvSavePin;
-    private TextView tvMainValidatePin;
-    private TextView tvMainSavePin;
+    private Button tvSavePin;
+    private Button tvMainSavePin;
 
     private AsyncSendOk asyncSendOk;
     private AsyncTaskCreatePin asyncTaskCreatePin;
-    private AsyncTaskResetCount asyncTaskResetCount;
-    private GPSTracker gpsTracker;
+    private AsyncTaskHasPin asyncTaskHasPin;
     private String lattdLastKnown;
     private String longtdLastKnown;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     private boolean isPinCreated = false;
     protected static final String SUCCESS = "success";
-    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,73 +85,53 @@ public class AmOkFragmentI extends BaseFragment {
     @Override
     public void initView(View view) {
 
-        callResetCount();
-        llMain = (LinearLayout) view.findViewById(R.id.fragment_iamok_llMain);
-        llFirst = (LinearLayout) view.findViewById(R.id.fragment_iamok_llFirst);
-        llSecond = (LinearLayout) view.findViewById(R.id.fragment_iamok_llSecond);
+        llMain = view.findViewById(R.id.fragment_iamok_llMain);
+        llFirst = view.findViewById(R.id.fragment_iamok_llFirst);
+        llSecond = view.findViewById(R.id.fragment_iamok_llSecond);
 
-        etPin = (EditText) view.findViewById(R.id.fragment_iamok_etPin);
-        etOldPin = (EditText) view.findViewById(R.id.fragment_iamok_etOldPin);
-        etNewPin = (EditText) view.findViewById(R.id.fragment_iamok_etNewPin);
-        etReEnterPin = (EditText) view.findViewById(R.id.fragment_iamok_etReEnterPin);
-        etMainNewPin = (EditText) view.findViewById(R.id.fragment_iamok_llMain_etNewPin);
-        etMainConfirmPin = (EditText) view.findViewById(R.id.fragment_iamok_llMain_etReenterPin);
+        etPin = view.findViewById(R.id.fragment_iamok_etPin);
+        etPinIcon = view.findViewById(R.id.fragment_iamok_etPinIcon);
+        etOldPin = view.findViewById(R.id.fragment_iamok_etOldPin);
+        etNewPin = view.findViewById(R.id.fragment_iamok_etNewPin);
+        etReEnterPin = view.findViewById(R.id.fragment_iamok_etReEnterPin);
+        etMainNewPin = view.findViewById(R.id.fragment_iamok_llMain_etNewPin);
+        etMainConfirmPin = view.findViewById(R.id.fragment_iamok_llMain_etReenterPin);
 
-        tvSendImOkMessage = (TextView) view.findViewById(R.id.fragment_iamok_tvSendIamokMsg);
-        tvResetPin = (TextView) view.findViewById(R.id.fragment_iamok_tvResetPin);
-        tvForgotPin = (TextView) view.findViewById(R.id.fragment_iamok_tvForgotPin);
+        Button tvSendImOkMessage = view.findViewById(R.id.fragment_iamok_tvSendIamokMsg);
+        TextView tvResetPin = view.findViewById(R.id.fragment_iamok_tvResetPin);
+        TextView tvForgotPin = view.findViewById(R.id.fragment_iamok_tvForgotPin);
 
-        tvValidatePin = (TextView) view.findViewById(R.id.fragment_iamok_tvValidatePin);
-        tvSavePin = (TextView) view.findViewById(R.id.fragment_iamok_tvSavePin);
-        tvMainValidatePin = (TextView) view.findViewById(R.id.fragment_iamok_llMain_tvValidatePin);
-        tvMainSavePin = (TextView) view.findViewById(R.id.fragment_iamok_llMain_tvSavePin);
+        tvSavePin = view.findViewById(R.id.fragment_iamok_tvSavePin);
+        tvMainSavePin = view.findViewById(R.id.fragment_iamok_llMain_tvSavePin);
 
-        tvCancel = (TextView) view.findViewById(R.id.fragment_iamok_tvCancel);
+        TextView tvCancel = view.findViewById(R.id.fragment_iamok_tvCancel);
 
         isPinCreated = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_PIN_CREATED, false);
-
-        if (isPinCreated) {
-            llMain.setVisibility(View.GONE);
-            llFirst.setVisibility(View.VISIBLE);
-        } else {
-            llMain.setVisibility(View.VISIBLE);
-            llFirst.setVisibility(View.GONE);
-        }
+        setupInitialView();
 
         tvSendImOkMessage.setOnClickListener(this);
         tvResetPin.setOnClickListener(this);
         tvForgotPin.setOnClickListener(this);
-        tvValidatePin.setOnClickListener(this);
         tvSavePin.setOnClickListener(this);
-        tvMainValidatePin.setOnClickListener(this);
         tvMainSavePin.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
-
+        etPinIcon.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
         final int fragmentId = v.getId();
-        if (fragmentId == R.id.fragment_iamok_llMain_tvValidatePin) {
-            ValidateNewAndConfirmFeild(false);
-        } else if (fragmentId == R.id.fragment_iamok_llMain_tvSavePin) {
+        if (fragmentId == R.id.fragment_iamok_llMain_tvSavePin) {
             ValidateNewAndConfirmFeild(true);
         } else if (fragmentId == R.id.fragment_iamok_tvSendIamokMsg) {
             if (!TextUtils.isEmpty(etPin.getText().toString())) {
-                // if (etPin.equals(etMainConfirmPin)) {
                 if (etPin.getText().length() == 4) {
                     updateLatLong();
                     callSendOkService(etPin.getText().toString());
-
                 } else {
                     DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PING_SHORT_MSG));
                 }
-                //}
-//                    else {
-//                        DisplayDialog.getInstance().displayMessageDialog(getActivity(), "Please enter correct value for Pin.");
-//                    }
-
             } else {
                 DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PIN_NOT_EMPTY_MSG));
             }
@@ -162,38 +140,54 @@ public class AmOkFragmentI extends BaseFragment {
             llSecond.setVisibility(View.VISIBLE);
         } else if (fragmentId == R.id.fragment_iamok_tvForgotPin) {
             forgotPin();
-        } else if (fragmentId == R.id.fragment_iamok_tvValidatePin) {
-            ValidateOldNewAndConfirmFeild(false);
         } else if (fragmentId == R.id.fragment_iamok_tvSavePin) {
-            ValidateOldNewAndConfirmFeild(true);
+            ValidateOldNewAndConfirmFeild();
             callCreatePinService(false);
-        } else if (fragmentId == R.id.fragment_iamok_tvCancel) {
+        } else if (getActivity() != null && fragmentId == R.id.fragment_iamok_tvCancel) {
             etOldPin.setText("");
             etNewPin.setText("");
             etReEnterPin.setText("");
-            tvSavePin.setEnabled(false);
-            tvSavePin.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_gray));
             llSecond.setVisibility(View.GONE);
             llFirst.setVisibility(View.VISIBLE);
+        } else if (fragmentId == R.id.fragment_iamok_etPinIcon) {
+            togglePasswordInput(etPin, etPinIcon);
         }
     }
 
-    private void callResetCount() {
-        if (Utills.isInternetConnected(getActivity())) {
-            if (asyncTaskResetCount != null && asyncTaskResetCount.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskResetCount.execute();
-            } else if (asyncTaskResetCount == null || asyncTaskResetCount.getStatus() == AsyncTask.Status.FINISHED) {
-                asyncTaskResetCount = new AsyncTaskResetCount();
-                asyncTaskResetCount.execute();
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void togglePasswordInput(EditText etPassword, ImageView icon) {
+        if (etPassword.getInputType() == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
+            // Show password
+            etPassword.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_on));
+        } else {
+            // Hide password
+            etPassword.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_off));
+        }
+        // Move cursor to the end
+        etPassword.setSelection(etPassword.length());
+    }
+
+    private void callHasPinService() {
+        if (getActivity() == null) {
+            return;
+        }
+        if (Utills.isInternetAvailable(getActivity())) {
+            if (asyncTaskHasPin != null && asyncTaskHasPin.getStatus() == AsyncTask.Status.PENDING) {
+                asyncTaskHasPin.execute();
+            } else if (asyncTaskHasPin == null || asyncTaskHasPin.getStatus() == AsyncTask.Status.FINISHED) {
+                asyncTaskHasPin = new AsyncTaskHasPin();
+                asyncTaskHasPin.execute();
             }
         } else {
+
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
-
     }
 
     private void callCreatePinService(final boolean isMainScreenOrNot) {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskCreatePin != null && asyncTaskCreatePin.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskCreatePin.execute();
             } else if (asyncTaskCreatePin == null || asyncTaskCreatePin.getStatus() == AsyncTask.Status.FINISHED) {
@@ -209,10 +203,65 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private class AsyncTaskHasPin extends AsyncTask<String, Void, String> {
+        private WsHasPin wsHasPin;
+        private ProgressDialog progressDialog;
 
+
+        public AsyncTaskHasPin() {
+            wsHasPin = new WsHasPin(getActivity());
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
+
+
+            progressDialog.show();
+//            progressDialog.setContentView(R.layout.progress_layout);
+            progressDialog.setCancelable(false);
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            wsHasPin.executeService();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            if (!isCancelled()) {
+                isPinCreated = wsHasPin.isSuccess();
+                Preference.getInstance().savePreferenceData(Constant.IS_PIN_CREATED, wsHasPin.isSuccess());
+                setupInitialView();
+            }
+        }
+    }
+
+    private void setupInitialView() {
+        if (isPinCreated) {
+            llMain.setVisibility(View.GONE);
+            llFirst.setVisibility(View.VISIBLE);
+        } else {
+            callHasPinService();
+            llMain.setVisibility(View.VISIBLE);
+            llFirst.setVisibility(View.GONE);
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskCreatePin extends AsyncTask<String, Void, String> {
-        private WsCreatePin wsCreatePin;
-        private String pin;
+        private final WsCreatePin wsCreatePin;
+        private final String pin;
         private ProgressDialog progressDialog;
 
 
@@ -254,7 +303,7 @@ public class AmOkFragmentI extends BaseFragment {
                     llFirst.setVisibility(View.VISIBLE);
 
                 } else {
-                    if (!wsCreatePin.getMessage().trim().equals("")) {
+                    if (!wsCreatePin.getMessage().trim().isEmpty()) {
                         Utills.displayDialog(getActivity(), getString(R.string.app_name), wsCreatePin.getMessage(), getString(R.string.ok), "", false, false);
                     } else {
                         Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_SOME_WENT_WRONG_MSG), getString(R.string.ok), "", false, false);
@@ -281,11 +330,11 @@ public class AmOkFragmentI extends BaseFragment {
     }
 
     public void updateLatLong() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (getActivity() != null && (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            gpsTracker = new GPSTracker(getActivity());
+                == PackageManager.PERMISSION_GRANTED)) {
+            GPSTracker gpsTracker = new GPSTracker(getActivity());
             if (gpsTracker.canGetLocation()) {
                 //lattdLastKnown = "" + gpsTracker.getLatitude();
                 //longtdLastKnown = "" + gpsTracker.getLongitude();
@@ -303,7 +352,7 @@ public class AmOkFragmentI extends BaseFragment {
     }
 
     private void callSendOkService(final String pin) {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncSendOk != null && asyncSendOk.getStatus() == AsyncTask.Status.PENDING) {
                 asyncSendOk.execute(pin);
 
@@ -316,6 +365,7 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncSendOk extends AsyncTask<String, Void, JSONObject> {
 
         private WsCallSendOk wsCallSendOk;
@@ -382,11 +432,9 @@ public class AmOkFragmentI extends BaseFragment {
             etMainConfirmPin.requestFocus();
 
         } else if (!etMainNewPin.getText().toString().trim().equalsIgnoreCase("") && !etMainConfirmPin.getText().toString().trim().equalsIgnoreCase("")) {
-            if (checkPassWordAndConfirmPassword(etMainNewPin.getText().toString().trim(), etMainConfirmPin.getText().toString().trim())) {
-
+            if (getActivity() != null && checkPassWordAndConfirmPassword(etMainNewPin.getText().toString().trim(), etMainConfirmPin.getText().toString().trim())) {
 //
                 if (b) {
-
                     if (Utills.isOnline(getActivity(), true)) {
                         callCreatePinService(true);
                     } else {
@@ -394,10 +442,8 @@ public class AmOkFragmentI extends BaseFragment {
                     }
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CORRECT_PIN), getString(R.string.ok), "", false, false);
-                    tvMainSavePin.setEnabled(true);
                     tvMainSavePin.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_blue));
                 }
-
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INCORRECT_PIN), getString(R.string.ok), "", false, false);
                 etMainNewPin.requestFocus();
@@ -405,7 +451,7 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
-    private void ValidateOldNewAndConfirmFeild(final boolean b) {
+    private void ValidateOldNewAndConfirmFeild() {
         if (etOldPin.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_OLD_TEMP_PIN), getString(R.string.ok), "", false, false);
             etOldPin.requestFocus();
@@ -444,17 +490,11 @@ public class AmOkFragmentI extends BaseFragment {
 
         } else if (!etNewPin.getText().toString().trim().equalsIgnoreCase("") && !etReEnterPin.getText().toString().trim().equalsIgnoreCase("")) {
             if (checkPassWordAndConfirmPassword(etNewPin.getText().toString().trim(), etReEnterPin.getText().toString().trim())) {
-                if (b) {
-                    if (Utills.isOnline(getActivity(), true)) {
-                        callCreatePinService(false);
-                    } else {
-                        Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.ok), "", false, false);
-                    }
+                if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
+                    callCreatePinService(false);
                 } else {
-                    tvSavePin.setEnabled(true);
-                    tvSavePin.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_blue));
+                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.ok), "", false, false);
                 }
-
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INCORRECT_PIN), getString(R.string.ok), "", false, false);
                 etNewPin.requestFocus();
@@ -496,6 +536,7 @@ public class AmOkFragmentI extends BaseFragment {
         dialog.show();
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class ForGotPinTask extends AsyncTask<String, String, String> {
 
         int response = 3;
@@ -515,7 +556,7 @@ public class AmOkFragmentI extends BaseFragment {
 
         @Override
         protected String doInBackground(String... params) {
-            if (Utills.isInternetConnected(getActivity())) {
+            if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
 
                 JSONObject loginjson = wsForgotPin.executeService();
                 try {
@@ -565,45 +606,6 @@ public class AmOkFragmentI extends BaseFragment {
                 }
             }
         }
-    }
-
-    private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
-        private WsResetCount wsResetCount;
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            wsResetCount = new WsResetCount(getActivity());
-            wsResetCount.executeService();
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (!isCancelled() && isAdded()) {
-                if (wsResetCount.isSuccess()) {
-//                    progressDialog.dismiss();
-                    Log.d("Count", "Updated");
-
-
-                } else {
-
-                    Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }
-
-
     }
 
 

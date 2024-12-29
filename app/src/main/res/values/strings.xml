@@ -193,17 +193,18 @@
     <string name="fragment_i_m_ok_et_new_pin_hint">Old/temp Pin</string>
     <string name="fragment_i_m_ok_et_confirm_pin_hint">reenter Pin</string>
     <string name="fragment_i_m_ok_tv_reset_pin"><u>Reset PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_update_pin" translatable="false"><u>Update PIN</u>"</string>
     <string name="fragment_i_m_ok_tv_forgot_pin"><u>Forgot PIN</u>"</string>
     <string name="fragment_i_m_ok_tv_validate_pin">Validate PIN:</string>
     <string name="fragment_i_m_ok_tv_save_pin">Save PIN</string>
     <string name="send_i_m_ok_message"><u>Send I\'m OK Message</u></string>
     <string name="pin_required">A PIN is required before you can send an I\'m ok message. Please create a PIN:</string>
     <string name="old_temporary_pin">Old/Temporary Pin</string>
-    <string name="new_pin">New Pin</string>
+    <string name="new_pin">New PIN</string>
     <string name="alert_invalid_pin">Invalid PIN</string>
     <string name="confirm_pin">Confirm Pin</string>
     <string name="validate_pin"><u>Validate Pin</u></string>
-    <string name="save_pin"><u>Save Pin</u></string>
+    <string name="save_pin">Save Pin</string>
     <string name="USER_ID">userID</string>
 
     <!-- Contact  fragment string has been start-->
@@ -313,8 +314,8 @@
     <string name="TAG_CONFIRM_PINF">Connfirm New PIN</string>
     <string name="TAG_PIN_VALIDATION">Enter 4 digit PIN</string>
     <string name="TAG_PIN_NOT_FOUR">PIN Lenghth Should Not Exceed 4 digit</string>
-    <string name="TAG_ENTER_OLD_TEMP_PIN">Enter Old/temp PIN</string>
-    <string name="TAG_FORGOT_PIN">Forgot Pin !!</string>
+    <string name="TAG_ENTER_OLD_TEMP_PIN">Current PIN</string>
+    <string name="TAG_FORGOT_PIN">Forgot PIN</string>
     <string name="TAG_AUTO_GEN_PIN">Do you want to auto generate a new Pin?</string>
     <string name="TAG_WAIT">Wait...</string>
     <string name="TAG_PIN_CAN_NOT_GET">Pin cannot be generate yet. Please try again later.</string>
@@ -332,16 +333,16 @@
     <string name="TAG_RESET">Reset</string>
     <string name="TAG_VALIDATE">validate</string>
     <string name="TAG_MIN_FOUR">Enter Minimum 4 digit</string>
-    <string name="TAG_I_AM_ON">"I'M OK"</string>
-    <string name="TAGE_ENTER_YOUR_PIN">Enter You PIN</string>
+    <string name="TAG_I_AM_ON">"I'm OK"</string>
+    <string name="TAGE_ENTER_YOUR_PIN">Enter Your PIN</string>
     <string name="TAGE_SEND_OK_MSG">Send I"'"m OK Message:</string>
     <string name="TAGE_REQUIRE_PIN">A PIN is required before you can send an i\'m ok message. Please create PIN :</string>
     <string name="TAGE_NEW_PIN">New PIN:</string>
     <string name="TAGE_CONFIRM_PIN">Confirm PIN:</string>
-    <string name="TAG_RESEt_PIN">Reset PIN:</string>
+    <string name="TAG_RESEt_PIN">Change PIN</string>
     <string name="TAG_VALIDATE_PIN">Validate PIN</string>
-    <string name="TAG_SAVE_PIN">SAVE PIN</string>
-    <string name="TAG_RE_ENTER_PIN">Re Enter PIN:</string>
+    <string name="TAG_SAVE_PIN">Save PIN</string>
+    <string name="TAG_RE_ENTER_PIN">Verify PIN</string>
     <string name="TAGE_PIN">PIN</string>
     <string name="TAG_TAKE_PHOTO">Take Photo</string>
     <string name="TAG_CHOOSE_FROM_GALLERY">Choose from Gallery</string>
