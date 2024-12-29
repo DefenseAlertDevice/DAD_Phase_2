@@ -137,7 +137,7 @@
     <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ License</string>
     <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
-    <string name="change_password"><u>Change Password</u></string>
+    <string name="change_password">Change Password</string>
 
 
     <!--Add More Fragment string has been start-->
@@ -379,6 +379,7 @@
     <string name="custom_dialog_nb_lang">Norwegian</string>
     <string name="custom_dialog_sv_lang">Swedish</string>
     <string name="TAG_forgot_pwd">Forgot Password</string>
+    <string name="TAG_delete_account" translatable="false">Delete Account</string>
     <string name="TAG_ENTER_FIRST_NAME">Enter First Name.</string>
     <string name="TAG_ENTER_LAST_NAME">Enter Last Name.</string>
     <string name="TAG_HAS_BEEN_ON">Has Been On</string>

@@ -8,12 +8,12 @@ import com.bumptech.glide.request.transition.Transition;
 import net.tigerlight.dad.DADApplication;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
-import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.model.GetUserInfoModel;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.registration.webservices.WsCallForgotPassword;
 import net.tigerlight.dad.webservices.WsCallChangePassword;
+import net.tigerlight.dad.webservices.WsCallDeleteAccount;
 import net.tigerlight.dad.webservices.WsCallUpdateAccount;
 import net.tigerlight.dad.webservices.WsGetUserData;
 import net.tigerlight.dad.webservices.WsUploadImage;
@@ -22,9 +22,9 @@ import net.tigerlight.dad.simplecropping.Constants;
 import net.tigerlight.dad.util.CircleTransform;
 import net.tigerlight.dad.util.Preference;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -40,13 +40,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.DialogFragment;
 
-import android.text.method.PasswordTransformationMethod;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,7 +53,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
@@ -62,19 +60,15 @@ import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 public class EditProfileFragment extends DialogFragment implements View.OnClickListener {
 
     private DADApplication dadApplication;
-    private View view;
-    private TextView tvCancel;
-    private TextView tvsave;
-    private TextView tvForgotPassword;
-    private TextView tvChangeLanguage;
-    private TextView tvDefaultLanguage;
     private ImageView ivProfile;
     private EditText etUserName;
     private EditText etPhoneNo;
     private EditText etCurrentPassword;
     private EditText etNewPassword;
     private EditText etConfirmPassword;
-    private CheckBox cbToggle;
+    private ImageView cbToggle;
+    private ImageView cnToggle;
+    private ImageView npToggle;
     //    private CheckBox cbDa;
 //    private CheckBox cbNb;
 //    private CheckBox cbSv;
@@ -85,6 +79,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     private AsyncTaskForgotPassword asyncTaskForgotPassword;
     private AsyncTaskGetUserInfo asyncTaskGetUserInfo;
     private AsyncTaskUpdatePassword asyncTaskUpdatePassword;
+    private AsyncTaskDeleteAccount asyncTaskDeleteAccount;
 
     private static final String TAG = "CreateAccountFragment";
     private String userChoosenTask;
@@ -115,22 +110,26 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         initView(view);
         return view;
     }
 
     public void initView(View view) {
+        if (getActivity() == null) {
+            return;
+        }
         dadApplication = (DADApplication) getActivity().getApplication();
 //        lat = ((BaseActivity) getActivity()).getLatitude();
 //        log = ((BaseActivity) getActivity()).getLongitude();
 
         profileModel = new GetUserInfoModel();
-        tvCancel = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_cancel);
-        tvsave = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_save);
-        tvForgotPassword = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_forgot_password);
+        TextView tvCancel = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_cancel);
+        Button tvsave = view.findViewById(R.id.fragment_edit_profile_tv_save);
+        Button tvChangePassword = view.findViewById(R.id.fragment_edit_profile_tv_change_password);
+        TextView tvForgotPassword = view.findViewById(R.id.fragment_edit_profile_tv_forgot_password);
+        TextView tvDeleteAccount = view.findViewById(R.id.fragment_edit_profile_tv_delete_account);
         ivProfile = (ImageView) view.findViewById(R.id.fragment_edit_profile_im_pf);
-        tvChangeLanguage = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_change_language);
 //        tvDefaultLanguage = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_eng);
 
 
@@ -139,7 +138,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         etCurrentPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_current_password);
         etNewPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_new_password);
         etConfirmPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_confirm_password);
-        cbToggle = (CheckBox) view.findViewById(R.id.fragment_edit_profile_toggle_cb);
+        cbToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_cb);
+        cnToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_cn);
+        npToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_np);
 //        cbDa = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_da);
 //        cbNb = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_nb);
 //        cbSv = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_sv);
@@ -147,8 +148,10 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         ivProfile.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         tvsave.setOnClickListener(this);
+        tvChangePassword.setOnClickListener(this);
         tvForgotPassword.setOnClickListener(this);
-        tvChangeLanguage.setOnClickListener(this);
+        tvDeleteAccount.setOnClickListener(this);
+
 //        tvDefaultLanguage.setOnClickListener(this);
 
 
@@ -164,28 +167,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
                 .into(ivProfile);
 
 
-        cbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                int start, end;
-                Log.i("inside checkbox chnge", "" + isChecked);
-                if (!isChecked) {
-                    cbToggle.setText(getString(R.string.show));
-                    start = etCurrentPassword.getSelectionStart();
-                    end = etCurrentPassword.getSelectionEnd();
-                    etCurrentPassword.setTransformationMethod(new PasswordTransformationMethod());
-                    etCurrentPassword.setSelection(start, end);
-                } else {
-                    cbToggle.setText(getString(R.string.hide));
-                    start = etCurrentPassword.getSelectionStart();
-                    end = etCurrentPassword.getSelectionEnd();
-                    etCurrentPassword.setTransformationMethod(null);
-                    etCurrentPassword.setSelection(start, end);
-                }
-            }
-        });
-
-
+        cbToggle.setOnClickListener(this);
+        cnToggle.setOnClickListener(this);
+        npToggle.setOnClickListener(this);
     }
 
     @Override
@@ -195,228 +179,37 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         if (fragmentId == R.id.fragment_edit_profile_tv_save) {
             validateEditSection();
         } else if (fragmentId == R.id.fragment_edit_profile_tv_cancel) {
-            getActivity().onBackPressed();
-        } else if (fragmentId == R.id.fragment_edit_profile_tv_forgot_password) {
+            dismiss();
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_change_password) {
             validateUpdatePasswordSection();
-        } else if (fragmentId == R.id.fragment_edit_profile_tv_change_language) {
-            openDialogBox();
         } else if (fragmentId == R.id.fragment_edit_profile_im_pf) {
             selectImage();
+        } else if (fragmentId == R.id.fragment_edit_profile_toggle_cb) {
+            togglePasswordInput(etCurrentPassword, cbToggle);
+        } else if (fragmentId == R.id.fragment_edit_profile_toggle_cn) {
+            togglePasswordInput(etConfirmPassword, cnToggle);
+        } else if (fragmentId == R.id.fragment_edit_profile_toggle_np) {
+            togglePasswordInput(etNewPassword, npToggle);
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_forgot_password) {
+            forgotPassword();
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_delete_account) {
+            deleteAccount();
         }
     }
 
-    private void openDialogBox() {
-        final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogThemeNonTras);
-        dialog.setContentView(R.layout.custom_dialog_select_language);
-        final CheckBox cbDa = (CheckBox) dialog.findViewById(R.id.custom_dialog_select_lang_da);
-        final CheckBox cbNb = (CheckBox) dialog.findViewById(R.id.custom_dialog_select_lang_nb);
-        final CheckBox cbSv = (CheckBox) dialog.findViewById(R.id.custom_dialog_select_lang_sv);
-        final CheckBox cbEng = (CheckBox) dialog.findViewById(R.id.custom_dialog_select_lang_en);
-        final String str = Locale.getDefault().getDisplayLanguage();
-        Log.d("Lag", str);
-        if (str.equalsIgnoreCase("english")) {
-            cbDa.setChecked(false);
-            cbNb.setChecked(false);
-            cbSv.setChecked(false);
-            cbEng.setChecked(true);
-            Preference.getInstance().savePreferenceData(Constant.IS_ENG, true);
-            Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-
-
-        } else if (str.equalsIgnoreCase("dansk")) {
-            cbDa.setChecked(true);
-            cbNb.setChecked(false);
-            cbSv.setChecked(false);
-            cbEng.setChecked(false);
-
-
-            Preference.getInstance().savePreferenceData(Constant.IS_DA, true);
-            Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-
-
-        } else if (str.equalsIgnoreCase("svenska")) {
-            cbDa.setChecked(false);
-            cbNb.setChecked(false);
-            cbSv.setChecked(true);
-            cbEng.setChecked(false);
-            Preference.getInstance().savePreferenceData(Constant.IS_SV, true);
-            Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-
-
-        } else if (str.equalsIgnoreCase("norsk bokmål")) {
-            cbDa.setChecked(false);
-            cbNb.setChecked(true);
-            cbSv.setChecked(false);
-            cbEng.setChecked(false);
-
-            Preference.getInstance().savePreferenceData(Constant.IS_NB, true);
-            Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void togglePasswordInput(EditText etPassword, ImageView icon) {
+        if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            // Show password
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_on, 0); // Change icon to "eye open"
         } else {
-            cbDa.setChecked(false);
-            cbNb.setChecked(false);
-            cbSv.setChecked(false);
-            cbEng.setChecked(true);
-
-            Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-            Preference.getInstance().savePreferenceData(Constant.IS_ENG, true);
-
+            // Hide password
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_off, 0); // Change icon to "eye closed"
         }
-
-
-//        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_DA, false)) {
-//            cbDa.setChecked(true);
-//            cbNb.setChecked(false);
-//            cbSv.setChecked(false);
-//            cbEng.setChecked(false);
-//
-//        } else if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_NB, false)) {
-//            cbDa.setChecked(false);
-//            cbNb.setChecked(true);
-//            cbSv.setChecked(false);
-//            cbEng.setChecked(false);
-//        } else if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_SV, false)) {
-//            cbDa.setChecked(false);
-//            cbNb.setChecked(false);
-//            cbSv.setChecked(true);
-//            cbEng.setChecked(false);
-//        } else if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ENG, false)) {
-//            cbDa.setChecked(false);
-//            cbNb.setChecked(false);
-//            cbSv.setChecked(false);
-//            cbEng.setChecked(true);
-//
-//
-//        }
-//        else
-//        {
-//            cbDa.setChecked(true);
-//            cbNb.setChecked(false);
-//            cbSv.setChecked(false);
-//            cbEng.setChecked(false);
-//        }
-
-
-        cbDa.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                if (b) {
-                    Preference.getInstance().savePreferenceData(Constant.IS_LANG_ID, "da");
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, b);
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-                } else {
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-                }
-
-
-                dadApplication.configLanguage(getActivity(), getString(R.string.pref_key_language_da));
-                restartActivity();
-
-            }
-        });
-
-        cbNb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                Preference.getInstance().savePreferenceData(Constant.IS_NB, b);
-
-                if (b) {
-                    Preference.getInstance().savePreferenceData(Constant.IS_LANG_ID, "nb");
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, b);
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-
-                } else {
-
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-
-                }
-
-                dadApplication.configLanguage(getActivity(), getString(R.string.pref_key_language_nb));
-                restartActivity();
-
-
-            }
-        });
-
-        cbSv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                Preference.getInstance().savePreferenceData(Constant.IS_SV, b);
-
-
-                if (b) {
-                    Preference.getInstance().savePreferenceData(Constant.IS_LANG_ID, "sv");
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, b);
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-
-                } else {
-
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, false);
-
-                }
-
-
-                dadApplication.configLanguage(getActivity(), getString(R.string.pref_key_language_sv));
-                restartActivity();
-
-
-            }
-        });
-
-        cbEng.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-
-                if (b) {
-                    Preference.getInstance().savePreferenceData(Constant.IS_LANG_ID, "en");
-                    Preference.getInstance().savePreferenceData(Constant.IS_ENG, b);
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-
-                } else {
-
-                    Preference.getInstance().savePreferenceData(Constant.IS_DA, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_NB, false);
-                    Preference.getInstance().savePreferenceData(Constant.IS_SV, false);
-
-                }
-
-
-                dadApplication.configLanguage(getActivity(), getString(R.string.pref_key_language_eng));
-                restartActivity();
-
-
-            }
-        });
-
-        dialog.show();
-
-
+        // Move cursor to the end
+        etPassword.setSelection(etPassword.length());
     }
 
     private void restartActivity() {
@@ -605,7 +398,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
             if (checkPassWordAndConfirmPassword(etNewPassword.getText().toString().trim(), etConfirmPassword.getText().toString().trim())) {
                 if (checkPassWordAndConfirmPassword(etCurrentPassword.getText().toString().trim(), currentPwd.trim())) {
                     Log.d("From here", "Call service");
-                    if (Utills.isOnline(getActivity(), true)) {
+                    if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
                         updatePassword();
                         // Utils.displayDialog(this, getString(R.string.app_name), "Account has been created", getString(android.R.string.ok), "", false, true);
                     } else {
@@ -681,12 +474,26 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     private void forgotPassword() {
 
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskForgotPassword != null && asyncTaskForgotPassword.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskForgotPassword.execute();
             } else if (asyncTaskForgotPassword == null || asyncTaskForgotPassword.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskForgotPassword = new AsyncTaskForgotPassword();
                 asyncTaskForgotPassword.execute();
+            }
+        } else {
+            Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
+        }
+    }
+
+    private void deleteAccount() {
+
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
+            if (asyncTaskDeleteAccount != null && asyncTaskDeleteAccount.getStatus() == AsyncTask.Status.PENDING) {
+                asyncTaskDeleteAccount.execute();
+            } else if (asyncTaskDeleteAccount == null || asyncTaskDeleteAccount.getStatus() == AsyncTask.Status.FINISHED) {
+                asyncTaskDeleteAccount = new AsyncTaskDeleteAccount();
+                asyncTaskDeleteAccount.execute();
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
@@ -841,6 +648,48 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     }
 
+    private class AsyncTaskDeleteAccount extends AsyncTask<Void, Void, Void> {
+
+        private WsCallDeleteAccount wsCallDeleteAccount;
+        private ProgressDialog progressDialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
+            progressDialog.setCancelable(false);
+            wsCallDeleteAccount = new WsCallDeleteAccount(getActivity());
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            wsCallDeleteAccount.executeService();
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            super.onPostExecute(result);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (!isCancelled()) {
+
+                if (wsCallDeleteAccount.isSuccess()) {
+                    // TODO: add logout action here
+                    dismiss();
+                } else {
+                    Utills.displayDialog(getActivity(), getString(R.string.app_name), wsCallDeleteAccount.getMessage(), getString(R.string.TAG_OK), "", false, false);
+                }
+
+            }
+        }
+
+    }
+
     private class AsyncTaskUpdatePassword extends AsyncTask<Void, Void, Void> {
 
         private WsCallChangePassword wsCallChangePassword;
@@ -921,10 +770,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
-                Intent intent = new Intent();
-                intent.putExtra(net.tigerlight.dad.util.Constants.Extras.FORCE_LOGOUT, true);
-                                getTargetFragment().onActivityResult(net.tigerlight.dad.util.Constants.REQUEST_CODES.FORCE_LOGOUT, RESULT_OK, intent);
-                requireActivity().getSupportFragmentManager().popBackStack();
+                dismiss();
             }
         });
         dialog.show();

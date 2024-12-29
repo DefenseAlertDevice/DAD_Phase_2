@@ -56,6 +56,7 @@ public class WsConstants {
     public final static String METHOD_SEND_DANGER = "SendDanger";
     public final static String METHOD_GET_ALERT_COUNT = "GetAlerts";
     public final static String METHOD_DELETE_ALERT = "DeleteAlerts";
+    public final static String METHOD_DELETE_ACCOUNT = "DeleteAccount";
     public final static String METHOD_DAD_TEST = "DADTest";
     public final static String METHOD_UPDATE_LOCATION = "UpdateLocation";
 

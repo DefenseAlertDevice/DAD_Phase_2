@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_alert_orange"
-    android:orientation="vertical">
+    android:background="@drawable/app_background"
+>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,8 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.1">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -25,13 +24,14 @@
                     android:id="@+id/fragment_edit_profile_tv_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:drawableStart="@drawable/ic_arrow_back_ios_24"
+                    android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="@dimen/margin_left_5dp"
+                    android:layout_marginStart="@dimen/margin_left_5dp"
                     android:padding="@dimen/_5sdp"
                     android:text="@string/fragment_create_account_tv_cancel"
                     android:textAllCaps="false"
-                    android:textColor="@color/color_blue"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/_14sdp" />
 
                 <net.tigerlight.dad.util.CustomTextViewBold
@@ -43,27 +43,13 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/_18sdp" />
 
-                <net.tigerlight.dad.util.CustomTextViewSemiBold
-                    android:id="@+id/fragment_edit_profile_tv_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_right_5dp"
-                    android:padding="@dimen/_5sdp"
-                    android:text="@string/fragment_create_account_tv_save"
-                    android:textColor="@color/color_blue"
-                    android:textSize="@dimen/_14sdp"
-                    android:layout_alignBaseline="@+id/fragment_edit_profile_tv_cancel"
-                    android:layout_alignBottom="@+id/fragment_edit_profile_tv_cancel"
-                    android:layout_alignParentEnd="true" />
-
             </RelativeLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.9"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/_5sdp">
 
@@ -154,6 +140,19 @@
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="italic" />
 
+                <Button
+                    android:id="@+id/fragment_edit_profile_tv_save"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp"
+                    android:text="@string/fragment_create_account_tv_save"
+                    android:textColor="@color/colorOrange_new"
+                    android:textSize="@dimen/font_20sp"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_bg_white"
+                />
+
             </LinearLayout>
 
             <LinearLayout
@@ -200,33 +199,32 @@
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/fragment_edit_profile_et_current_password"
+                    <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_weight="0.6"
-                        android:background="@drawable/drawable_grey_rounded_margin_et"
-                        android:hint="@string/fragment_edit_profile_et_current_hint"
-                        android:inputType="textPassword"
-                        android:padding="@dimen/_10sdp"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/_13sdp"
-                        android:textStyle="bold" />
+                        android:layout_weight="0.8"
+                        android:layout_height="wrap_content">
 
-                    <CheckBox
-                        android:id="@+id/fragment_edit_profile_toggle_cb"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_weight="0.2"
-                        android:button="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="@string/show"
-                        android:textColor="@color/color_blue"
-                        android:textOff="@string/show"
-                        android:textOn="@string/hide"
-                        android:textStyle="bold" />
+                        <EditText
+                            android:id="@+id/fragment_edit_profile_et_current_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:background="@drawable/drawable_grey_rounded_margin_et"
+                            android:hint="@string/fragment_edit_profile_et_current_hint"
+                            android:inputType="textPassword"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/fragment_edit_profile_toggle_cb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="@dimen/_10sdp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_eye_off" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -248,24 +246,32 @@
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/fragment_edit_profile_et_new_password"
+                    <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_weight="0.6"
-                        android:background="@drawable/drawable_grey_rounded_margin_et"
-                        android:hint="@string/fragment_edit_profile_new_hint"
-                        android:inputType="textPassword"
-                        android:padding="@dimen/_10sdp"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/_13sdp"
-                        android:textStyle="bold" />
+                        android:layout_weight="0.8"
+                        android:layout_height="wrap_content">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2" />
+                        <EditText
+                            android:id="@+id/fragment_edit_profile_et_new_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:background="@drawable/drawable_grey_rounded_margin_et"
+                            android:hint="@string/fragment_edit_profile_new_hint"
+                            android:inputType="textPassword"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/fragment_edit_profile_toggle_np"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="@dimen/_10sdp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_eye_off" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -287,68 +293,73 @@
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/fragment_edit_profile_et_confirm_password"
+                    <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_weight="0.6"
-                        android:background="@drawable/drawable_grey_rounded_margin_et"
-                        android:hint="@string/fragment_edit_profile_title_confirm"
-                        android:inputType="textPassword"
-                        android:padding="@dimen/_10sdp"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/_13sdp"
-                        android:textStyle="bold" />
+                        android:layout_weight="0.8"
+                        android:layout_height="wrap_content">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2" />
+                        <EditText
+                            android:id="@+id/fragment_edit_profile_et_confirm_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:background="@drawable/drawable_grey_rounded_margin_et"
+                            android:hint="@string/fragment_edit_profile_title_confirm"
+                            android:inputType="textPassword"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/fragment_edit_profile_toggle_cn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="@dimen/_10sdp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_eye_off" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 
+                <Button
+                    android:id="@+id/fragment_edit_profile_tv_change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_10sdp"
+                    android:text="@string/change_password"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_bg_white"
+                    android:textColor="@color/colorOrange_new"
+                    android:textSize="@dimen/font_20sp"
+                    />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp">
+                >
 
-                    <net.tigerlight.dad.util.CustomTextViewBold
+                    <TextView
                         android:id="@+id/fragment_edit_profile_tv_forgot_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_16sp"
+                        android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:text="@string/change_password"
-                        android:textColor="@color/color_blue" />
+                        android:textColor="@color/color_blue"
+                        android:text="@string/TAG_forgot_pwd"
+                    />
 
-                </RelativeLayout>
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp">
-
-                    <net.tigerlight.dad.util.CustomTextViewBold
-                        android:id="@+id/fragment_edit_profile_tv_change_language"
+                    <TextView
+                        android:id="@+id/fragment_edit_profile_tv_delete_account"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_16sp"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
-                        android:text="@string/change_language"
-                        android:textColor="@color/color_blue" />
-
-
-                    <!--<net.tigerlight.dad.util.CustomTextViewBold-->
-                    <!--android:id="@+id/fragment_edit_profile_tv_eng"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:layout_marginRight="@dimen/_10sdp"-->
-                    <!--android:layout_toLeftOf="@+id/fragment_edit_profile_tv_change_language"-->
-                    <!--android:text="@string/default_english"-->
-                    <!--android:textColor="@color/color_blue" />-->
-
-
+                        android:textColor="@color/colorBlack"
+                        android:text="@string/TAG_delete_account"
+                        />
                 </RelativeLayout>
 
 
