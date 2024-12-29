@@ -152,7 +152,7 @@
 
     <!--I am OK  Account fragment string has been start-->
     <string name="fragment_account_tv_title">Account</string>
-    <string name="logout"><u>Logout</u></string>
+    <string name="logout">Logout</string>
     <string name="fragment_login_to_your_et_hint_email_id">Email</string>
 
     <!-- Change Password fragment string has been start-->
@@ -251,7 +251,7 @@
     <string name="dialog_dial_neg_button">Cancel</string>
     <string name="str_cancel">Cancel</string>
     <string name="pin">Pin</string>
-    <string name="edit_account"><u>Edit Account</u></string>
+    <string name="edit_account">Edit Account</string>
     <string name="need_to_change_your_name_phone_or_password">Need to Change your Name, Phone or Password?</string>
     <string name="saving_image">Saving image</string>
     <string name="preparing_card">Preparing card</string>

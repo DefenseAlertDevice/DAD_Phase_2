@@ -13,6 +13,7 @@ import net.tigerlight.dad.util.Preference;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -23,9 +24,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.Locale;
@@ -35,10 +38,9 @@ public class AccountFragment extends BaseFragment {
     private static final String TAG = AccountFragment.class.getSimpleName();
 
     private TextView tvWelcome;
-    private TextView tvEditAccount;
-    private TextView tvLogin;
     private TextView tvShowEula;
-    private TextView tvLogOut;
+    private Button tvEditAccount;
+    private Button tvLogOut;
     private AsyncTaskLogOut asyncTaskLogOut;
     private AsyncTaskResetCount asyncTaskResetCount;
 
@@ -53,28 +55,29 @@ public class AccountFragment extends BaseFragment {
     public void initView(View view) {
 
         callResetCount();
-        tvWelcome = (TextView) view.findViewById(R.id.fragment_settings_tvWelcome);
-        tvEditAccount = (TextView) view.findViewById(R.id.fragment_settings_tvEditAccount);
-        tvLogin = (TextView) view.findViewById(R.id.fragment_settings_tvLogin);
-        tvShowEula = (TextView) view.findViewById(R.id.fragment_settings_tvShowEula);
-        tvLogOut = (TextView) view.findViewById(R.id.fragment_settings_tvLogOut);
+        tvWelcome = view.findViewById(R.id.fragment_settings_tvWelcome);
+        tvEditAccount = view.findViewById(R.id.fragment_settings_tvEditAccount);
+        tvShowEula = view.findViewById(R.id.fragment_settings_tvShowEula);
+        tvLogOut = view.findViewById(R.id.fragment_settings_tvLogOut);
         currentUserName = Preference.getInstance().mSharedPreferences.getString(Constant.USER_NAME, "");
         tvWelcome.setText(getString(R.string.TAG_WELCOME) + " " + currentUserName);
 
 //       tvWelcome.setText(String.format("Welcome ", currentUserName));
         tvEditAccount.setOnClickListener(this);
-        tvLogin.setOnClickListener(this);
         tvShowEula.setOnClickListener(this);
         tvLogOut.setOnClickListener(this);
 
-
-
-        TextView tvBuildVersion = (TextView) view.findViewById(R.id.tvBuild);
+        TextView tvBuildVersion = view.findViewById(R.id.tvBuild);
         try
         {
-            PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            Context context = getContext();
+            Activity activity = getActivity();
+            if (activity != null && context != null) {
+                PackageInfo packageInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
 
-            tvBuildVersion.setText(String.format(Locale.US, getString(R.string.build_no), packageInfo.versionCode, packageInfo.versionName));
+                tvBuildVersion.setText(String.format(Locale.US, getString(R.string.build_no), packageInfo.versionCode, packageInfo.versionName));
+                activity.getWindow().setStatusBarColor(ContextCompat.getColor(context, R.color.colorBlack));
+            }
         }
         catch (PackageManager.NameNotFoundException e)
         {
@@ -101,11 +104,9 @@ public class AccountFragment extends BaseFragment {
     public void onClick(View v) {
         super.onClick(v);
         final int fragmentId = v.getId();
-        if (fragmentId == R.id.fragment_settings_tvEditAccount) {
+        if (getActivity() != null && fragmentId == R.id.fragment_settings_tvEditAccount) {
             ((MainActivity) getActivity()).addFragment(new EditProfileFragment(), AccountFragment.this);
         } else if (fragmentId == R.id.fragment_settings_tvLogOut) {
-            displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
-        } else if (fragmentId == R.id.fragment_settings_tvLogin) {
             displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
         } else if (fragmentId == R.id.fragment_settings_tvShowEula) {
             if (getActivity() instanceof MainActivity) {
@@ -115,7 +116,7 @@ public class AccountFragment extends BaseFragment {
     }
 
     private void logOut() {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskLogOut != null && asyncTaskLogOut.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskLogOut.execute();
             } else if (asyncTaskLogOut == null || asyncTaskLogOut.getStatus() == AsyncTask.Status.FINISHED) {
@@ -128,7 +129,7 @@ public class AccountFragment extends BaseFragment {
     }
 
     private void callResetCount() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskResetCount != null && asyncTaskResetCount.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskResetCount.execute();
             } else if (asyncTaskResetCount == null || asyncTaskResetCount.getStatus() == AsyncTask.Status.FINISHED) {
