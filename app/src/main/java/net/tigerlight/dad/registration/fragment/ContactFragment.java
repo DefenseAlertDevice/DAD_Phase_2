@@ -6,12 +6,10 @@ import static net.tigerlight.dad.registration.util.Utills.isInternetConnected;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -43,10 +41,8 @@ import net.tigerlight.dad.registration.adapter.RecieveElementAdapter;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.webservices.WsCallDeleteContact;
-import net.tigerlight.dad.webservices.WsCallGetAlertCount;
 import net.tigerlight.dad.webservices.WsCallGetAllContacts;
 import net.tigerlight.dad.webservices.WsCallSendDanger;
-import net.tigerlight.dad.webservices.WsResetCount;
 import net.tigerlight.dad.swipemenulistview.SwipeMenu;
 import net.tigerlight.dad.swipemenulistview.SwipeMenuCreator;
 import net.tigerlight.dad.swipemenulistview.SwipeMenuItem;
@@ -55,7 +51,6 @@ import net.tigerlight.dad.util.BitMapHelper;
 import net.tigerlight.dad.util.Constants;
 import net.tigerlight.dad.util.NetworkAvailability;
 import net.tigerlight.dad.util.Preference;
-import net.tigerlight.dad.util.Util;
 import net.tigerlight.dad.util.WsConstants;
 
 import org.json.JSONArray;
@@ -65,15 +60,13 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class ContactFragment extends BaseFragment implements AdapterView.OnItemClickListener, RecieveElementAdapter.OnDeleteItemClickListner {
+public class ContactFragment extends BaseFragment implements AdapterView.OnItemClickListener, RecieveElementAdapter.OnDeleteItemClickListner, OnContactUpdatedListener {
 
     private static final String TAG = ContactFragment.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    private TextView tvRestoreFromTheServer;
     private TextView tvEmptyView;
-    private ImageView ivAddMore;
 
     private SwipeMenuListView listView;
     private JSONArray jsonArray;
@@ -85,31 +78,23 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private static boolean isBTRequestDenied = false;
     private static boolean isGPS_ReqDenied = false;
     private AsyncTaskSendPush asyncTaskSendPush;
-    private AsyncTaskResetCount asyncTaskResetCount;
 
     private boolean isDataAvailable = false;
-    private int listSize = 0;
     private boolean isJustDataDeleted = false;
 
-    private final String SUCCESS = "success";
     private BLEHelper bleHelper;
-    private boolean isBleSupported;
     private Handler handler;
-    private static boolean isBleDialogShown;
     public static boolean isServiceCall = false;
     private LinearLayout llMain;
-    private LinearLayout llEmptyView;
 
-
-    private DashBoardWithSwipableFragment dashBoardWithSwipableFragment;
+    @Override
+    public void onContactUpdated() {
+        // Refresh the contact list here
+        loadRecieversListUsingThread(true); // Use your existing method to reload the list
+    }
 
     public ContactFragment() {
 
-    }
-
-    public ContactFragment(DashBoardWithSwipableFragment dashBoardWithSwipableFragment) {
-
-        this.dashBoardWithSwipableFragment = dashBoardWithSwipableFragment;
     }
 
     @Override
@@ -117,19 +102,16 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         //		mLocationClient.connect();
 
-        callResetCount();
-        mHandler = new Handler();
-
-        final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        final BluetoothManager bluetoothManager;
+        if (getActivity() != null) {
+            bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+            mBluetoothAdapter = bluetoothManager.getAdapter();
+        }
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(getActivity(), R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             buildAlertDialogBLENotSupported();
-            return;
         }
-        new AlertListLoaderThread().start();
-//        dashBoardWithSwipableFragment.updateCount();
     }
 
 
@@ -138,11 +120,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         super.onResume();
 
         // Check for permissions
-        if (!checkPermissions()) {
+        if (getActivity() != null && !checkPermissions()) {
             requestPermissions();
-        } else {
-            // Permissions are already granted, proceed with your logic
-            startForegroundService();
         }
 
         Calendar cal = Calendar.getInstance();
@@ -151,32 +130,32 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
         isAllredyShown = false;
 
-        if (!Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && !Utills.isInternetConnected(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        isBleSupported = true;
         bleHelper = new BLEHelper(ContactFragment.this, false);
 
-        if (isBleSupported && mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled() && !isBTRequestDenied) {
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled() && !isBTRequestDenied) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
 
-        final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (isBleSupported && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !isGPS_ReqDenied) {
-            buildAlertMessageNoGps();
-            return;
-        }
-
-        if (isBleSupported) {
-            // scanLeDevice(true);
+        final LocationManager manager;
+        if (getActivity() != null) {
+            manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !isGPS_ReqDenied) {
+                buildAlertMessageNoGps();
+            }
         }
     }
 
     private boolean checkPermissions() {
+        if (getActivity() == null) {
+            return false;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
@@ -195,6 +174,9 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
     private void requestPermissions() {
+        if (getActivity() == null) {
+            return;
+        }
         String[] permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions = new String[]{
@@ -227,7 +209,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
     private void buildAlertDialogBLENotSupported() {
-        isBleDialogShown = true;
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(Constant.NO_BEACON_FUNCTION).setCancelable(false).setPositiveButton(getString(R.string.TAG_OK), (dialog, id) -> dialog.dismiss());
         final AlertDialog alert = builder.create();
@@ -235,17 +216,10 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     }
 
     private void buildAlertMessageNoGps() {
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getString(R.string.TAG_GPS_ENABLE_MSG)).setCancelable(false).setPositiveButton(getString(R.string.TAG_YES), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        }).setNegativeButton(getString(R.string.TAG_NO), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                dialog.cancel();
-                isGPS_ReqDenied = true;
-            }
+        builder.setMessage(getString(R.string.TAG_GPS_ENABLE_MSG)).setCancelable(false).setPositiveButton(getString(R.string.TAG_YES), (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))).setNegativeButton(getString(R.string.TAG_NO), (dialog, id) -> {
+            dialog.cancel();
+            isGPS_ReqDenied = true;
         });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -255,44 +229,28 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_contact, container, false);
-
     }
 
     @Override
     public void initView(View view) {
-        listView = (SwipeMenuListView) view.findViewById(R.id.listReciever);
-        //tvRestoreFromTheServer = (TextView) view.findViewById(R.id.fragment_contact_tv_restore_from_the_server);
-        ivAddMore = (ImageView) view.findViewById(R.id.fragment_contact_iv_add_more);
-        llEmptyView = (LinearLayout) view.findViewById(R.id.fragment_contact_llEmptyView);
-        tvEmptyView = (TextView) view.findViewById(R.id.fragment_contact_tvEmptyView);
-        llMain = (LinearLayout) view.findViewById(R.id.fragment_contact_llMain);
-        // int alertCount = Preference.getInstance().mSharedPreferences.getInt(C.ALERT_COUNT, 0);
-        // ((TextView) view.findViewById(R.id.alertCount)).setText("" + alertCount);
-
-        //		mLocationClient = new LocationClient(this, this, this);
-
-        // startBackgroundThreadForBLE();
-        if (!Utills.isInternetConnected(getActivity())) {
+        listView = view.findViewById(R.id.listReciever);
+        ImageView ivAddMore = view.findViewById(R.id.fragment_contact_iv_add_more);
+        tvEmptyView = view.findViewById(R.id.fragment_contact_tvEmptyView);
+        llMain = view.findViewById(R.id.fragment_contact_llMain);
+        if (getActivity() != null && !Utills.isInternetConnected(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
         }
 
         setSwipeMenu();
-//        loadAlertCountUsingThread(true);
         loadRecieversListUsingThread(true);
         listView.setEmptyView(tvEmptyView);
         listView.setOnItemClickListener(this);
-        //tvRestoreFromTheServer.setOnClickListener(this);
         ivAddMore.setOnClickListener(this);
-
     }
 
     public boolean isEditing() {
         return isEditing;
-    }
-
-    public void setEditing(boolean isEditing) {
-        this.isEditing = isEditing;
     }
 
     private void loadRecieversListUsingThread(boolean showProgress) {
@@ -308,7 +266,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 if (wsCallGetAllContacts.isSuccess()) {
                     isDataAvailable = true;
                     jsonArray = recieverList.optJSONArray("data");
-                    listSize = jsonArray.length();
                 } else {
                     isDataAvailable = false;
                 }
@@ -333,11 +290,11 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
                         listView.setOnItemClickListener(ContactFragment.this);
                     }
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
                 } catch (Exception ex) {
-                    Log.e(TAG, ex.getMessage());
+                    Log.e(TAG, "error getting all contacts");
+                }
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
             });
         }).start();
@@ -361,38 +318,13 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         super.onClick(v);
 
         if (v.getId() == R.id.fragment_contact_iv_add_more) {
-            loadFragment(new AddMoreFragment(ContactFragment.this), AddMoreFragment.class.getSimpleName());
+            openAddMoreFragment(new AddMoreFragment());
         }
     }
 
-    /**
-     * To add fragment in container
-     *
-     * @param newFragment
-     * @param tagStr
-     */
-    private void loadFragment(final Fragment newFragment, final String tagStr) {
-        Util.getInstance().hideSoftKeyboard(getActivity());
-        getLocalFragmentManager()
-                .beginTransaction()
-                .add(R.id.activity_registartion_fl_container, newFragment, newFragment.getClass().getSimpleName())
-                .addToBackStack(newFragment.getClass().getSimpleName())
-                .hide(ContactFragment.this)
-                .commit();
-    }
-
-    private void callResetCount() {
-        if (Utills.isInternetConnected(getActivity())) {
-            if (asyncTaskResetCount != null && asyncTaskResetCount.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskResetCount.execute();
-            } else if (asyncTaskResetCount == null || asyncTaskResetCount.getStatus() == AsyncTask.Status.FINISHED) {
-                asyncTaskResetCount = new AsyncTaskResetCount();
-                asyncTaskResetCount.execute();
-            }
-        } else {
-            Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
-        }
-
+    private void openAddMoreFragment(AddMoreFragment addMoreFragment) {
+        addMoreFragment.setOnContactUpdatedListener(this);
+        addMoreFragment.show(getParentFragmentManager(), AddMoreFragment.class.getSimpleName());
     }
 
     @Override
@@ -403,14 +335,14 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 if (isEditing()) {
                     return;
                 }
-                final AddMoreFragment addMoreFragment = new AddMoreFragment(ContactFragment.this);
+                final AddMoreFragment addMoreFragment = new AddMoreFragment();
                 final Bundle bundle = new Bundle();
                 final String jsonObject = jsonobjectToChange.toString();
                 bundle.putString(Constant.JSON_OBJECT, jsonObject);
                 addMoreFragment.setArguments(bundle);
-                loadFragment(addMoreFragment, AddMoreFragment.class.getSimpleName());
+                openAddMoreFragment(addMoreFragment);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, "on item click");
             }
         }
     }
@@ -429,7 +361,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         try {
             jsonobjectToChange = (JSONObject) jsonArray.get(position);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "on delete item click");
         }
         deleteByThread();
     }
@@ -444,13 +376,13 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             wsCallDeleteContact.executeService(contact_user_id);
             if (wsCallDeleteContact.isSuccess()) {
                 String email = jsonobjectToChange.optString(new WsConstants().PARAMS_EMAIL);
-                BitMapHelper.deleteImageFromStorage(getActivity(), "" + email, Preference.getInstance().mSharedPreferences.getString(email, ""));
+                BitMapHelper.deleteImageFromStorage(getActivity(), email, Preference.getInstance().mSharedPreferences.getString(email, ""));
                 isJustDataDeleted = true;
             }
 
             handlerDelete.post(() -> {
                 if (isJustDataDeleted) {
-                    if (!isInternetConnected(getActivity())) {
+                    if (getActivity() != null && !isInternetConnected(getActivity())) {
                         Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -468,56 +400,9 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         //CheckForeground.onPause();
     }
 
-    private class ListCountThread extends Thread {
-
-        private static final String SUCCESS = "success";
-        private int issuccess;
-        private WsCallGetAlertCount wsCallGetAlertCount;
-
-        @Override
-        public void run() {
-            wsCallGetAlertCount = new WsCallGetAlertCount(getActivity());
-            String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
-            JSONObject recieverList = wsCallGetAlertCount.executeService(email, "0");
-            if (recieverList != null) {
-                if (wsCallGetAlertCount.isSuccess()) {
-                    issuccess = 1;
-                } else {
-                    issuccess = 0;
-                }
-            } else {
-                issuccess = 0;
-            }
-            getActivity().runOnUiThread(new ListCountHandler(issuccess, recieverList));
-        }
-    }
-
-    private class ListCountHandler implements Runnable {
-
-        private JSONObject result;
-        private int issuccess;
-
-        public ListCountHandler(int issuccess, JSONObject result) {
-            this.issuccess = issuccess;
-            this.result = result;
-        }
-
-        @Override
-        public void run() {
-            if (issuccess == 1) {
-                int alertCount = result.optJSONArray("data").length();
-                if (alertCount < 0) {
-                    alertCount = 0;
-                }
-            } else if (issuccess == 0) {
-            }
-        }
-    }
-
     // ///////////////////// BLE Scanning//////////////////////
 
     private BluetoothAdapter mBluetoothAdapter;
-    private Handler mHandler;
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
@@ -530,13 +415,12 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private class PushForReciever extends Thread {
         @Override
         public void run() {
-            String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
             callSenDangerServiceRecievingListScreen();
         }
     }
 
     private void callSenDangerServiceRecievingListScreen() {
-        if (NetworkAvailability.isOnline(getActivity(), true, true, true)) {
+        if (getActivity() != null && NetworkAvailability.isOnline(getActivity(), true, true, true)) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskSendPush.execute();
             } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
@@ -572,7 +456,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         if (isAllredyShown) {
             return;
         }
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN)
+        if (getActivity() != null && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN)
                 == PackageManager.PERMISSION_GRANTED) {
             isAllredyShown = true;
             Toast.makeText(getActivity(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
@@ -634,23 +518,18 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             }
         };
         listView.setMenuCreator(creator);
-        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                try {
-                    jsonobjectToChange = (JSONObject) jsonArray.get(position);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                switch (index) {
-                    case 0:
-                        if (menu.getMenuItems().size() == 1) {
-                            displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_MSG), getString(R.string.TAG_YES), getString(R.string.fragment_create_account_tv_cancel));
-                        }
-                        break;
-                }
-                return false;
+        listView.setOnMenuItemClickListener((position, menu, index) -> {
+            try {
+                jsonobjectToChange = (JSONObject) jsonArray.get(position);
+            } catch (JSONException e) {
+                Log.e(TAG, "set swipe menu");
             }
+            if (index == 0) {
+                if (menu.getMenuItems().size() == 1) {
+                    displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_MSG), getString(R.string.TAG_YES), getString(R.string.fragment_create_account_tv_cancel));
+                }
+            }
+            return false;
         });
         listView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
             @Override
@@ -669,21 +548,15 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         dialog.setTitle(title);
         dialog.setCancelable(false);
         dialog.setMessage(msg);
-        dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                if (Utills.isOnline(getActivity(), true)) {
-                    deleteByThread();
-                } else {
-                    Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
-                }
+        dialog.setPositiveButton(strPositiveText, (dialog12, id) -> {
+            dialog12.dismiss();
+            if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
+                deleteByThread();
+            } else {
+                Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
             }
         });
-        dialog.setNegativeButton(strNegativeText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
+        dialog.setNegativeButton(strNegativeText, (dialog1, id) -> dialog1.dismiss());
         dialog.show();
     }
 
@@ -693,62 +566,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         if (!hidden) {
             if (isServiceCall) {
                 loadRecieversListUsingThread(true);
-            }
-        }
-    }
-
-    private class AlertListLoaderThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                final WsCallGetAlertCount wsCallGetAlertCount;
-                wsCallGetAlertCount = new WsCallGetAlertCount(getActivity());
-                String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
-                JSONObject jsonRecieved = wsCallGetAlertCount.executeService(email, "" + 0);
-                if (jsonRecieved != null) {
-                    if (jsonRecieved.getInt(SUCCESS) == 1) {
-                        isDataAvailable = true;
-                        int alertCount = jsonRecieved.optJSONArray("data").length();
-
-                        if (alertCount < 0) {
-                            alertCount = 0;
-                        }
-                        Preference.getInstance().savePreferenceData("total_count", alertCount);
-                        Preference.getInstance().savePreferenceData("total_count", alertCount);
-                    } else {
-                        isDataAvailable = false;
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
-        private WsResetCount wsResetCount;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            wsResetCount = new WsResetCount(getActivity());
-            wsResetCount.executeService();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (!isCancelled()) {
-                if (wsResetCount.isSuccess()) {
-                    Log.d("Count", "Updated");
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }

@@ -1,5 +1,7 @@
 package net.tigerlight.dad.registration.fragment;
 
+import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,30 +9,34 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.DialogFragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,46 +50,38 @@ import com.bumptech.glide.request.transition.Transition;
 
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
-import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.registration.util.Utills;
+import net.tigerlight.dad.util.CircleTransform;
+import net.tigerlight.dad.util.Util;
 import net.tigerlight.dad.webservices.WsCallAddreceiver;
 import net.tigerlight.dad.webservices.WsCallUpdateContact;
 import net.tigerlight.dad.simplecropping.CameraUtil;
 import net.tigerlight.dad.simplecropping.Constants;
 import net.tigerlight.dad.util.BitMapHelper;
-import net.tigerlight.dad.util.Preference;
+import net.tigerlight.dad.webservices.WsUploadContactImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-public class AddMoreFragment extends BaseFragment {
+public class AddMoreFragment extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "AddMoreFragment";
-    private final String TAG_USER_ID = "userid";
-    private final String TAG_FIRST_NAME = "firstname";
-    private final String TAG_LAST_NAME = "lastname";
-    private final String TAG_EMAIL = "email";
-    private final String TAG_PHONE = "phone";
-    private final String TAG_NICKNAME = "nickname";
     private static final int REQUEST_READ_CONTACTS_PERMISSION = 100;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
-    private String userChoosenTask;
+    private static final int GALLERY_REQUEST_CODE = 102;
 
+    private OnContactUpdatedListener contactUpdatedListener;
 
-    //TO check whether image taken or not
-    private boolean isImageUpdated;
-    //To store the cropped path
-    private String path;
-
-    private View view;
     private EditText etUserName;
     private EditText etPhoneNo;
     private EditText etFirstName;
@@ -95,40 +93,61 @@ public class AddMoreFragment extends BaseFragment {
     private ProgressDialog progressDialog;
     private boolean isEditOrSave = false;
     private String userId = "";
-    private String emailPreviouus = "";
     private String firstName = "";
     private String lastName = "";
     private String phone = "";
     private String nickname = "";
     private String email = "";
-    private Bitmap thePic;
-    private ContactFragment contactFragment;
     private File imageFile;
     private Intent yourIntentData;
+    private ActivityResultLauncher<Intent> photoPickerLauncher;
+    private String isImportedPhoto;
+    private String isPhotoEdited;
+    private boolean isUploadingPhoto = false;
 
-
-    public AddMoreFragment(ContactFragment contactFragment) {
-        this.contactFragment = contactFragment;
+    public void setOnContactUpdatedListener(OnContactUpdatedListener listener) {
+        this.contactUpdatedListener = listener;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
+        photoPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri selectedImageUri = result.getData().getData();
+                        if (selectedImageUri != null) {
+                            handleSelectedImage(selectedImageUri);
+                        } else {
+                            Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
     }
 
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_add_more, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate your layout
+        View view = inflater.inflate(R.layout.fragment_add_more, container, false);
+        // Call initView method
+        initView(view);
         return view;
     }
 
-    private void checkAndRequestReadContactsPermission() {
-        // Permission has already been granted, proceed with your operation
-        if (getActivity() != null && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request it
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS_PERMISSION);
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Make the dialog full-screen
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT
+            );
         }
     }
 
@@ -148,18 +167,20 @@ public class AddMoreFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void initView(View view) {
+    private void initView(View view) {
+        isImportedPhoto = null;
+        isPhotoEdited = null;
+        isUploadingPhoto = false;
         etUserName = view.findViewById(R.id.fragment_add_more_et_user_name);
         etPhoneNo = view.findViewById(R.id.fragment_add_more_et_phone_no);
         etFirstName = view.findViewById(R.id.fragment_add_more_et_first_name);
         etLastName = view.findViewById(R.id.fragment_add_more_et_last_name);
         etEmail = view.findViewById(R.id.fragment_add_more_et_email);
         ivProfilePic = view.findViewById(R.id.fragment_add_more_iv_user_profile);
+        TextView dialogTitle = view.findViewById(R.id.fragment_add_more_dialog_title);
         TextView tvCancel = view.findViewById(R.id.fragment_add_more_tv_cancel);
         TextView tvAddressBook = view.findViewById(R.id.fragment_add_more_tv_addressbook);
         Button tvSave = view.findViewById(R.id.fragment_add_more_tv_save);
-
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
@@ -169,62 +190,63 @@ public class AddMoreFragment extends BaseFragment {
                 JSONObject jsonobjectToChange = null;
                 if (getActivity() != null && jsonObject != null) {
                     jsonobjectToChange = new JSONObject(jsonObject);
+                    String TAG_USER_ID = "userid";
                     userId = jsonobjectToChange.optString(TAG_USER_ID);
+                    String TAG_NICKNAME = "nickname";
                     nickname = jsonobjectToChange.optString(TAG_NICKNAME);
+                    String TAG_FIRST_NAME = "firstname";
                     firstName = jsonobjectToChange.optString(TAG_FIRST_NAME);
+                    String TAG_LAST_NAME = "lastname";
                     lastName = jsonobjectToChange.optString(TAG_LAST_NAME);
-                    emailPreviouus = jsonobjectToChange.optString(TAG_EMAIL);
+                    String TAG_EMAIL = "email";
+                    String emailPrevious = jsonobjectToChange.optString(TAG_EMAIL);
+                    String TAG_PHONE = "phone";
                     phone = jsonobjectToChange.optString(TAG_PHONE);
 
                     etUserName.setText(String.format("%s", nickname));
                     etFirstName.setText(String.format("%s", firstName));
                     etLastName.setText(String.format("%s", lastName));
-                    etEmail.setText(String.format("%s", emailPreviouus));
+                    etEmail.setText(String.format("%s", emailPrevious));
                     etPhoneNo.setText(String.format("%s", phone));
-
-
-                    File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "DadApp");
-
-
-                    Bitmap imageFromStorage = BitMapHelper.loadImageFromStorage(getActivity(), emailPreviouus, directory.toString());
-                    //bitmapChanged = BitMapHelper.loadImageFromStorage(getActivity(), "" + emailPreviouus, Preference.getInstance().mSharedPreferences.getString(emailPreviouus, ""));
-                    if (imageFromStorage == null) {
-                        ivProfilePic.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.pf_pic));
-                    } else {
-                        Bitmap circledBitmap = createScaleddBitmapFromFile(imageFromStorage);
-                        ivProfilePic.setImageDrawable(new BitmapDrawable(circledBitmap));
-                    }
                 }
-
             } catch (JSONException e) {
                 Log.e(TAG, "Error initialising view");
             }
         }
+        dialogTitle.setText(getString(isEditOrSave ? R.string.fragment_update_contact_tv_title : R.string.fragment_add_contact_tv_title));
         ivProfilePic.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         tvAddressBook.setOnClickListener(this);
         tvSave.setOnClickListener(this);
+        setProfilePicture();
     }
 
-    @Override
-    public void trackScreen() {
-
-    }
-
-    @Override
-    public void initActionBar() {
-
+    private void setProfilePicture() {
+        if (userId != null && !userId.isEmpty()) {
+            String url = String.format("%scontact_image_%s.png", ASSETS_DOMAIN, userId);
+            Glide.with(this)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).transform(new CircleTransform(getActivity()))
+                    .placeholder(R.drawable.pf_pic)
+                    .into(ivProfilePic);
+        } else {
+            Glide.with(this)
+                    .load(R.drawable.pf_pic)
+                    .into(ivProfilePic);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        super.onClick(v);
-
+        if (getActivity() != null) {
+            Util.getInstance().hideSoftKeyboard(getActivity());
+        }
         final int fragmentId = v.getId();
         if (fragmentId == R.id.fragment_add_more_tv_save) {
             validateFragment();
         } else if (fragmentId == R.id.fragment_add_more_tv_cancel) {
-            requireActivity().getSupportFragmentManager().popBackStack();
+            dismiss();
         } else if (fragmentId == R.id.fragment_add_more_iv_user_profile) {
             selectImage();
         } else if (fragmentId == R.id.fragment_add_more_tv_addressbook) {
@@ -232,79 +254,102 @@ public class AddMoreFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private String resolveFilePath(Uri uri) {
+        if (getActivity() == null) {
+            return null;
+        }
 
-        if (resultCode != Activity.RESULT_OK) {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            try (Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    return cursor.getString(columnIndex);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error resolving file path from content URI", e);
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            Toast.makeText(getActivity(), "Error: No file selected or action canceled.", Toast.LENGTH_SHORT).show();
             return;
         }
+
         switch (requestCode) {
-            case Constants.REQUEST_CODE_GALLERY:
+            case GALLERY_REQUEST_CODE:
                 try {
-                    if (getActivity() != null && data.getData() != null) {
-                        final InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
-                        final FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-                        if (inputStream != null) {
-                            CameraUtil.copyStream(inputStream, fileOutputStream);
-                            inputStream.close();
-                            fileOutputStream.close();
+                    Uri selectedImageUri = data.getData();
+                    if (selectedImageUri != null) {
+                        String filePath = resolveFilePath(selectedImageUri);
+                        if (filePath != null) {
+                            imageFile = new File(filePath);
+                            Log.d(TAG, "File Path: " + filePath); // Add logging
+                            startCropImage();
                         } else {
-                            fileOutputStream.close();
+                            Toast.makeText(getActivity(), "Error resolving file path.", Toast.LENGTH_SHORT).show();
                         }
-                        startCropImage();
+                    } else {
+                        Toast.makeText(getActivity(), "Error: Invalid file selection.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "Error initialising gallery");
+                    Log.e(TAG, "Error processing selected file", e);
+                    Toast.makeText(getActivity(), "Error getting selected files.", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case Constants.REQUEST_CODE_TAKE_PICTURE:
                 startCropImage();
                 break;
+
             case Constants.REQUEST_CODE_CROP_IMAGE:
-                path = data.getStringExtra(CropImage.IMAGE_PATH);
-                if (path == null) {
-                    return;
+                String croppedImagePath = data.getStringExtra(CropImage.IMAGE_PATH);
+                if (croppedImagePath != null) {
+                    imageFile = new File(croppedImagePath);
+                    isPhotoEdited = croppedImagePath;
+                    updateProfileImage(imageFile);
+                } else {
+                    Toast.makeText(getActivity(), "Error cropping image.", Toast.LENGTH_SHORT).show();
                 }
-                imageFile = new File(path);
-                if (imageFile.exists()) {
-                    Glide.with(this)
-                            .asBitmap()  // Ensure it's loading as Bitmap
-                            .load(imageFile.getAbsolutePath())
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .centerCrop()
-                            .into(new BitmapImageViewTarget(ivProfilePic) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    if (resource != null) {
-                                        RoundedBitmapDrawable circularBitmapDrawable =
-                                                RoundedBitmapDrawableFactory.create(getResources(), resource);
-                                        circularBitmapDrawable.setCircular(true);
-                                        ivProfilePic.setImageDrawable(circularBitmapDrawable);
-                                        isImageUpdated = true;
-                                    }
-                                }
-
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
-                                    super.onResourceReady(resource, transition); // Call the super to trigger setResource
-                                    Log.d("Glide", "Bitmap resource is ready");
-                                }
-                            });
-                }
-
                 break;
 
-            case Constants.REQUEST_CONTACT_NUMBER:
-                yourIntentData = data;
-                checkAndRequestReadContactsPermission();
-                break;
-
-
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    private void updateProfileImage(File imageFile) {
+        if (imageFile.exists()) {
+            Glide.with(this)
+                    .asBitmap()  // Ensure it's loading as Bitmap
+                    .load(imageFile.getAbsolutePath())
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(ivProfilePic) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            if (resource != null) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                ivProfilePic.setImageDrawable(circularBitmapDrawable);
+                            }
+                        }
 
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                            super.onResourceReady(resource, transition); // Call the super to trigger setResource
+                            Log.d("Glide", "Bitmap resource is ready");
+                        }
+                    });
+        }
     }
 
     @Override
@@ -315,24 +360,17 @@ public class AddMoreFragment extends BaseFragment {
         if (asyncTaskSaveAddress != null && asyncTaskSaveAddress.getStatus() == AsyncTask.Status.RUNNING) {
             asyncTaskSaveAddress.cancel(true);
         }
-
     }
 
     //User Defined Methods
 
     private void validateFragment() {
-
         nickname = etUserName.getText().toString().trim();
         phone = etPhoneNo.getText().toString().trim();
         firstName = etFirstName.getText().toString().trim();
         lastName = etLastName.getText().toString().trim();
         email = etEmail.getText().toString().trim();
 
-        if (isImageUpdated) {
-            BitMapHelper.deleteImageFromStorage(getActivity(), emailPreviouus, Preference.getInstance().mSharedPreferences.getString(emailPreviouus, ""));
-            String bitmappath = BitMapHelper.saveImageAndGetPath(thePic, getActivity(), email);
-            Preference.getInstance().savePreferenceData(email, bitmappath);
-        }
         if (getActivity() != null) {
             if (etPhoneNo.getText().toString().trim().equalsIgnoreCase("")) {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PHONE_NO_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
@@ -340,22 +378,14 @@ public class AddMoreFragment extends BaseFragment {
             } else if (!etPhoneNo.getText().toString().trim().equalsIgnoreCase("")) {
                 if (Utills.isOnline(getActivity(), true)) {
                     if (isEditOrSave) {
-                        if (imageFile != null) {
-                            reName(imageFile.getPath());
-                        }
                         new UpdateTask().execute();
-
                     } else {
-                        if (imageFile != null) {
-                            reName(imageFile.getPath());
-                        }
                         saveAddressBook();
                     }
 
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
                 }
-
             }
         }
     }
@@ -413,16 +443,19 @@ public class AddMoreFragment extends BaseFragment {
                 cursorPhone.close();
             }
 
-            InputStream openPhoto = openPhoto(Long.parseLong(contactID));
-
-            Bitmap bitmap = BitmapFactory.decodeStream(openPhoto);
-            if (bitmap == null) {
-                ivProfilePic.setBackgroundDrawable(getResources().getDrawable(R.drawable.pf_pic));
-            } else {
-                Bitmap circleBitmap = BitMapHelper.getCircleBitmap(bitmap);
-                setPicListStatus(circleBitmap);
-                ivProfilePic.setImageBitmap(circleBitmap);
+            InputStream openPhoto = null;
+            if (contactID != null) {
+                openPhoto = openPhoto(Long.parseLong(contactID));
+                Bitmap bitmap = BitmapFactory.decodeStream(openPhoto);
+                if (bitmap == null) {
+                    ivProfilePic.setBackgroundDrawable(getResources().getDrawable(R.drawable.pf_pic));
+                } else {
+                    Bitmap circleBitmap = BitMapHelper.getCircleBitmap(bitmap);
+                    ivProfilePic.setImageBitmap(circleBitmap);
+                    isImportedPhoto = BitMapHelper.saveImageAndGetPath(bitmap, getContext(), userId);
+                }
             }
+
 
             // Bitmap thumbnailID = new QuickContactHelper(this,
             // contactNumber).addThumbnail(this);
@@ -464,11 +497,12 @@ public class AddMoreFragment extends BaseFragment {
                 int bytesRead;
                 if (in != null) {
                     while ((bytesRead = in.read(imageData)) > 0) {
-                        out.write(Arrays.copyOfRange(imageData, 0, Math.max(0, bytesRead)));
+                        out.write(Arrays.copyOfRange(imageData, 0, bytesRead));
                     }
+                    in.close();
                 }
+                out.close();
             }
-
         } catch (Exception ex) {
             Log.e(TAG, "openPhoto error");
         }
@@ -506,37 +540,18 @@ public class AddMoreFragment extends BaseFragment {
         Cursor cursor = null;
         if (getActivity() != null) {
             cursor = getActivity().getContentResolver().query(URI_NICK_NAME, null, SELECTION_NICK_NAME, SELECTION_ARRAY_NICK_NAME, null);
-            int indexNickName = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME);
-            if (cursor.moveToNext()) {
-                nickNameStr = cursor.getString(indexNickName);
+            int indexNickName = 0;
+            if (cursor != null) {
+                indexNickName = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME);
+                if (cursor.moveToNext()) {
+                    nickNameStr = cursor.getString(indexNickName);
+                }
+                cursor.close();
             }
-            cursor.close();
         }
 
         return nickNameStr;
     }
-
-    private void setPicListStatus(Bitmap scaledBitmap) {
-        // TODO this line is used to get the id of imageview, hense if there
-        // will be any change in layout...this code will also be changed
-        try {
-            //View view = (View) ivProfilePic.getParent().getParent().getParent().getParent().getParent().getParent();
-            //int id = view.getId();
-            //picStatusList.set(id, true);
-            //bitmapArrayList.set(id, scaledBitmap);
-            //if (picStatusList.get(id)) {
-            thePic = scaledBitmap;
-            isImageUpdated = true;
-            // String email = etEmail.getText().toString();
-            //String bitmappath = BitMapHelper.saveImageAndGetPath(scaledBitmap, getActivity(), email);
-            //Preference.getInstance().savePreferenceData(email, bitmappath);
-            //}
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     //Media Methods
 
@@ -565,8 +580,6 @@ public class AddMoreFragment extends BaseFragment {
 
 
             if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
-                userChoosenTask = getString(R.string.TAG_TAKE_PHOTO);
-
                 gotoCamera();
 //                    selectFromcamera();
 //                    try {
@@ -585,7 +598,6 @@ public class AddMoreFragment extends BaseFragment {
 
 
             } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
-                userChoosenTask = getString(R.string.TAG_CHOOSE_FROM_GALLERY);
                 gotoGallery();
 //                    selectfromGallery();
 //                    try {
@@ -646,11 +658,56 @@ public class AddMoreFragment extends BaseFragment {
         }
     }
 
+    private String getRealPathFromURI(Uri uri) {
+        Cursor cursor = null;
+        try {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            if (getActivity() != null) {
+                cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+            }
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            Log.e("PhotoPicker", "Error getting real path", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
+    private void handleSelectedImage(Uri imageUri) {
+        // Use the URI to display or process the selected image
+        try {
+            if (imageUri != null) {
+                String path = getRealPathFromURI(imageUri);
+                if (path != null) {
+                    imageFile = new File(path);
+                    startCropImage();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Failed to retrieve the image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error handling the selected image", Toast.LENGTH_SHORT).show();
+            Log.e("PhotoPicker", "Error processing image", e);
+        }
+    }
+
     public void gotoGallery() {
-        imageFile = CameraUtil.getOutputMediaFile(1);
-        final Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, Constants.REQUEST_CODE_GALLERY);
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+
+        // Use Photo Picker API for Android 13+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        }
+
+        // Launch the picker
+        photoPickerLauncher.launch(intent);
     }
 
     private void startCropImage() {
@@ -668,31 +725,54 @@ public class AddMoreFragment extends BaseFragment {
         }
     }
 
+    private class AsyncTaskUploadContactPic extends AsyncTask<Void, Void, Void> {
+        private WsUploadContactImage wsUploadImage;
 
-    private Bitmap createScaleddBitmapFromFile(Bitmap bitmap) {
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
-        return BitMapHelper.getCircleBitmap(scaledBitmap);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
+            progressDialog.setCancelable(false);
+            wsUploadImage = new WsUploadContactImage(getActivity());
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String path = null;
+            if (isPhotoEdited != null) {
+                path = isPhotoEdited;
+            } else if (isImportedPhoto != null) {
+                path = isImportedPhoto;
+            }
+            wsUploadImage.executeService(path, userId);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            if (!isCancelled()) {
+                if (wsUploadImage.isSuccess() && isUploadingPhoto) {
+                    ContactFragment.isServiceCall = true;
+                    if (contactUpdatedListener != null) {
+                        contactUpdatedListener.onContactUpdated();
+                    }
+                    dismiss();
+                }
+            }
+            isUploadingPhoto = false;
+        }
     }
-
-    private void reName(String imgPath) {
-        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "DadApp");
-        String filename = imgPath.substring(imgPath.lastIndexOf("/") + 1);
-//        String filename = imgPath.substring(path.lastIndexOf("/") + 1);
-        File from = new File(directory, filename);
-        File to = new File(directory, email + ".jpg");
-        if (from.exists())
-            from.renameTo(to);
-
-    }
-
-
-    //Networking Task
-
 
     private class UpdateTask extends AsyncTask<String, Void, String> {
 
         private static final String EDITED_SUCCESSFULLY = "Contact has been edited successfully.";
         private static final String KEY_SUCCESS = "success";
+        private final Context context = getContext();
         private int response;
         private WsCallUpdateContact wsCallUpdateContact;
 
@@ -709,11 +789,10 @@ public class AddMoreFragment extends BaseFragment {
         @Override
         protected String doInBackground(String... params) {
 
-            if (Utills.isInternetConnected(getActivity())) {
+            if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
                 wsCallUpdateContact.executeService(userId, firstName, lastName, nickname, email, phone, "");
                 if (wsCallUpdateContact.isSuccess()) {
-                    ContactFragment.isServiceCall = true;
-                    requireActivity().getSupportFragmentManager().popBackStack();
+                    response = 0;
                     return KEY_SUCCESS;
                 } else {
                     response = 2;
@@ -730,7 +809,7 @@ public class AddMoreFragment extends BaseFragment {
             progressDialog.cancel();
             switch (response) {
                 case 2:
-                    Toast.makeText(getActivity(), "" + result, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
                     break;
 
                 case 1:
@@ -742,6 +821,15 @@ public class AddMoreFragment extends BaseFragment {
                         Toast.makeText(getActivity(), getString(R.string.TAG_PWD_FETCH_EROR), Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e(TAG, "success");
+                        if (isPhotoEdited != null || isImportedPhoto != null) {
+                            isUploadingPhoto = true;
+                            new AsyncTaskUploadContactPic().execute();
+                        } else {
+                            if (contactUpdatedListener != null) {
+                                contactUpdatedListener.onContactUpdated();
+                            }
+                            dismiss();
+                        }
                         //Toast.makeText(getActivity(), "Contact has been edited successfully.", Toast.LENGTH_SHORT).show();
                         //setUpdated();
                         //finish();
@@ -752,6 +840,17 @@ public class AddMoreFragment extends BaseFragment {
 
         private void setUpdated() {
             //IS_UPDATED = true;
+        }
+    }
+
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        try (InputStream in = new FileInputStream(sourceFile);
+             OutputStream out = new FileOutputStream(destFile)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
         }
     }
 
@@ -768,14 +867,16 @@ public class AddMoreFragment extends BaseFragment {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskSaveAddress extends AsyncTask<Void, Void, Void> {
 
         private WsCallAddreceiver wsCallAddreceiver;
-        private String etUserNameStr = etUserName.getText().toString().trim();
-        private String etPhoneNoStr = etPhoneNo.getText().toString().trim();
-        private String etFirNamestr = etFirstName.getText().toString().trim();
-        private String etLastnameStr = etLastName.getText().toString().trim();
-        private String etEmailstr = etEmail.getText().toString().trim();
+        private final String etUserNameStr = etUserName.getText().toString().trim();
+        private final String etPhoneNoStr = etPhoneNo.getText().toString().trim();
+        private final String etFirNamestr = etFirstName.getText().toString().trim();
+        private final String etLastnameStr = etLastName.getText().toString().trim();
+        private final String etEmailstr = etEmail.getText().toString().trim();
+        private final Context context = getContext();
         // private String etAddressstr = tvAddressBook.getText().toString().trim();
 
         @Override
@@ -802,9 +903,17 @@ public class AddMoreFragment extends BaseFragment {
             if (!isCancelled()) {
                 if (wsCallAddreceiver.isSuccess()) {
 //                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CONT_ADDED_SUCCESS), getString(android.R.string.ok), "", false, false);
-                    ContactFragment.isServiceCall = true;
-                    requireActivity().getSupportFragmentManager().popBackStack();
-
+                    userId = wsCallAddreceiver.getUserId();
+                    if (isPhotoEdited != null || isImportedPhoto != null) {
+                        isUploadingPhoto = true;
+                        new AsyncTaskUploadContactPic().execute();
+                    } else {
+                        ContactFragment.isServiceCall = true;
+                        if (contactUpdatedListener != null) {
+                            contactUpdatedListener.onContactUpdated();
+                        }
+                        dismiss();
+                    }
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CONT_UNABLE_ADDED), getString(android.R.string.ok), "", false, false);
                 }

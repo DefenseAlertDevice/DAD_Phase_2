@@ -409,4 +409,6 @@
     <string name="TAG_TRY_AGAIN" translatable="false">Try Again</string>
     <string name="TAG_EMAIL_NOT_FOUND" translatable="false">User not found. Please create a new account or try with a different email address.</string>
     <string name="TAG_INVALID_LOGIN_PASSWORD" translatable="false">Incorrect Password. Please reset your password or try again.</string>
+    <string name="fragment_add_contact_tv_title" translatable="false">Add Contact</string>
+    <string name="fragment_update_contact_tv_title" translatable="false">Update Contact</string>
 </resources>

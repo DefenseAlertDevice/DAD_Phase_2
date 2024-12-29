@@ -101,6 +101,17 @@ public class CropImage extends MonitoredActivity {
     private final BitmapManager.ThreadSet mDecodingThreads =
             new BitmapManager.ThreadSet();
 
+    private String getFileNameFromPath(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return null;
+        }
+        int lastSlashIndex = imagePath.lastIndexOf('/');
+        if (lastSlashIndex == -1) {
+            return imagePath; // The path might already be just the file name
+        }
+        return imagePath.substring(lastSlashIndex + 1);
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
 
@@ -120,9 +131,7 @@ public class CropImage extends MonitoredActivity {
 
             if (extras.getString(CIRCLE_CROP) != null) {
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-                    mImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                }
+                mImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
                 mCircleCrop = true;
                 mAspectX = 1;
@@ -131,7 +140,7 @@ public class CropImage extends MonitoredActivity {
 
             mImagePath = extras.getString(IMAGE_PATH);
 
-            mSaveUri = getImageUri(mImagePath);
+            mSaveUri = getOutputImageUri(mImagePath);
             mBitmap = getBitmap(mImagePath);
 
             if (extras.containsKey(ASPECT_X) && extras.get(ASPECT_X) instanceof Integer) {
@@ -207,11 +216,6 @@ public class CropImage extends MonitoredActivity {
                     }
                 });
         startFaceDetection();
-    }
-
-    private Uri getImageUri(String path) {
-
-        return Uri.fromFile(new File(path));
     }
 
     private Bitmap getBitmap(String path) {
@@ -412,6 +416,22 @@ public class CropImage extends MonitoredActivity {
         }
     }
 
+    private Uri getOutputImageUri(String fileName) {
+        String name = getFileNameFromPath(fileName);
+        File outputDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (outputDir == null) {
+            Log.e(TAG, "Failed to get app-specific storage directory");
+            return null;
+        }
+
+        File outputFile = new File(outputDir, name);
+        return Uri.fromFile(outputFile);
+    }
+
+    private Uri getImageUri(String path) {
+        return Uri.fromFile(new File(path));
+    }
+
     private void saveOutput(Bitmap croppedImage) {
 
         if (mSaveUri != null) {
@@ -435,7 +455,7 @@ public class CropImage extends MonitoredActivity {
             Bundle extras = new Bundle();
             Intent intent = new Intent(mSaveUri.toString());
             intent.putExtras(extras);
-            intent.putExtra(IMAGE_PATH, mImagePath);
+            intent.putExtra(IMAGE_PATH, mSaveUri.getPath());
             intent.putExtra(ORIENTATION_IN_DEGREES, Util.getOrientationInDegree(this));
             setResult(RESULT_OK, intent);
         } else {

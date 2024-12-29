@@ -19,7 +19,7 @@ public class SwipeMenuListView extends ListView {
     private static final int TOUCH_STATE_NONE = 0;
     private static final int TOUCH_STATE_X = 1;
     private static final int TOUCH_STATE_Y = 2;
-
+    private float startX, startY;
     private int MAX_Y = 5;
     private int MAX_X = 3;
     private float mDownX;
@@ -96,6 +96,37 @@ public class SwipeMenuListView extends ListView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = ev.getX();
+                startY = ev.getY();
+                // Notify parent to disallow interception initially
+                getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                float dx = Math.abs(ev.getX() - startX);
+                float dy = Math.abs(ev.getY() - startY);
+
+                // If the gesture is primarily vertical, allow the parent to intercept
+                if (dy > dx && dy > MAX_Y) {
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                    return false; // Allow parent to handle the event
+                }
+
+                // If the gesture is primarily horizontal, handle it in this view
+                if (dx > dy && dx > MAX_X) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                    return true; // Intercept and handle the event
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                // Reset interception
+                getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
         return super.onInterceptTouchEvent(ev);
     }
 

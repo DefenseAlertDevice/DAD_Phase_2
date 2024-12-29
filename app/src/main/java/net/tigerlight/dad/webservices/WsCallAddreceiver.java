@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 public class WsCallAddreceiver {
     private Context context;
     private String message;
+    private String userId;
     private boolean success;
 
     public WsCallAddreceiver(final Context context) {
@@ -31,6 +32,10 @@ public class WsCallAddreceiver {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     /**
@@ -63,6 +68,7 @@ public class WsCallAddreceiver {
                 if (jsonObject.length() > 0) {
                     success = jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("1");
                     message = jsonObject.optString(wsConstants.PARAMS_MESSAGE);
+                    userId = jsonObject.optString(wsConstants.PARAMS_ID);
 
                     if (success) {
                         return jsonObject;

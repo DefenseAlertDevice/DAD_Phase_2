@@ -10,11 +10,12 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorGray">
 
-        <TextView
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/fragment_contact_tv_title"
+            android:id="@+id/fragment_add_more_dialog_title"
+            android:text="@string/fragment_add_contact_tv_title"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/font_20sp"
             android:textStyle="bold" />
@@ -142,7 +143,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_marginHorizontal="@dimen/_20sdp"
-        android:layout_marginBottom="?android:attr/actionBarSize"
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/fragment_add_more_tv_save"
@@ -157,7 +157,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_10sdp"
+            android:layout_marginVertical="@dimen/_15sdp"
         >
             <net.tigerlight.dad.util.CustomTextViewSemiBold
                 android:id="@+id/fragment_add_more_tv_cancel"

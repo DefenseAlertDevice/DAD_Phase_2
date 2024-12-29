@@ -26,6 +26,7 @@ public class WsConstants {
 
     //public static final String IMAGE_MAIN_URL = "http://52.33.140.142:8080/TigerServlet/FileTransfer?";
     public static final String IMAGE_MAIN_URL = DOMAIN + "FileTransfer1";
+    public static final String CONTACT_IMAGE_MAIN_URL = DOMAIN + "ContactFileTransfer";
     public static final String IMAGE_MAIN_URL_AMAZONE = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
 
 

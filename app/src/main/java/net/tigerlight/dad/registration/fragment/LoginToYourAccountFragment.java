@@ -337,7 +337,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
                     long time = 1000 * 5;  //For repiting 30 second
 
-                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
+//                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
 
 //                        Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
 //                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -346,7 +346,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
 
 //                getActivity().startService(intent);
-                    }
+//                    }
 
 //                    if(!Utills.isMyServiceRunning(BleService.class, getActivity()))
 //                    {
