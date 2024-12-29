@@ -100,12 +100,16 @@ public class AccountFragment extends BaseFragment {
         }
     }
 
+    private void openEditProfileFragment(EditProfileFragment editProfileFragment) {
+        editProfileFragment.show(getParentFragmentManager(), EditProfileFragment.class.getSimpleName());
+    }
+
     @Override
     public void onClick(View v) {
         super.onClick(v);
         final int fragmentId = v.getId();
         if (getActivity() != null && fragmentId == R.id.fragment_settings_tvEditAccount) {
-            ((MainActivity) getActivity()).addFragment(new EditProfileFragment(), AccountFragment.this);
+            openEditProfileFragment(new EditProfileFragment());
         } else if (fragmentId == R.id.fragment_settings_tvLogOut) {
             displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
         } else if (fragmentId == R.id.fragment_settings_tvShowEula) {

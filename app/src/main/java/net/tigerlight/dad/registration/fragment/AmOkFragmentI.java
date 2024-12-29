@@ -54,6 +54,11 @@ public class AmOkFragmentI extends BaseFragment {
     private EditText etMainNewPin;
     private EditText etMainConfirmPin;
     private ImageView etPinIcon;
+    private ImageView etOldPinIcon;
+    private ImageView etNewPinIcon;
+    private ImageView etReEnterPinIcon;
+    private ImageView etMainNewPinIcon;
+    private ImageView etMainConfirmPinIcon;
 
     private LinearLayout llMain;
     private LinearLayout llFirst;
@@ -92,10 +97,15 @@ public class AmOkFragmentI extends BaseFragment {
         etPin = view.findViewById(R.id.fragment_iamok_etPin);
         etPinIcon = view.findViewById(R.id.fragment_iamok_etPinIcon);
         etOldPin = view.findViewById(R.id.fragment_iamok_etOldPin);
+        etOldPinIcon = view.findViewById(R.id.fragment_iamok_etOldPinIcon);
         etNewPin = view.findViewById(R.id.fragment_iamok_etNewPin);
+        etNewPinIcon = view.findViewById(R.id.fragment_iamok_etNewPinIcon);
         etReEnterPin = view.findViewById(R.id.fragment_iamok_etReEnterPin);
+        etReEnterPinIcon = view.findViewById(R.id.fragment_iamok_etReEnterPinIcon);
         etMainNewPin = view.findViewById(R.id.fragment_iamok_llMain_etNewPin);
+        etMainNewPinIcon = view.findViewById(R.id.fragment_iamok_llMain_etNewPinIcon);
         etMainConfirmPin = view.findViewById(R.id.fragment_iamok_llMain_etReenterPin);
+        etMainConfirmPinIcon = view.findViewById(R.id.fragment_iamok_llMain_etReenterPinIcon);
 
         Button tvSendImOkMessage = view.findViewById(R.id.fragment_iamok_tvSendIamokMsg);
         TextView tvResetPin = view.findViewById(R.id.fragment_iamok_tvResetPin);
@@ -116,6 +126,11 @@ public class AmOkFragmentI extends BaseFragment {
         tvMainSavePin.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         etPinIcon.setOnClickListener(this);
+        etOldPinIcon.setOnClickListener(this);
+        etNewPinIcon.setOnClickListener(this);
+        etReEnterPinIcon.setOnClickListener(this);
+        etMainNewPinIcon.setOnClickListener(this);
+        etMainConfirmPinIcon.setOnClickListener(this);
     }
 
     @Override
@@ -151,6 +166,16 @@ public class AmOkFragmentI extends BaseFragment {
             llFirst.setVisibility(View.VISIBLE);
         } else if (fragmentId == R.id.fragment_iamok_etPinIcon) {
             togglePasswordInput(etPin, etPinIcon);
+        } else if (fragmentId == R.id.fragment_iamok_etOldPinIcon) {
+            togglePasswordInput(etOldPin, etOldPinIcon);
+        }else if (fragmentId == R.id.fragment_iamok_etNewPinIcon) {
+            togglePasswordInput(etNewPin, etNewPinIcon);
+        } else if (fragmentId == R.id.fragment_iamok_etReEnterPinIcon) {
+            togglePasswordInput(etReEnterPin, etReEnterPinIcon);
+        }else if (fragmentId == R.id.fragment_iamok_llMain_etNewPinIcon) {
+            togglePasswordInput(etPin, etPinIcon);
+        } else if (fragmentId == R.id.fragment_iamok_llMain_etReenterPinIcon) {
+            togglePasswordInput(etMainConfirmPin, etMainConfirmPinIcon);
         }
     }
 

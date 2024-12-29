@@ -64,20 +64,34 @@
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/fragment_iamok_llMain_etReenterPin"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/drawable_grey_rounded_margin_et"
-            android:hint="@string/TAG_RE_ENTER_PIN"
-            android:layout_marginVertical="@dimen/_10sdp"
-            android:inputType="numberPassword"
-            android:maxLength="6"
-            android:padding="@dimen/_10sdp"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_20sp"
-            android:drawableEnd="@drawable/ic_eye_off"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/fragment_iamok_llMain_etReenterPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/drawable_grey_rounded_margin_et"
+                android:hint="@string/TAG_RE_ENTER_PIN"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:inputType="numberPassword"
+                android:maxLength="6"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_20sp"
+                android:textStyle="bold"
+            />
+
+            <ImageView
+                android:id="@+id/fragment_iamok_llMain_etReenterPinIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_eye_off" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/fragment_iamok_llMain_tvSavePin"
@@ -196,43 +210,84 @@
             android:textColor="@color/color_black"
             android:textSize="@dimen/font_25sp" />
 
-        <EditText
-            android:id="@+id/fragment_iamok_etOldPin"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/drawable_grey_rounded_margin_et"
-            android:hint="@string/TAG_ENTER_OLD_TEMP_PIN"
-            android:inputType="numberPassword"
-            android:maxLength="4"
-            android:padding="@dimen/_12sdp"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_20sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/fragment_iamok_etNewPin"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/fragment_iamok_etOldPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/drawable_grey_rounded_margin_et"
+                android:hint="@string/TAG_ENTER_OLD_TEMP_PIN"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_20sp"
+                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/fragment_iamok_etOldPinIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_eye_off" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_10sdp"
-            android:background="@drawable/drawable_grey_rounded_margin_et"
-            android:hint="@string/new_pin"
-            android:inputType="numberPassword"
-            android:maxLength="4"
-            android:padding="@dimen/_10sdp"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_20sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/fragment_iamok_etReEnterPin"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/fragment_iamok_etNewPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:background="@drawable/drawable_grey_rounded_margin_et"
+                android:hint="@string/new_pin"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_20sp"
+                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/fragment_iamok_etNewPinIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_eye_off" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/drawable_grey_rounded_margin_et"
-            android:hint="@string/TAG_RE_ENTER_PIN"
-            android:inputType="numberPassword"
-            android:maxLength="4"
-            android:padding="@dimen/_10sdp"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_20sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/fragment_iamok_etReEnterPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/drawable_grey_rounded_margin_et"
+                android:hint="@string/TAG_RE_ENTER_PIN"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_20sp"
+                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/fragment_iamok_etReEnterPinIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_eye_off" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/fragment_iamok_tvSavePin"

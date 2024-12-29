@@ -38,6 +38,8 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.DialogFragment;
+
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +59,7 @@ import java.util.Locale;
 import static android.app.Activity.RESULT_OK;
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
-public class EditProfileFragment extends BaseFragment {
+public class EditProfileFragment extends DialogFragment implements View.OnClickListener {
 
     private DADApplication dadApplication;
     private View view;
@@ -107,16 +109,17 @@ public class EditProfileFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
         getUserInfo();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        initView(view);
         return view;
     }
 
-    @Override
     public void initView(View view) {
         dadApplication = (DADApplication) getActivity().getApplication();
 //        lat = ((BaseActivity) getActivity()).getLatitude();
@@ -187,8 +190,6 @@ public class EditProfileFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-        super.onClick(v);
-
         final int fragmentId = v.getId();
 
         if (fragmentId == R.id.fragment_edit_profile_tv_save) {
@@ -488,16 +489,6 @@ public class EditProfileFragment extends BaseFragment {
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    @Override
-    public void trackScreen() {
-
-    }
-
-    @Override
-    public void initActionBar() {
     }
 
     @Override
