@@ -22,6 +22,7 @@ import net.tigerlight.dad.simplecropping.Constants;
 import net.tigerlight.dad.util.CircleTransform;
 import net.tigerlight.dad.util.Preference;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,13 +30,20 @@ import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.DialogFragment;
@@ -49,6 +57,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,7 +68,9 @@ import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 public class EditProfileFragment extends DialogFragment implements View.OnClickListener {
 
-    private DADApplication dadApplication;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
+    private static final int GALLERY_REQUEST_CODE = 102;
+
     private ImageView ivProfile;
     private EditText etUserName;
     private EditText etPhoneNo;
@@ -69,10 +80,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     private ImageView cbToggle;
     private ImageView cnToggle;
     private ImageView npToggle;
-    //    private CheckBox cbDa;
-//    private CheckBox cbNb;
-//    private CheckBox cbSv;
-//    private CheckBox cbEng;
+    private ActivityResultLauncher<Intent> photoPickerLauncher;
     private ProgressDialog progressDialog;
     private GetUserInfoModel profileModel;
     private AsyncTaskEditProfile asyncTaskEditProfile;
@@ -81,17 +89,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     private AsyncTaskUpdatePassword asyncTaskUpdatePassword;
     private AsyncTaskDeleteAccount asyncTaskDeleteAccount;
 
-    private static final String TAG = "CreateAccountFragment";
-    private String userChoosenTask;
-    //keep track of camera capture intent
+    private static final String TAG = "EditProfileFragment";
 
-    boolean result = true;
-
-    private double lat;
-    private double log;
     private String email = "";
-    private String croppedFile;
-    //    String imgUrl = "http://52.33.140.142/admin/uploads/user_image/user_image_";
     String imgUrl = ASSETS_DOMAIN + "user_image_";
     private boolean isImageUpdated;
 
@@ -100,12 +100,66 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
 
     private File imageFile;
+    private String isPhotoEdited;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isPhotoEdited = null;
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
+        photoPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri selectedImageUri = result.getData().getData();
+                        if (selectedImageUri != null) {
+                            handleSelectedImage(selectedImageUri);
+                        } else {
+                            Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
         getUserInfo();
+    }
+
+    private String getRealPathFromURI(Uri uri) {
+        Cursor cursor = null;
+        try {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            if (getActivity() != null) {
+                cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+            }
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            Log.e("PhotoPicker", "Error getting real path", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
+    private void handleSelectedImage(Uri imageUri) {
+        // Use the URI to display or process the selected image
+        try {
+            if (imageUri != null) {
+                String path = getRealPathFromURI(imageUri);
+                if (path != null) {
+                    imageFile = new File(path);
+                    startCropImage();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Failed to retrieve the image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error handling the selected image", Toast.LENGTH_SHORT).show();
+            Log.e("PhotoPicker", "Error processing image", e);
+        }
     }
 
     @Override
@@ -119,41 +173,27 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         if (getActivity() == null) {
             return;
         }
-        dadApplication = (DADApplication) getActivity().getApplication();
-//        lat = ((BaseActivity) getActivity()).getLatitude();
-//        log = ((BaseActivity) getActivity()).getLongitude();
-
         profileModel = new GetUserInfoModel();
-        TextView tvCancel = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_cancel);
+        TextView tvCancel = view.findViewById(R.id.fragment_edit_profile_tv_cancel);
         Button tvsave = view.findViewById(R.id.fragment_edit_profile_tv_save);
         Button tvChangePassword = view.findViewById(R.id.fragment_edit_profile_tv_change_password);
         TextView tvForgotPassword = view.findViewById(R.id.fragment_edit_profile_tv_forgot_password);
         TextView tvDeleteAccount = view.findViewById(R.id.fragment_edit_profile_tv_delete_account);
-        ivProfile = (ImageView) view.findViewById(R.id.fragment_edit_profile_im_pf);
-//        tvDefaultLanguage = (TextView) view.findViewById(R.id.fragment_edit_profile_tv_eng);
-
-
-        etUserName = (EditText) view.findViewById(R.id.fragment_edit_profile_et_user_name);
-        etPhoneNo = (EditText) view.findViewById(R.id.fragment_edit_profile_et_ph_no);
-        etCurrentPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_current_password);
-        etNewPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_new_password);
-        etConfirmPassword = (EditText) view.findViewById(R.id.fragment_edit_profile_et_confirm_password);
-        cbToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_cb);
-        cnToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_cn);
-        npToggle = (ImageView) view.findViewById(R.id.fragment_edit_profile_toggle_np);
-//        cbDa = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_da);
-//        cbNb = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_nb);
-//        cbSv = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_sv);
-//        cbEng = (CheckBox) view.findViewById(R.id.custom_dialog_select_lang_en);
+        ivProfile = view.findViewById(R.id.fragment_edit_profile_im_pf);
+        etUserName = view.findViewById(R.id.fragment_edit_profile_et_user_name);
+        etPhoneNo = view.findViewById(R.id.fragment_edit_profile_et_ph_no);
+        etCurrentPassword = view.findViewById(R.id.fragment_edit_profile_et_current_password);
+        etNewPassword = view.findViewById(R.id.fragment_edit_profile_et_new_password);
+        etConfirmPassword = view.findViewById(R.id.fragment_edit_profile_et_confirm_password);
+        cbToggle = view.findViewById(R.id.fragment_edit_profile_toggle_cb);
+        cnToggle = view.findViewById(R.id.fragment_edit_profile_toggle_cn);
+        npToggle = view.findViewById(R.id.fragment_edit_profile_toggle_np);
         ivProfile.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         tvsave.setOnClickListener(this);
         tvChangePassword.setOnClickListener(this);
         tvForgotPassword.setOnClickListener(this);
         tvDeleteAccount.setOnClickListener(this);
-
-//        tvDefaultLanguage.setOnClickListener(this);
-
 
         final String uset_id = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "") + ".png";
 
@@ -212,14 +252,26 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         etPassword.setSelection(etPassword.length());
     }
 
-    private void restartActivity() {
-        Intent intent = getActivity().getIntent();
-        getActivity().finish();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        getActivity().overridePendingTransition(0, 0);
-    }
+    private String resolveFilePath(Uri uri) {
+        if (getActivity() == null) {
+            return null;
+        }
 
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            try (Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    return cursor.getString(columnIndex);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error resolving file path from content URI", e);
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -228,78 +280,78 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
             return;
         }
         switch (requestCode) {
-            case Constants.REQUEST_CODE_GALLERY:
+            case GALLERY_REQUEST_CODE:
                 try {
-                    final InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
-                    final FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-                    CameraUtil.copyStream(inputStream, fileOutputStream);
-                    fileOutputStream.close();
-                    if (inputStream != null) {
-                        inputStream.close();
+                    Uri selectedImageUri = data.getData();
+                    if (selectedImageUri != null) {
+                        String filePath = resolveFilePath(selectedImageUri);
+                        if (filePath != null) {
+                            imageFile = new File(filePath);
+                            Log.d(TAG, "File Path: " + filePath); // Add logging
+                            startCropImage();
+                        } else {
+                            Toast.makeText(getActivity(), "Error resolving file path.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Error: Invalid file selection.", Toast.LENGTH_SHORT).show();
                     }
-                    startCropImage();
                 } catch (Exception e) {
-//                    Utils.displayMessageDialog(this, e.getMessage());
-                    e.printStackTrace();
+                    Log.e(TAG, "Error processing selected file", e);
+                    Toast.makeText(getActivity(), "Error getting selected files.", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case Constants.REQUEST_CODE_TAKE_PICTURE:
                 startCropImage();
                 break;
+
             case Constants.REQUEST_CODE_CROP_IMAGE:
-                path = data.getStringExtra(CropImage.IMAGE_PATH);
-                if (path == null) {
-                    return;
+                String croppedImagePath = data.getStringExtra(CropImage.IMAGE_PATH);
+                if (croppedImagePath != null) {
+                    imageFile = new File(croppedImagePath);
+                    isPhotoEdited = croppedImagePath;
+                    updateProfileImage(imageFile);
+                } else {
+                    Toast.makeText(getActivity(), "Error cropping image.", Toast.LENGTH_SHORT).show();
                 }
-                imageFile = new File(path);
-                if (imageFile.exists()) {
-                    Glide.with(this)
-                            .asBitmap()  // Ensure it's loading as Bitmap
-                            .load(imageFile.getAbsolutePath())
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .centerCrop()
-                            .into(new BitmapImageViewTarget(ivProfile) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    if (resource != null) {
-                                        RoundedBitmapDrawable circularBitmapDrawable =
-                                                RoundedBitmapDrawableFactory.create(getResources(), resource);
-                                        circularBitmapDrawable.setCircular(true);
-                                        ivProfile.setImageDrawable(circularBitmapDrawable);
-                                        isImageUpdated = true;
-                                    }
-                                }
-
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
-                                    super.onResourceReady(resource, transition); // Call the super to trigger setResource
-                                    Log.d("Glide", "Bitmap resource is ready");
-                                }
-                            });
-                }
-
                 break;
+
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void updateProfileImage(File imageFile) {
+        if (imageFile.exists()) {
+            Glide.with(this)
+                    .asBitmap()  // Ensure it's loading as Bitmap
+                    .load(imageFile.getAbsolutePath())
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(ivProfile) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            if (resource != null) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                ivProfile.setImageDrawable(circularBitmapDrawable);
+                            }
+                        }
+
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                            super.onResourceReady(resource, transition); // Call the super to trigger setResource
+                            Log.d("Glide", "Bitmap resource is ready");
+                        }
+                    });
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-
-//        // cancel async task if any pending.
-//        if (asyncTaskEditProfile != null && asyncTaskForgotPassword.getStatus() == AsyncTask.Status.RUNNING && asyncTaskGetUserInfo.getStatus() == AsyncTask.Status.RUNNING && asyncTaskUpdatePassword.getStatus() == AsyncTask.Status.RUNNING) {
-//            asyncTaskEditProfile.cancel(true);
-//            asyncTaskForgotPassword.cancel(true);
-//            asyncTaskGetUserInfo.cancel(true);
-//            asyncTaskUpdatePassword.cancel(true);
-//
-//            Log.d("Cancel", "Here all running asynctas will be cleared");
-//        }
-
-
     }
 
     private void selectImage() {
@@ -312,15 +364,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
             public void onClick(DialogInterface dialog, int item) {
 
                 if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
-                    userChoosenTask = getString(R.string.TAG_TAKE_PHOTO);
                     gotoCamera();
-
-
                 } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
-                    userChoosenTask = getString(R.string.TAG_CHOOSE_FROM_GALLERY);
                     gotoGallery();
-
-
                 } else if (items[item].equals(getString(R.string.fragment_create_account_tv_cancel))) {
                     dialog.dismiss();
                 }
@@ -331,24 +377,55 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     }
 
     public void gotoCamera() {
-        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        CAMERA_PERMISSION_REQUEST_CODE
+                );
+            } else {
+                // Start the camera activity
+                startCameraActivity();
+            }
+        } else {
+            // Start the camera activity
+            startCameraActivity();
+        }
+    }
+
+    private void startCameraActivity() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            imageFile = CameraUtil.getOutputMediaFile(1);
-            final Uri mImageCaptureUri = Uri.fromFile(imageFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, Constants.REQUEST_CODE_TAKE_PICTURE);
+            imageFile = CameraUtil.getOutputMediaFile(1); // Your method to create the file
+            Activity activity = getActivity();
+            if (activity != null && imageFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(
+                        activity,
+                        getActivity().getApplicationContext().getPackageName() + ".provider",
+                        imageFile
+                );
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION); // Grant URI permissions
+                startActivityForResult(intent, Constants.REQUEST_CODE_TAKE_PICTURE);
+            }
         } catch (ActivityNotFoundException e) {
-            Log.d("TAG", "cannot take picture", e);
+            Log.e(TAG, "Cannot take picture", e);
         }
     }
 
     public void gotoGallery() {
-        imageFile = CameraUtil.getOutputMediaFile(1);
-        final Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
 
-        startActivityForResult(photoPickerIntent, Constants.REQUEST_CODE_GALLERY);
+        // Use Photo Picker API for Android 13+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        }
+
+        // Launch the picker
+        photoPickerLauncher.launch(intent);
     }
 
 
@@ -435,7 +512,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
             etPhoneNo.requestFocus();
 
         } else {
-            if (Utills.isOnline(getActivity(), true)) {
+            if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
                 editProfile();
                 //  Utils.displayDialog(this, getString(R.string.app_name), "We've sent a password reset link to email address", getString(android.R.string.ok), "", false, true);
             } else {
@@ -446,7 +523,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     }
 
     private void updatePassword() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskUpdatePassword != null && asyncTaskUpdatePassword.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskUpdatePassword.execute();
             } else if (asyncTaskUpdatePassword == null || asyncTaskUpdatePassword.getStatus() == AsyncTask.Status.FINISHED) {
@@ -459,7 +536,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     }
 
     private void editProfile() {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskEditProfile != null && asyncTaskEditProfile.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskEditProfile.execute();
             } else if (asyncTaskEditProfile == null || asyncTaskEditProfile.getStatus() == AsyncTask.Status.FINISHED) {
@@ -501,7 +578,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     }
 
     private void getUserInfo() {
-        if (Utills.isInternetAvailable(getActivity())) {
+        if (getActivity() != null && Utills.isInternetAvailable(getActivity())) {
             if (asyncTaskGetUserInfo != null && asyncTaskGetUserInfo.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskGetUserInfo.execute();
             } else if (asyncTaskGetUserInfo == null || asyncTaskGetUserInfo.getStatus() == AsyncTask.Status.FINISHED) {
@@ -513,6 +590,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskGetUserInfo extends AsyncTask<Void, Void, Void> {
 
         private WsGetUserData wsGetUserData;
@@ -553,6 +631,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskEditProfile extends AsyncTask<Void, Void, Void> {
 
         private WsCallUpdateAccount wsCallUpdateAccount;
@@ -587,7 +666,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
             if (!isCancelled()) {
                 if (wsCallUpdateAccount.isSuccess()) {
                     Preference.getInstance().savePreferenceData(Constant.USER_NAME, etUserName.getText().toString());
-                    if (isImageUpdated) {
+                    if (isPhotoEdited != null) {
                         new AsynTaskUploadProfilePicEditProfile().execute();
                     } else {
                         displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PROFILE_UPDATED_MSG), getString(R.string.TAG_OK));
@@ -600,6 +679,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskForgotPassword extends AsyncTask<Void, Void, Void> {
 
         private WsCallForgotPassword wsCallForgotPassword;
@@ -648,6 +728,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskDeleteAccount extends AsyncTask<Void, Void, Void> {
 
         private WsCallDeleteAccount wsCallDeleteAccount;
@@ -690,6 +771,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskUpdatePassword extends AsyncTask<Void, Void, Void> {
 
         private WsCallChangePassword wsCallChangePassword;
@@ -729,6 +811,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsynTaskUploadProfilePicEditProfile extends AsyncTask<Void, Void, Void> {
         private WsUploadImage wsUploadImage;
 
@@ -742,7 +825,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
         @Override
         protected Void doInBackground(Void... voids) {
-            wsUploadImage.executeService(path);
+            if (isPhotoEdited != null) {
+                wsUploadImage.executeService(isPhotoEdited);
+            }
             return null;
         }
 
@@ -761,17 +846,14 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
-
     private void displayDialog(final Activity context, final String title, final String msg, final String strPositiveText) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(title);
         dialog.setCancelable(false);
         dialog.setMessage(msg);
-        dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                dismiss();
-            }
+        dialog.setPositiveButton(strPositiveText, (dialog1, id) -> {
+            dialog1.dismiss();
+            dismiss();
         });
         dialog.show();
     }
