@@ -29,17 +29,24 @@ import net.tigerlight.dad.util.Preference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
@@ -63,7 +70,6 @@ import java.util.TimeZone;
 
 import static net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
 import static net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
-import static net.tigerlight.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 public class AlertDetailFragment extends BaseFragment implements OnClickListener, OnGestureListener, OnMapReadyCallback {
@@ -72,43 +78,26 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     private static final String GPS_SERVICE_UNAVAILABLE = "Google play services not available. You need to log in first, to use any of google play services.";
     public static final String TAG_IMAGE = "image";
     private View layout;
-    private GestureDetector gestureDetector;
     private boolean isInvisible;
     Double longitude = 0.00;
     Double latitude = 0.00;
     private ImageView arrowImageView;
-    private String timezoneID;
-    private final String TAG_ALERT_TYPE = "alertType";
-    private final String TAG_STATUS = "status";
-    private final String TAG_LONG = "longitude";
-    private final String TAG_LATITUDE = "latitude";
     private final String TAG_USER_NAME = "username";
     public static final String TAG_ADDRESS = "address";
     private static final String TAG_DATE_TIME = "datetime";
     private Button go_to_googlemap;
     Marker myMarker;
-    private LatLng latLongPos;
-    private LinearLayout llOkAlert;
-    private LinearLayout llRedAlert;
-    private LinearLayout llOrangeAlert;
-    private LinearLayout llTestAlert;
-    private LinearLayout flMapContainer;
-    private TextView tvStatus;
-    private TextView tvDial;
-    private TextView tvBackAlerts;
     private TextView tvTitle;
     private TextView tvUserName;
     private TextView tvUserAddress;
     private TextView imgUserProfile;
-    private ImageView fragment_alert_detail_llOkAlert_img;
-    private ImageView fragment_alert_detail_img_redalert;
-    private ImageView fragment_alert_detail_img_testalert;
     public String imagePath = "";
     String testStr;
     String imgUrl = ASSETS_DOMAIN;
 
     SqlLiteDbHelper dbHelper;
     CountryModel contacts;
+    private JSONObject jsonobjectToChange;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,19 +105,19 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     }
 
     private boolean checkPlayServices() {
-        int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        if (googlePlayServicesAvailable == ConnectionResult.SUCCESS) {
-            return true;
+        if (getActivity() == null) {
+            return false;
         }
-        return false;
+        int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+        return googlePlayServicesAvailable == ConnectionResult.SUCCESS;
     }
 
     private void showDialog(String msg) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(msg).setCancelable(false).setPositiveButton(getString(R.string.TAG_OK), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                dialog.dismiss();
+        builder.setMessage(msg).setCancelable(false).setPositiveButton(getString(R.string.TAG_OK), (dialog, id) -> {
+            dialog.dismiss();
+            if (getActivity() != null) {
                 getActivity().finish();
             }
         });
@@ -137,11 +126,11 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     }
 
     private void setDetails(View view) {
-        final TextView tvTitle = (TextView) view.findViewById(R.id.fragment_alert_detail_tvTitle);
-        final TextView tvUserAddress = (TextView) view.findViewById(fragment_alert_detail_tvUserAddress);
-        final TextView tvUsername = (TextView) view.findViewById(R.id.fragment_alert_detail_tvUserName);
-        final TextView tvUserDateTime = (TextView) view.findViewById(R.id.fragment_alert_detail_tvDateTime);
-        final ImageView imgUserprofile = (ImageView) view.findViewById(R.id.fragment_alert_detail_ivUserProfile);
+        final TextView tvTitle = view.findViewById(R.id.fragment_alert_detail_tvTitle);
+        final TextView tvUserAddress = view.findViewById(fragment_alert_detail_tvUserAddress);
+        final TextView tvUsername = view.findViewById(R.id.fragment_alert_detail_tvUserName);
+        final TextView tvUserDateTime = view.findViewById(R.id.fragment_alert_detail_tvDateTime);
+        final ImageView imgUserprofile = view.findViewById(R.id.fragment_alert_detail_ivUserProfile);
         imgUserprofile.setOnClickListener(view1 -> showDialog());
 
         //TODO:  Band-aid (per Rod) for unknown NPE
@@ -163,14 +152,15 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         } else {
 //            tvUsername.setText("#f60101");
             tvUsername.setText(String.format("%s " + getString(R.string.is_danger), userName));
-            tvUsername.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_allert_bg));
+            if (getActivity() != null) {
+                tvUsername.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_allert_bg));
+            }
         }
 
         if (jsonobjectToChange != null) {
             imagePath = jsonobjectToChange.optString(TAG_IMAGE);
         }
         String lastWord = imagePath.substring(imagePath.lastIndexOf("/") + 1);
-        ;
         imagePath = imgUrl + lastWord;
         Glide.with(this)
                 .load(imagePath).diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -189,89 +179,113 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         String CC = "";
 
         final Preference preference = Preference.getInstance();
-        if (!preference.mSharedPreferences.getString(Constant.COMMON_LATITUDE, "").equals("") && !preference.mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "").equals("")) {
+        if (!preference.mSharedPreferences.getString(Constant.COMMON_LATITUDE, "").isEmpty() && !preference.mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "").isEmpty()) {
             CC = Utills.getCountryName(getActivity(), preference.mSharedPreferences.getString(Constant.COMMON_LATITUDE, ""), preference.mSharedPreferences.getString(Constant.COMMON_LONGITUDE, ""));
         }
         contacts = dbHelper.Get_ContactDetails(CC);
         layout = view.findViewById(R.id.fragment_alert_detail_llHeader);
-        tvStatus = (TextView) view.findViewById(R.id.fragment_alert_detail_tvStatus);
-        tvDial = (TextView) view.findViewById(R.id.fragment_alert_detail_tvDial911);
+        TextView tvStatus = view.findViewById(R.id.fragment_alert_detail_tvStatus);
+        TextView tvDial = view.findViewById(fragment_alert_detail_tvDial911);
 
         if (contacts != null) {
 
             Log.d("data", "C C=" + contacts.getC_c() + "Name=" + contacts.getC_name() + "e_no=" + contacts.getC_e_no());
-            tvDial.setText("Dial " + contacts.getC_e_no());
+            tvDial.setText(String.format("Dial %s", contacts.getC_e_no()));
         }
 
-        tvBackAlerts = (TextView) view.findViewById(R.id.fragment_alert_detail_tvBackAlerts);
-        llOkAlert = (LinearLayout) view.findViewById(R.id.fragment_alert_detail_llOkAlert);
-        llRedAlert = (LinearLayout) view.findViewById(R.id.fragment_alert_detail_llRedAlert);
-        llOrangeAlert = (LinearLayout) view.findViewById(R.id.fragment_alert_detail_llOrangeAlert);
-        llTestAlert = (LinearLayout) view.findViewById(R.id.fragment_alert_detail_llTestAlert);
-        flMapContainer = (LinearLayout) view.findViewById(R.id.fragment_alert_detail_flMapContainer);
-        fragment_alert_detail_llOkAlert_img = (ImageView) view.findViewById(R.id.fragment_alert_detail_llOkAlert_img);
-        fragment_alert_detail_img_redalert = (ImageView) view.findViewById(R.id.fragment_alert_detail_img_redalert);
-        fragment_alert_detail_img_testalert = (ImageView) view.findViewById(R.id.fragment_alert_detail_img_testalert);
-        gestureDetector = new GestureDetector(this);
+        TextView tvBackAlerts = view.findViewById(R.id.fragment_alert_detail_tvBackAlerts);
+        LinearLayout llOkAlert = view.findViewById(R.id.fragment_alert_detail_llOkAlert);
+        LinearLayout llRedAlert = view.findViewById(R.id.fragment_alert_detail_llRedAlert);
+        LinearLayout llOrangeAlert = view.findViewById(R.id.fragment_alert_detail_llOrangeAlert);
+        LinearLayout llTestAlert = view.findViewById(R.id.fragment_alert_detail_llTestAlert);
+        LinearLayout llAlertHeader = view.findViewById(R.id.fragment_alert_detail_header);
+        LinearLayout flMapContainer = view.findViewById(R.id.fragment_alert_detail_flMapContainer);
+        ImageView fragment_alert_detail_llOkAlert_img = view.findViewById(R.id.fragment_alert_detail_llOkAlert_img);
+        ImageView fragment_alert_detail_img_redalert = view.findViewById(R.id.fragment_alert_detail_img_redalert);
+        ImageView fragment_alert_detail_img_testalert = view.findViewById(R.id.fragment_alert_detail_img_testalert);
+        GestureDetector gestureDetector = new GestureDetector(this);
         tvDial.setOnClickListener(this);
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
             try {
                 String jsonObject = bundle.getString(Constant.JSON_OBJECT);
-                JSONObject jsonobjectToChange = new JSONObject(jsonObject);
-
-                if (jsonobjectToChange.optInt(TAG_STATUS) == 1 || jsonobjectToChange.optString(TAG_STATUS).trim().equalsIgnoreCase("1")) {
-                    llOkAlert.setVisibility(View.VISIBLE);
-                    llRedAlert.setVisibility(View.GONE);
-                    llOrangeAlert.setVisibility(View.GONE);
-                    llTestAlert.setVisibility(View.GONE);
-                    fragment_alert_detail_llOkAlert_img.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ok_alerts));
+                if (jsonObject != null) {
+                    jsonobjectToChange = new JSONObject(jsonObject);
+                    String TAG_STATUS = "status";
+                    Activity activity = getActivity();
+                    Context context = getContext();
+                    int selectedColor = R.color.color_alert_green;
+                    if (jsonobjectToChange.optInt(TAG_STATUS) == 1 || jsonobjectToChange.optString(TAG_STATUS).trim().equalsIgnoreCase("1")) {
+                        llOkAlert.setVisibility(View.VISIBLE);
+                        llRedAlert.setVisibility(View.GONE);
+                        llOrangeAlert.setVisibility(View.GONE);
+                        llTestAlert.setVisibility(View.GONE);
+                        if (getActivity() != null) {
+                            fragment_alert_detail_llOkAlert_img.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ok_alerts));
 //                    tvStatus.setText(getString(R.string.ok_ok));
-                    tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_green));
+                            tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_green));
+                        }
 
 //                    tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_green));
 
-                } else {
+                    } else {
 
 
 //                    fragment_alert_detail_img_redalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.danger_alerts));
 //                    tvStatus.setText(getString(R.string.danger));
 
 //                    tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_red));
-                    if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 0 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("0")) {
-                        llOkAlert.setVisibility(View.GONE);
-                        llRedAlert.setVisibility(View.VISIBLE);
-                        fragment_alert_detail_img_redalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.danger_alerts));
-                        llTestAlert.setVisibility(View.GONE);
-                        llOrangeAlert.setVisibility(View.GONE);
+                        String TAG_ALERT_TYPE = "alertType";
+                        if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 0 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("0")) {
+                            llOkAlert.setVisibility(View.GONE);
+                            llRedAlert.setVisibility(View.VISIBLE);
+                            if (getActivity() != null) {
+                                fragment_alert_detail_img_redalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.danger_alerts));
+                                selectedColor = R.color.color_alert_orange;
+                            }
 
-                    } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 1 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("1")) {
-                        llOkAlert.setVisibility(View.GONE);
-                        llRedAlert.setVisibility(View.VISIBLE);
-                        fragment_alert_detail_img_redalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.crowd_alerts));
-                        llTestAlert.setVisibility(View.GONE);
-                        llOrangeAlert.setVisibility(View.GONE);
+                            llTestAlert.setVisibility(View.GONE);
+                            llOrangeAlert.setVisibility(View.GONE);
 
-                    } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 2 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("2")) {
-                        llOkAlert.setVisibility(View.VISIBLE);
-                        fragment_alert_detail_llOkAlert_img.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ok_alerts));
-                        llRedAlert.setVisibility(View.GONE);
-                        llTestAlert.setVisibility(View.GONE);
-                        llOrangeAlert.setVisibility(View.GONE);
+                        } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 1 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("1")) {
+                            llOkAlert.setVisibility(View.GONE);
+                            llRedAlert.setVisibility(View.GONE);
+                            if (getActivity() != null) {
+                                fragment_alert_detail_img_redalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.crowd_alerts));
+                                selectedColor = R.color.color_alert_red;
+                            }
+                            llTestAlert.setVisibility(View.GONE);
+                            llOrangeAlert.setVisibility(View.VISIBLE);
+                        } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 2 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("2")) {
+                            llOkAlert.setVisibility(View.VISIBLE);
+                            if (getActivity() != null) {
+                                fragment_alert_detail_llOkAlert_img.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ok_alerts));
+                                selectedColor = R.color.color_alert_green;
+                            }
+                            llRedAlert.setVisibility(View.GONE);
+                            llTestAlert.setVisibility(View.GONE);
+                            llOrangeAlert.setVisibility(View.GONE);
 
-                    } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 3 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("3") || jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 4 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("4")) {
-                        fragment_alert_detail_img_testalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.test_alerts));
+                        } else if (jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 3 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("3") || jsonobjectToChange.optInt(TAG_ALERT_TYPE) == 4 || jsonobjectToChange.optString(TAG_ALERT_TYPE).trim().equalsIgnoreCase("4")) {
+                            if (getActivity() != null) {
+                                fragment_alert_detail_img_testalert.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.test_alerts));
+                                tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_blue));
+                                selectedColor = R.color.color_alert_blue;
+                            }
 //                        tvStatus.setText(getString(R.string.test_test));
-                        tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_alert_blue));
-                        llTestAlert.setVisibility(View.VISIBLE);
-                        llOkAlert.setVisibility(View.GONE);
-                        llRedAlert.setVisibility(View.GONE);
-                        llOrangeAlert.setVisibility(View.GONE);
+                            llTestAlert.setVisibility(View.VISIBLE);
+                            llOkAlert.setVisibility(View.GONE);
+                            llRedAlert.setVisibility(View.GONE);
+                            llOrangeAlert.setVisibility(View.GONE);
 
+                        }
+                    }
+                    if (activity != null && context != null) {
+                        activity.getWindow().setStatusBarColor(ContextCompat.getColor(context, selectedColor));
+                        llAlertHeader.setBackgroundColor(ContextCompat.getColor(activity, selectedColor));
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -279,7 +293,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
-        timezoneID = tz.getID();
+        String timezoneID = tz.getID();
 
         setDetails(view);
         if (!checkPlayServices()) {
@@ -313,17 +327,18 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View v) {
         final int fragmentId = v.getId();
-        if (fragmentId == fragment_alert_detail_tvDial911) {
+        if (getActivity() != null && fragmentId == fragment_alert_detail_tvDial911 && jsonobjectToChange != null) {
             final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
             dialog.setContentView(R.layout.custom_dialog);
 
-            final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-            final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-            final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-            final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
+            final TextView tvTitle = dialog.findViewById(R.id.dialog_tvTitle);
+            final TextView tvMessage = dialog.findViewById(R.id.dialog_tvMessage);
+            final TextView tvPosButton = dialog.findViewById(R.id.dialog_tvPosButton);
+            final TextView tvNegButton = dialog.findViewById(R.id.dialog_tvNegButton);
             tvTitle.setText(getString(R.string.dialog_dial_title));
             tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
             tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
@@ -353,7 +368,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 
                 }
             });
-            tvNegButton.setOnClickListener(new View.OnClickListener() {
+            tvNegButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
@@ -361,13 +376,18 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             });
             dialog.show();
         } else if (fragmentId == R.id.fragment_alert_detail_tvBackAlerts) {
+            if (getActivity() != null && getContext() != null) {
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorGray));
+            }
             if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 requireActivity().getSupportFragmentManager().popBackStack();
             } else {
                 // Open AlertFragment directly
                 MainActivity activity = (MainActivity) getActivity();
                 DashBoardWithSwipableFragment fragment = new DashBoardWithSwipableFragment();
-                activity.replaceFragment(fragment);
+                if (activity != null) {
+                    activity.replaceFragment(fragment);
+                }
             }
         }
     }
@@ -388,7 +408,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 //    }
 
     void showDialog() {
-        MyDialogFragment newFragment = MyDialogFragment.newInstance();
+        MyDialogFragment newFragment = MyDialogFragment.newInstance(jsonobjectToChange.optString(TAG_IMAGE));
         // Use the FragmentManager from the parent activity to show the DialogFragment
         newFragment.show(requireActivity().getSupportFragmentManager(), "dialog");
     }
@@ -450,7 +470,9 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 
         try {
             if (jsonobjectToChange != null) {
+                String TAG_LATITUDE = "latitude";
                 latitude = Double.valueOf(jsonobjectToChange.optString(TAG_LATITUDE));
+                String TAG_LONG = "longitude";
                 longitude = Double.valueOf(jsonobjectToChange.optString(TAG_LONG));
 
 //            String  cName= Utills.getCountryName(getActivity(),   48.8588377, 2.2775171);
@@ -464,9 +486,11 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             e.printStackTrace();
             return;
         }
-        latLongPos = new LatLng(latitude, longitude); // i have chnaged lat long pos , new LatLng(latitude, longitude); bcz values are coming inverse
+        LatLng latLongPos = new LatLng(latitude, longitude); // i have chnaged lat long pos , new LatLng(latitude, longitude); bcz values are coming inverse
 
-        googleMap.setMyLocationEnabled(true);
+        if (getContext() != null && (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            googleMap.setMyLocationEnabled(true);
+        }
 
         googleMap.clear();
         googleMap.addMarker(new MarkerOptions().title(userName).snippet(userAdderss).position(latLongPos).
@@ -493,9 +517,15 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     public static class MyDialogFragment extends DialogFragment {
 
         private ImageView ivProfile;
+        private String imagePathPart;
 
-        static MyDialogFragment newInstance() {
-            return new MyDialogFragment();
+        static MyDialogFragment newInstance(String imagePathPart) {
+            final AddMoreFragment addMoreFragment = new AddMoreFragment();
+            final Bundle bundle = new Bundle();
+            bundle.putString("imagePathPart", imagePathPart);
+            MyDialogFragment myDialogFragment = new MyDialogFragment();
+            myDialogFragment.setArguments(bundle);
+            return myDialogFragment;
         }
 
         @Override
@@ -503,12 +533,22 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             Dialog dialog = super.onCreateDialog(savedInstanceState);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.fragment_dialog);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            }
 
             ivProfile = dialog.findViewById(R.id.fragment_dialog_iv_profile);
-            String imagePathPart = jsonobjectToChange.optString(TAG_IMAGE);
 
+            final Bundle bundle = getArguments();
+            if (bundle != null) {
+                imagePathPart = bundle.getString("imagePathPart");
+            }
+            String lastWord = null;
+            if (imagePathPart != null) {
+                lastWord = imagePathPart.substring(imagePathPart.lastIndexOf("/") + 1);
+                imagePathPart = ASSETS_DOMAIN + lastWord;
+            }
             Glide.with(this)
                     .load(imagePathPart)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -516,7 +556,6 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
                     .skipMemoryCache(true)
                     .placeholder(R.drawable.pf_pic)
                     .into(ivProfile);
-
             return dialog;
         }
     }

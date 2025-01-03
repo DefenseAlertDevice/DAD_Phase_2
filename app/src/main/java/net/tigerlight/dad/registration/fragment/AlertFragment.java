@@ -24,9 +24,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -68,10 +71,11 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     public static final int MAXIMUM_ACCURACY_WAIT = 30000;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1000;
 
-    private TextView tvSendDanger;
     private TextView tvEmptyAlert;
-    private Switch swCrowdALert;
-    private Switch swTestMode;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private SwitchCompat swCrowdALert;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private SwitchCompat swTestMode;
     private SwipeMenuListView lvAlerts;
     private AlertAdapter alertAdapter;
     private ProgressDialog progressDialog;
@@ -80,7 +84,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private boolean isJustDataDeleted = false;
     private String timezoneID;
     public static JSONObject jsonobjectToChange;
-    private int listSize = 0;
     public static boolean isEditing;
     private JSONArray jsonArray;
     private AsyncTaskSendPush asyncTaskSendPush;
@@ -111,18 +114,14 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     public void initView(View view) {
         callResetCount();
 
-        tvSendDanger = (TextView) view.findViewById(R.id.fragment_alert_tvSendDanger);
-        tvEmptyAlert = (TextView) view.findViewById(R.id.fragment_alert_tvEmptyView);
-        swCrowdALert = (Switch) view.findViewById(R.id.fragment_alert_swCrowdAlert);
+        TextView tvSendDanger = view.findViewById(R.id.fragment_alert_tvSendDanger);
+        tvEmptyAlert = view.findViewById(R.id.fragment_alert_tvEmptyView);
+        swCrowdALert = view.findViewById(R.id.fragment_alert_swCrowdAlert);
 
-        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_CHECKED, false)) {
-            swCrowdALert.setChecked(true);
-        } else {
-            swCrowdALert.setChecked(false);
-        }
+        swCrowdALert.setChecked(Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_CHECKED, false));
 
-        swTestMode = (Switch) view.findViewById(R.id.fragment_alert_swTestMode);
-        lvAlerts = (SwipeMenuListView) view.findViewById(R.id.fragment_alert_lvAlerts);
+        swTestMode = view.findViewById(R.id.fragment_alert_swTestMode);
+        lvAlerts = view.findViewById(R.id.fragment_alert_lvAlerts);
 
         tvSendDanger.setOnClickListener(this);
         swCrowdALert.setOnCheckedChangeListener(this);
@@ -132,7 +131,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         isEditing = false;
         setSwipeMenu();
 
-        if (!Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && !Utills.isInternetConnected(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -145,10 +144,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
-
         if (!mIsSentAlertReceiverRegistered) {
             IntentFilter intentFilter = new IntentFilter(Constants.Actions.SENT_ALERT_ACTION);
 
@@ -227,32 +225,32 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 
-        if (!Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && !Utills.isInternetConnected(getActivity())) {
             swCrowdALert.setChecked(!isChecked);
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (isChecked) {
-            Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
+            Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, true);
 
-            callCrowdAlertModeServiceON(1);
+            callCrowdAlertModeServiceON();
         } else {
-            Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
+            Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, false);
 
-            callCrowdAlertModeServiceOFF(0);
+            callCrowdAlertModeServiceOFF();
 
         }
     }
 
-    private CompoundButton.OnCheckedChangeListener mTestModeOnCheckChangeListener = (compoundButton, b) -> {
-        if (b) {
+    private final CompoundButton.OnCheckedChangeListener mTestModeOnCheckChangeListener = (compoundButton, b) -> {
+        if (getActivity() != null && b) {
             final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
             dialog.setContentView(R.layout.custom_dialog_test_mode);
-            final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-            final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-            final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-            final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
+            final TextView tvTitle = dialog.findViewById(R.id.dialog_tvTitle);
+            final TextView tvMessage = dialog.findViewById(R.id.dialog_tvMessage);
+            final TextView tvPosButton = dialog.findViewById(R.id.dialog_tvPosButton);
+            final TextView tvNegButton = dialog.findViewById(R.id.dialog_tvNegButton);
 
 
             tvTitle.setText(getString(R.string.dialog_test_mode_title));
@@ -275,6 +273,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             });
 
             tvNegButton.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("CommitPrefEdits")
                 @Override
                 public void onClick(View view) {
                     Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
@@ -355,7 +354,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private class AlertListDataHandler implements Runnable {
 
-        private JSONObject result;
+        private final JSONObject result;
 
         public AlertListDataHandler(JSONObject result) {
             this.result = result;
@@ -367,8 +366,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 try {
                     isJustDataDeleted = false;
                     jsonArray = result.getJSONArray("data");
-                    int alertCount = result.optJSONArray("data").length();
-                    count = result.optJSONArray("data").length();
+                    int alertCount = jsonArray.length();
+                    count = jsonArray.length();
                     if (alertCount < 0) {
                         alertCount = 0;
                     }
@@ -381,7 +380,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
                     if (jsonArray.length() == 0) {
                         tvEmptyAlert.setVisibility(View.VISIBLE);
-                        tvEmptyAlert.setText(getString(R.string.TAG_DATA_NA_MSG));
+                        tvEmptyAlert.setText(getString(R.string.TAG_ALERTS_NA_MSG));
                         lvAlerts.setVisibility(View.GONE);
                     }
 
@@ -433,8 +432,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                             int alertCount = Preference.getInstance().mSharedPreferences.getInt("total_count", 0);
 
                             alertCount = alertCount - 1;
-                            if (alertCount < 0) {
-                            }
                             Preference.getInstance().savePreferenceData("total_count", alertCount);
                             dashBoardWithSwipableFragment.updateCount();
                             alertAdapter.remove(position);
@@ -481,7 +478,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     private void callSenDangerServiceRecievingListScreen() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskSendPush.execute();
 //                sendAlert(asyncTaskSendPush);
@@ -495,7 +492,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     private void callResetCount() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskResetCount != null && asyncTaskResetCount.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskResetCount.execute();
             } else if (asyncTaskResetCount == null || asyncTaskResetCount.getStatus() == AsyncTask.Status.FINISHED) {
@@ -507,6 +504,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
         private WsResetCount wsResetCount;
 
@@ -536,6 +534,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
         private WsCallSendDanger wsCallSendDanger;
         //double log =((MainActivity) getActivity()).getLongitude();
@@ -559,7 +558,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!isCancelled()) {
+            if (getActivity() != null && !isCancelled()) {
                 if (wsCallSendDanger.isSuccess()) {
                     progressDialog.dismiss();
                     playAlarmSound();
@@ -589,7 +588,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
 
     private void callTestModeService() {
-        if (Utills.isInternetConnected(getActivity())) {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskTestMode != null && asyncTaskTestMode.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskTestMode.execute();
             } else if (asyncTaskTestMode == null || asyncTaskTestMode.getStatus() == AsyncTask.Status.FINISHED) {
@@ -643,6 +642,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         countDownTimer.start();
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskTestMode extends AsyncTask<Void, Void, Void> {
         private WsCallDADTest wsCallDADTest;
 
@@ -680,37 +680,45 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private void displayTestMessageDialog() {
         playAlarmSound();
         new AlertListLoaderThread().start();
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.test_message_title)
-                .setMessage(R.string.test_message_body)
-                .setPositiveButton(R.string.nice, (dialog, which) -> dialog.dismiss()).show();
-}
+        if (getActivity() != null) {
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.test_message_title)
+                    .setMessage(R.string.test_message_body)
+                    .setPositiveButton(R.string.nice, (dialog, which) -> dialog.dismiss()).show();
+        }
+    }
 
     private void playAlarmSound() {
+        if (getActivity() != null) {
             final AssetFileDescriptor audioFile = getActivity().getResources().openRawResourceFd(R.raw.tigerlightsound);
-
             Thread thread = new Thread(() -> {
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 try {
                     mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
-                mediaPlayer.prepare();
-                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-                mediaPlayer.start();
+                    mediaPlayer.prepare();
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+                    mediaPlayer.start();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
             thread.start();
+            try {
+                audioFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private void callCrowdAlertModeServiceON(int status) {
-        if (Utills.isInternetConnected(getActivity())) {
+    private void callCrowdAlertModeServiceON() {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskCrowdAlertOn != null && asyncTaskCrowdAlertOn.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskCrowdAlertOn.execute(new Integer(status));
+                asyncTaskCrowdAlertOn.execute(1);
             } else if (asyncTaskCrowdAlertOn == null || asyncTaskCrowdAlertOn.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskCrowdAlertOn = new AsyncCrowdAlertModeOn();
-                asyncTaskCrowdAlertOn.execute(new Integer(status));
+                asyncTaskCrowdAlertOn.execute(1);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
@@ -718,9 +726,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncCrowdAlertModeOn extends AsyncTask<Integer, Void, Void> {
 
-        private int status;
         private WsCrowdAlert wsCrowdAlert;
 
         @Override
@@ -732,7 +740,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            status = integers[0].intValue();
+            int status = integers[0];
             wsCrowdAlert.executeService(status);
             return null;
         }
@@ -748,22 +756,22 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
 
-    private void callCrowdAlertModeServiceOFF(int status) {
-        if (Utills.isInternetConnected(getActivity())) {
+    private void callCrowdAlertModeServiceOFF() {
+        if (getActivity() != null && Utills.isInternetConnected(getActivity())) {
             if (asyncTaskCrowdAlertOff != null && asyncTaskCrowdAlertOff.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskCrowdAlertOff.execute(new Integer(status));
+                asyncTaskCrowdAlertOff.execute(0);
             } else if (asyncTaskCrowdAlertOff == null || asyncTaskCrowdAlertOff.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskCrowdAlertOff = new AsyncCrowdAlertModeOff();
-                asyncTaskCrowdAlertOff.execute(new Integer(status));
+                asyncTaskCrowdAlertOff.execute(0);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncCrowdAlertModeOff extends AsyncTask<Integer, Void, Void> {
 
-        private int staus;
         private WsCrowdAlert wsCrowdAlert;
 
         @Override
@@ -775,8 +783,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            staus = integers[0].intValue();
-            wsCrowdAlert.executeService(staus);
+            int status = integers[0];
+            wsCrowdAlert.executeService(status);
 
             return null;
         }
@@ -798,11 +806,13 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         final SwipeMenuCreator creator = menu -> {
             // create "delete" item
             final SwipeMenuItem swipeMenuItemDelete = new SwipeMenuItem(getActivity());
-            swipeMenuItemDelete.setBackground(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.color_alert_red)));
-            swipeMenuItemDelete.setWidth(Utills.dpToPx(getActivity(), 100));
-            swipeMenuItemDelete.setIcon(R.drawable.img_notification_delete);
-            swipeMenuItemDelete.setTitleColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
-            menu.addMenuItem(swipeMenuItemDelete);
+            if (getActivity() != null) {
+                swipeMenuItemDelete.setBackground(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.color_alert_red)));
+                swipeMenuItemDelete.setWidth(Utills.dpToPx(getActivity(), 100));
+                swipeMenuItemDelete.setIcon(R.drawable.img_notification_delete);
+                swipeMenuItemDelete.setTitleColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
+                menu.addMenuItem(swipeMenuItemDelete);
+            }
         };
         lvAlerts.setMenuCreator(creator);
         lvAlerts.setOnMenuItemClickListener((position, menu, index) -> {
@@ -811,12 +821,10 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            switch (index) {
-                case 0:
-                    if (menu.getMenuItems().size() == 1) {
-                        displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_ALERT), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel), position);
-                    }
-                    break;
+            if (index == 0) {
+                if (menu.getMenuItems().size() == 1) {
+                    displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_ALERT), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel), position);
+                }
             }
             return false;
         });
@@ -841,7 +849,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         dialog.setMessage(msg);
         dialog.setPositiveButton(strPositiveText, (dialog1, id) -> {
             dialog1.dismiss();
-            if (Utills.isOnline(getActivity(), true)) {
+            if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
                 deleteUsingThread(position);
                 //callDeleteNotificationService(position, notificationListDataModel.getMType(), notificationListDataModel.getMMemberMessageBoardId());
             } else {
@@ -852,8 +860,15 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         dialog.show();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null && getContext() != null) {
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorGray));
+        }
+    }
 
-    private BroadcastReceiver mAlertSentReceiver = new BroadcastReceiver()
+    private final BroadcastReceiver mAlertSentReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)
@@ -878,24 +893,28 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     private boolean checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (getContext() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        } else if (getContext() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
-        } else {
+        } else if (getContext() != null) {
             return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
         }
+        return false;
     }
 
     private void requestPermissions() {
+        if (getActivity() == null) {
+            return;
+        }
         String[] permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions = new String[]{

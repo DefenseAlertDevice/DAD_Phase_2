@@ -6,12 +6,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1"
-        android:background="@color/color_alert_orange"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorGray"
+        android:id="@+id/fragment_alert_detail_header"
         android:gravity="center"
-        android:padding="@dimen/_10sdp"
-            android:paddingStart="@dimen/_2sdp">
+        android:paddingHorizontal="@dimen/_10sdp"
+    >
 
         <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvBackAlerts"
@@ -19,40 +19,42 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/dashbord_alert"
-            android:textColor="@color/color_blue"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/_14sdp"
-            android:drawableLeft="@drawable/ic_action_previous_item"
-            android:textStyle="bold" />
+            android:drawableTint="@color/colorWhite"
+            android:drawableStart="@drawable/ic_action_previous_item"
+            android:textStyle="bold"
+        />
 
         <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_weight="0.5"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/colorBlack"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/_16sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+        />
 
         <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvDial911"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
             android:gravity="center"
-
             android:textAllCaps="false"
-            android:textColor="@color/color_blue"
-            android:textSize="@dimen/_14sdp" />
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_14sdp"
+        />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.9"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
@@ -159,14 +161,16 @@
         <LinearLayout
             android:id="@+id/fragment_alert_detail_llOkAlert"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/fragment_alert_detail_llOkAlert_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ok_alerts"
                 android:contentDescription="@string/app_name" />
 
 
@@ -175,9 +179,7 @@
         <LinearLayout
             android:id="@+id/fragment_alert_detail_llRedAlert"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone">
 
@@ -185,7 +187,9 @@
                 android:id="@+id/fragment_alert_detail_img_redalert"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.2"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/danger_alerts"
                 android:contentDescription="@string/app_name" />
 
             <!--<net.tigerlight.dad.util.CustomTextViewBold-->
@@ -203,45 +207,34 @@
         <LinearLayout
             android:id="@+id/fragment_alert_detail_llOrangeAlert"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:background="@color/color_alert_orange"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.2"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/img_logo_white" />
-
-            <net.tigerlight.dad.util.CustomTextViewBold
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:gravity="center"
-                android:text="@string/danger_alert"
-                android:textAllCaps="true"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/_18sdp" />
+                android:src="@drawable/crowd_alerts" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/fragment_alert_detail_llTestAlert"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone">
 
             <ImageView
                 android:id="@+id/fragment_alert_detail_img_testalert"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.2"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/test_alerts"
                 android:contentDescription="@string/app_name" />
 
             <!--<net.tigerlight.dad.util.CustomTextViewBold-->

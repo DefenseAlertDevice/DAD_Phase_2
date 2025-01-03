@@ -39,10 +39,10 @@
     <color name="tab_selected_text">#0C64FF</color>
     <color name="tab_unselected_text">#929292</color>
     <color name="tab_background_gray">#DDDDDD</color>
-    <color name="color_alert_blue">#0000ff</color>
-    <color name="color_alert_green">#46c940</color>
-    <color name="color_alert_orange">#f96601</color>
-    <color name="color_alert_red">#f60101</color>
+    <color name="color_alert_blue">#117FAC</color>
+    <color name="color_alert_green">#0B8A47</color>
+    <color name="color_alert_orange">#E84A25</color>
+    <color name="color_alert_red">#EE222B</color>
     <color name="color_alert_purple">#cb67fe</color>
     <color name="color_allert_bg"> #FEFCBA</color>
     <color name="dialog_bg">#FF41392A</color>

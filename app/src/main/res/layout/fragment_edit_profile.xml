@@ -357,7 +357,7 @@
                         android:textSize="@dimen/font_16sp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
-                        android:textColor="@color/colorBlack"
+                        android:textColor="@color/color_blue"
                         android:text="@string/TAG_delete_account"
                         />
                 </RelativeLayout>

@@ -33,9 +33,8 @@ public class UpdateLocationWorker extends Worker {
         // Your logic to update the location
         Log.d(TAG, "Updating location: lat=" + latitude + ", long=" + longitude);
         // Simulate network call or database operation
-//        WsCallUpdateLocation wsCallUpdateLocation = new WsCallUpdateLocation(mContext);
-//        wsCallUpdateLocation.executeService(latitude, longitude);
-//        return wsCallUpdateLocation.isSuccess();
-        return true;
+        WsCallUpdateLocation wsCallUpdateLocation = new WsCallUpdateLocation(mContext);
+        wsCallUpdateLocation.executeService(latitude, longitude);
+        return wsCallUpdateLocation.isSuccess();
     }
 }

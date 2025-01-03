@@ -57,23 +57,10 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
 
     private void updateInFront(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
-        data = extras.getString("gcm.notification.data");
-        if (data == null) {
-            data = extras.getString("message");
-        }
-        if (data == null) {
-            data = extras.getString("gcm.notification.alert");
-        }
-        if (data == null) {
+        if (extras == null) {
             return;
         }
-        try {
-            jsonobjectToChange = new JSONObject(data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
+        jsonobjectToChange = bundleToJson(extras);
         // Pass the data to MainActivity
         Intent activityIntent = new Intent(context, MainActivity.class);
         activityIntent.putExtra(Constant.JSON_OBJECT, jsonobjectToChange.toString());
@@ -125,6 +112,7 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
                 .setContentTitle("The SoulDefendHER™ Danger Alert")
                 .setContentText(safeDangerString)
                 .setContentIntent(contentIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
         if (sound != null && !"default".equals(sound)) {
