@@ -51,7 +51,7 @@ public class WSUtil {
             return null; // No refresh token available
         }
 
-        String refreshUrl = WsConstants.MAIN_URL + "userid=" + userId;
+        String refreshUrl = WsConstants.MAIN_URL + "command=RefreshToken&userid=" + userId;
         OkHttpClient client = new OkHttpClient();
         Request refreshRequest = new Request.Builder()
                 .url(refreshUrl)

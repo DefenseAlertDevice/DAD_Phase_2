@@ -27,8 +27,8 @@ android {
         applicationId "net.tigerlight.dad"
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 103
+        versionName "1.0.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
@@ -38,11 +38,21 @@ android {
         targetCompatibility JavaVersion.VERSION_1_10
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     buildTypes {
+        debug {
+            buildConfigField "String", "API_URL", '"https://dev.api.defensealertdevice.com/"'
+            buildConfigField "String", "ASSETS_URL", '"https://dev.assets.defensealertdevice.com/"'
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+            buildConfigField "String", "API_URL", '"https://api.defensealertdevice.com/"'
+            buildConfigField "String", "ASSETS_URL", '"https://assets.defensealertdevice.com/"'
         }
     }
 
@@ -53,8 +63,8 @@ android {
             applicationId "net.tigerlight.dad"
             minSdkVersion 26
             targetSdkVersion 34
-            versionCode 1
-            versionName "1"
+            versionCode 103
+            versionName "1.0.3"
             dimension "version"
         }
     }
@@ -95,7 +105,15 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+
+    // UIAutomator (Optional)
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
+
+    // For JUnit
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
     implementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
 }

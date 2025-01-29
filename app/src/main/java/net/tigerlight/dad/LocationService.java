@@ -81,6 +81,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private static final long SCAN_PERIOD = 1000;
     final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final String CHANNEL_ID = "default";
+    private boolean hasStarted = false;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -92,11 +93,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(ACTION_DISCOVERY_STARTED)) {
+            if (action != null && action.equals(ACTION_DISCOVERY_STARTED)) {
                 searchIBeaconAvailability();
                 Log.d("DIS_START", "ACTION_DISCOVERY_STARTED");
             }
-            if (action.equals(ACTION_DISCOVERY_FINISHED)) {
+            if (action != null && action.equals(ACTION_DISCOVERY_FINISHED)) {
                 Log.d("DIS_STOP", "ACTION_DISCOVERY_FINISHED");
             }
         }
@@ -109,12 +110,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         super.onCreate();
         Log.d(TAG, "onCreate");
         createNotificationChannel();
-        startForegroundService();
         IntentFilter filter2 = new IntentFilter();
         filter2.addAction(ACTION_DISCOVERY_STARTED);
         filter2.addAction(ACTION_DISCOVERY_FINISHED);
         filter2.addAction(ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReceiver2, filter2);
+        startForegroundService();
     }
 
     private void createNotificationChannel() {
@@ -130,6 +131,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void startForegroundService() {
+        if (hasStarted) {
+            return;
+        }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
@@ -163,6 +167,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         } else {
             startForeground(1, notificationBuilder.build());
         }
+        hasStarted = true;
     }
 
     @Override
@@ -271,40 +276,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 //            Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
             Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, UUIDHex);
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.IDENTIFIER_KEY, device.getName());
             Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
             Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
             if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
             {
                 sendPushNotification();
-            } else {
-                Log.e(TAG, "getActivity() = null");
-            }
-        } else if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
-            //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
-
-            Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
-            Log.d(TAG, "found beacon");
-
-
-            //if (UUIDHex.equals(GELO_UUID)) {
-            // Bytes 25 and 26 of the advertisement packet represent
-            // the major value
-            int major = (scanRecord[25] << 8) | (scanRecord[26]);
-            Log.e(TAG, "Serial Number is " + major);
-
-            // Bytes 27 and 28 of the advertisement packet represent
-            // the minor value
-            int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-            Log.d(TAG, "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
-
-            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, UUIDHex);
-            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
-            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
-
-            if (getActivity() != null) {
-                sendPushNotification();
-//                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
             } else {
                 Log.e(TAG, "getActivity() = null");
             }
@@ -488,7 +466,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     public void callTestAlert() {
         if (Utills.isInternetConnected(this)) {
+            String uuid = Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.UUID_KEY, "");
+            String identifier = Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.IDENTIFIER_KEY, "");
             Data inputData = new Data.Builder()
+                    .putString("uuid", uuid)
+                    .putString("identifier", identifier)
                     .build();
 
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(TestAlertWorker.class)
@@ -503,11 +485,15 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (Utills.isInternetConnected(this)) {
             String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
             String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+            String uuid = Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.UUID_KEY, "");
+            String identifier = Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.IDENTIFIER_KEY, "");
             int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
             Data inputData = new Data.Builder()
                     .putDouble("latitude", Double.parseDouble(lat))
                     .putDouble("longitude", Double.parseDouble(log))
                     .putString("timezoneId", TimeZone.getDefault().getID())
+                    .putString("uuid", uuid)
+                    .putString("identifier", identifier)
                     .putInt("accuracy", accuracy)
                     .build();
 

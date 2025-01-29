@@ -16,6 +16,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.os.Handler;
 import androidx.core.app.NotificationCompat;
 
 import static net.tigerlight.dad.registration.fragment.AlertFragment.jsonobjectToChange;
+
+import java.io.InputStream;
 
 public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed from WakefulBroadcastReceiver
 
@@ -82,6 +85,20 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
         return json;
     }
 
+    private boolean isValidSoundUri(Context context, Uri soundUri) {
+        try {
+            // Try to open the URI with a ContentResolver
+            InputStream inputStream = context.getContentResolver().openInputStream(soundUri);
+            if (inputStream != null) {
+                inputStream.close(); // Close the stream after validation
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log any exception (e.g., file not found)
+        }
+        return false;
+    }
+
     private void showNotification(Context context, Intent intentData) {
         Bundle extras = intentData.getExtras();
         if (extras == null) {
@@ -92,6 +109,7 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
         final String jsonObject = jsonFromBundle.toString();
 
         String sound = extras.getString("gcm.notification.sound");
+        String sound2 = extras.getString("gcm.notification.sound2");
 
         String userName = "";
         String safeDangerString = " is in danger!";
@@ -115,14 +133,27 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        if (sound != null && !"default".equals(sound)) {
-            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, sound)));
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel("default_channel_id", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
+        if ((sound != null && !"default".equals(sound)) || (sound2 != null && !"default".equals(sound2))) {
+            Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tigerlightsound);
+            if (isValidSoundUri(context, soundUri)) {
+                mBuilder.setSound(soundUri);
+
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
+                channel.setSound(soundUri, audioAttributes);
+            } else {
+                // Fallback to default sound if URI is invalid
+                mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+            }
         } else {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         }
 
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("default_channel_id", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
         mNotificationManager.createNotificationChannel(channel);
         mNotificationManager.notify(1, mBuilder.build());
     }

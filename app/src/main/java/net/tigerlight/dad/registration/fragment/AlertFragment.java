@@ -258,18 +258,15 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
             tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
 
-            tvPosButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    updateTestModeValue(true);
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+            tvPosButton.setOnClickListener(view -> {
+                dialog.dismiss();
+                updateTestModeValue(true);
+                Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
 //                            callTestModeService();
 
 
 //                            Toast.makeText(getActivity(), "positive", Toast.LENGTH_SHORT).show();
 
-                }
             });
 
             tvNegButton.setOnClickListener(new View.OnClickListener() {
@@ -433,7 +430,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
                             alertCount = alertCount - 1;
                             Preference.getInstance().savePreferenceData("total_count", alertCount);
-                            dashBoardWithSwipableFragment.updateCount();
+                            if (dashBoardWithSwipableFragment != null) {
+                                dashBoardWithSwipableFragment.updateCount();
+                            }
                             alertAdapter.remove(position);
                             progressDialog.dismiss();
                         }
@@ -823,7 +822,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             }
             if (index == 0) {
                 if (menu.getMenuItems().size() == 1) {
-                    displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_ALERT), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel), position);
+                    deleteUsingThread(position);
                 }
             }
             return false;

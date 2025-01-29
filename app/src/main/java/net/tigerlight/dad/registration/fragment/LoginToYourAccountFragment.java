@@ -1,5 +1,7 @@
 package net.tigerlight.dad.registration.fragment;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import net.tigerlight.dad.LocationBroadcastServiceNew;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.blework.AlarmReceiver;
@@ -19,21 +21,26 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.autofill.AutofillManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -443,6 +450,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskGetUserInfo extends AsyncTask<Void, Void, Void> {
 
         private WsGetUserData wsGetUserData;

@@ -23,21 +23,23 @@ public class PushAlertWorker extends Worker {
         double latitude = getInputData().getDouble("latitude", 0.0);
         double longitude = getInputData().getDouble("longitude", 0.0);
         String timezoneId = getInputData().getString("timezoneId");
+        String uuid = getInputData().getString("uuid");
+        String identifier = getInputData().getString("identifier");
         int accuracy = getInputData().getInt("accuracy", 0);
 
         // Perform the location update
-        boolean success = makeServiceCall(latitude, longitude, timezoneId, accuracy);
+        boolean success = makeServiceCall(latitude, longitude, timezoneId, accuracy, uuid, identifier);
 
         // Return the result
         return success ? Result.success() : Result.failure();
     }
 
-    private boolean makeServiceCall(double latitude, double longitude, String timezoneId, int accuracy) {
+    private boolean makeServiceCall(double latitude, double longitude, String timezoneId, int accuracy, String uuid, String identifier) {
         // Your logic to update the location
         Log.d(TAG, "Sending push alert: lat=" + latitude + ", long=" + longitude);
         // Simulate network call or database operation
         WsCallSendDanger wsCall = new WsCallSendDanger(mContext);
-        wsCall.executeService(latitude, longitude, timezoneId, accuracy);
+        wsCall.executeService(latitude, longitude, timezoneId, accuracy, uuid, identifier);
         return wsCall.isSuccess();
     }
 }

@@ -25,6 +25,7 @@ public interface Constants {
         interface Keys
         {
             String UUID_KEY = "uuid";
+            String IDENTIFIER_KEY = "identifier";
             String MAJOR_KEY = "major";
             String MINOR_KEY = "minor";
 

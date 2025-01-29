@@ -40,7 +40,15 @@ public class WsCallDADTest {
         final String url;
         url = WsConstants.MAIN_URL;
         final String updateResponse = new WSUtil().callServiceHttpGet(context, url + generateUpdateRequest());
-        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest());
+        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest("", ""));
+        return parseResponse(response);
+    }
+
+    public JSONObject executeService(String uuid, String identifier) {
+        final String url;
+        url = WsConstants.MAIN_URL;
+        final String updateResponse = new WSUtil().callServiceHttpGet(context, url + generateUpdateRequest());
+        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest(uuid, identifier));
         return parseResponse(response);
     }
 
@@ -76,7 +84,7 @@ public class WsCallDADTest {
      *
      * @return {@link String} that will store all the parameters to be passed to the server for execultion.
      */
-    private String generateLoginRequest() {
+    private String generateLoginRequest(String uuid, String identifier) {
         final WsConstants wsConstants = new WsConstants();
         final Preference preference = Preference.getInstance();
         StringBuilder builder = new StringBuilder();
@@ -85,7 +93,10 @@ public class WsCallDADTest {
         builder.append("&" + wsConstants.PARAMS_TAG + "=" + wsConstants.PARAMS_TAG_VALUE);
         builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(Constant.IS_LANG_ID, ""));
         builder.append("&" + wsConstants.PARAMS_ACCURACY + "=" + preference.mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0));
+        builder.append("&uuid=" + uuid);
+        builder.append("&identifier=" + identifier);
 //        builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(preference.KEY_LANG_ID, "en"));
+
         return builder.toString();
     }
 

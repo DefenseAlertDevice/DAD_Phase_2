@@ -1,5 +1,7 @@
 package net.tigerlight.dad.util;
 
+import net.tigerlight.dad.BuildConfig;
+
 public class WsConstants {
 
     public WsConstants() {
@@ -7,8 +9,8 @@ public class WsConstants {
 
     public final static int CONNECTION_TIMEOUT = 30;
     public final static int SUCCESS_1 = 1;
-    public static final String DOMAIN = "https://dev.api.defensealertdevice.com/";
-    public static final String ASSETS_DOMAIN = "https://dev.assets.defensealertdevice.com/";
+    public static final String DOMAIN = BuildConfig.API_URL;
+    public static final String ASSETS_DOMAIN = BuildConfig.ASSETS_URL;
     //Prod
     //public static final String DOMAIN = "https://devbean.defensealertdevice.com/"; //Test
     //public static final String DOMAIN = "http://develop.defensealertdevice.com:8080/";

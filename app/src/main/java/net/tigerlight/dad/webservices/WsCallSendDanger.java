@@ -35,7 +35,18 @@ public class WsCallSendDanger {
         final String url;
         url = WsConstants.MAIN_URL;
         final String updateResponse = new WSUtil().callServiceHttpGet(context, url + generateUpdateRequest(latitude, longitude));
-        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest(latitude, longitude, timezoneID, accuracy));
+        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest(latitude, longitude, timezoneID, accuracy, "", ""));
+        return parseResponse(response);
+    }
+
+    /**
+     * Calls the api user Login.
+     */
+    public JSONObject executeService(final Double latitude, final Double longitude, String timezoneID, int accuracy, String uuid, String identifier) {
+        final String url;
+        url = WsConstants.MAIN_URL;
+        final String updateResponse = new WSUtil().callServiceHttpGet(context, url + generateUpdateRequest(latitude, longitude));
+        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest(latitude, longitude, timezoneID, accuracy, uuid, identifier));
         return parseResponse(response);
     }
 
@@ -69,7 +80,7 @@ public class WsCallSendDanger {
     /**
      * Generates RequestBody for making api call for okhttp
      */
-    private String generateLoginRequest(final Double latitude, final Double longitude, String timezoneID, int accuracy) {
+    private String generateLoginRequest(final Double latitude, final Double longitude, String timezoneID, int accuracy, String uuid, String identifier) {
         final WsConstants wsConstants = new WsConstants();
         final Preference preference = Preference.getInstance();
         StringBuilder builder = new StringBuilder();
@@ -84,7 +95,8 @@ public class WsCallSendDanger {
         builder.append("&" + wsConstants.PARAMS_TAG + "=" + wsConstants.PARAMS_TAG_VALUE);
         builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(Constant.IS_LANG_ID, ""));
         builder.append("&" + wsConstants.PARAMS_ACCURACY + "=" + accuracy);
-
+        builder.append("&uuid=" + uuid);
+        builder.append("&identifier=" + identifier);
 //        builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(preference.KEY_LANG_ID, "EN"));
         return builder.toString();
     }
