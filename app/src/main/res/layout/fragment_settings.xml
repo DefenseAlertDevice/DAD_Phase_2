@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/login_bg"
+>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/img_logo_white" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:paddingHorizontal="@dimen/_20sdp"
+            android:paddingBottom="@dimen/_50sdp"
+            android:layout_height="wrap_content">
+
+            <net.tigerlight.dad.util.CustomTextViewBold
+                android:id="@+id/fragment_settings_tvWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_18sdp"
+                android:textAlignment="center"
+                android:text="@string/TAG_WELCOME"
+                android:textStyle="bold"
+            />
+            <Button
+                android:id="@+id/fragment_settings_tvEditAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_bg_orange"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="@string/edit_account"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_15sdp"
+                android:textAllCaps="false"
+            />
+            <Button
+                android:id="@+id/fragment_settings_tvLogOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:text="@string/logout"
+                android:textColor="@color/colorOrange_new"
+                android:textAllCaps="false"
+                android:background="@drawable/button_bg_white"
+                android:textSize="@dimen/_15sdp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp">
+                <net.tigerlight.dad.util.CustomTextViewBold
+                    android:id="@+id/fragment_settings_tvShowEula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:text="@string/fragment_registration_show_eula"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/font_15sp" />
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
+                    android:id="@+id/tvBuild"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/build_no"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/font_15sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

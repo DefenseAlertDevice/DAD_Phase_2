@@ -1,0 +1,287 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorGray"
+        android:id="@+id/fragment_alert_detail_header"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_10sdp"
+    >
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:id="@+id/fragment_alert_detail_tvBackAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dashbord_alert"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_14sdp"
+            android:drawableTint="@color/colorWhite"
+            android:drawableStart="@drawable/ic_action_previous_item"
+            android:textStyle="bold"
+        />
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:id="@+id/fragment_alert_detail_tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_16sdp"
+            android:textStyle="bold"
+        />
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:id="@+id/fragment_alert_detail_tvDial911"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_14sdp"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/fragment_alert_detail_llHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/fragment_alert_detail_llProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/fragment_alert_detail_ivUserProfile"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_70sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/pf_pic"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <net.tigerlight.dad.util.CustomTextViewBold
+                    android:id="@+id/fragment_alert_detail_tvUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+
+                    android:focusable="false"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_15sdp"
+
+                    android:textStyle="bold" />
+
+                <net.tigerlight.dad.util.CustomTextViewRegular
+                    android:id="@+id/fragment_alert_detail_tvUserAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_alert_detail_tvUserName"
+                    android:layout_marginEnd="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:ellipsize="end"
+                    android:focusable="false"
+
+                    android:lineSpacingExtra="0dp"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_11sdp" />
+
+                <net.tigerlight.dad.util.CustomTextViewRegular
+                    android:id="@+id/fragment_alert_detail_tvDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_alert_detail_tvUserAddress"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:focusable="false"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_11sdp" />
+
+                <ImageView
+                    android:id="@+id/btnEditAlert"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/fragment_alert_detail_ivDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/img_cancel"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_alert_detail_llOkAlert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/fragment_alert_detail_llOkAlert_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ok_alerts"
+                android:contentDescription="@string/app_name" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_alert_detail_llRedAlert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/fragment_alert_detail_img_redalert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/danger_alerts"
+                android:contentDescription="@string/app_name" />
+
+            <!--<net.tigerlight.dad.util.CustomTextViewBold-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.8"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/crowd_alert"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/colorWhite"-->
+            <!--android:textSize="@dimen/_18sdp" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_alert_detail_llOrangeAlert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/crowd_alerts" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_alert_detail_llTestAlert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/fragment_alert_detail_img_testalert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/test_alerts"
+                android:contentDescription="@string/app_name" />
+
+            <!--<net.tigerlight.dad.util.CustomTextViewBold-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.8"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/test_alert"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/colorWhite"-->
+            <!--android:textSize="@dimen/_18sdp" />-->
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--<fragment-->
+            <!--android:id="@+id/fragment_alert_detail_map"-->
+            <!--class="com.google.android.gms.maps.MapFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+            <LinearLayout
+                android:id="@+id/fragment_alert_detail_flMapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/fragment_alert_detail_tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textSize="@dimen/_20sdp" />
+
+            <!--<com.google.android.gms.maps.MapView-->
+            <!--android:id="@+id/map"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

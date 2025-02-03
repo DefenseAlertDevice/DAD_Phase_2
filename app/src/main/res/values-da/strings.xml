@@ -1,0 +1,395 @@
+<resources>
+    <string name="app_name">The SoulDefendHER™</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--Common start-->
+    <string name="ok">OK</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="cancel">Annuller</string>
+    <string name="cancel_ul"><u>Annuller</u></string>
+    <!--<string name="done">DONE</string>-->
+    <string name="next">NEXT</string>
+    <!--<string name="back">BACK</string>-->
+    <!--<string name="submit">SUBMIT</string>-->
+    <string name="update">UPDATE</string>
+    <string name="settings">SETTINGS</string>
+    <string name="loading">Loading&#8230;</string>
+
+    <!--Common Alert Msg-->
+    <string name="alert_some_error">An error occurred, please try again later</string>
+    <string name="alert_something_wrong">Noget gik galt, prøv igen senere</string>
+    <string name="alert_network_error">Network error, please try again later</string>
+    <string name="alert_check_connection">Tjek venligst du og prøv igen</string>
+    <string name="alert_check_gps">Geolocation is turned OFF. Please turn it ON.</string>
+    <string name="alert_max_upload_image_size">Uploaded files must be less than 10MB</string>
+    <string name="alert_invalid_credentials">E-mail eller adgangskode er ugyldig.</string>
+    <string name="alert_invalid_login">E-mail eller adgangskode er ugyldig.</string>
+    <string name="alert_not_registered">Ingen konto er tilknyttet denne e-mail-id, Indtast gyldig e-mail-id eller Registrer ny konto.</string>
+    <string name="alert_valid_email">Enter Valid Email ID.</string>
+    <string name="alert_password_required">Please enter password to login in account.</string>
+    <string name="alert_"></string>
+
+
+    <!-- Forgot password string has been start -->
+    <string name="alert_forgot_password_success">En midlertidig adgangskode er blevet sendt til din registrerede e-mail-id.</string>
+    <string name="forgor_password_email_not_found">Ingen konto er tilknyttet denne e-mail-id, Indtast gyldig e-mail-id eller Registrer ny konto.</string>
+    <string name="alert_forgot_password_error">Der var en problem at sende e-mail. Prøv igen, eller senere.</string>
+
+    <!-- Forgot password string has been finish -->
+
+    <!--Registration fragment string has been start-->
+
+    <string name="fragment_registration_first_time_user">Førstegangsbruger?</string>
+    <string name="fragment_registration_create_account">"<u>Opret konto</u>"</string>
+    <string name="fragment_registration_setting_up_another_device">Vil du konfigurere en anden enhed?</string>
+    <string name="fragment_registration_login_to_your_account">"<u>Log ind på din konto</u>"</string>
+    <!--<string name="fragment_registration_show_eula">"<u>Vis licensaftale</u>"</string>-->
+
+    <string name="your_string_here">This is an <u>underline</u>.</string>
+    <string name="sample"> <u>your data</u></string>
+
+    <!--Login To Your Account fragment has been start-->
+    <string name="fragment_login_to_your_tv_remember_me">"<u>Husk mig</u>"</string>
+    <string name="fragment_login_to_your_tv_login">"<u>Log ind</u>"</string>
+    <string name="fragment_login_to_your_et_hint_pwd">adgangskode</string>
+    <string name="fragment_login_to_your_et_hint_user_name">User Name</string>
+    <string name="fragment_login_to_your_tv_forgot_pws">"<u>Glemt adgangskode</u>"</string>
+    <string name="fragment_login_to_your_tv_title_login_credentials">Loginoplysninger</string>
+    <!-- Validation Strings for login -->
+    <string name="TAG_VALID_USERNAME">E-mail er påkrævet.</string>
+    <string name="TAG_VALID_PASSWORD">Password er påkrævet.</string>
+    <string name="TAG_OK">Ok</string>
+    <string name="TAG_INTERNET_AVAILABILITY">Kontroller internetforbindelse.</string>
+
+
+    <!-- Registration String start -->
+    <!--<string name="alert_registration_success">You are registered successfully.</string>-->
+
+    <!--&lt;!&ndash; TODO: Remove or change this placeholder text &ndash;&gt;-->
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+
+
+    <!-- Registration String finish -->
+
+
+    <!--Create Account fragment string has been start-->
+    <string name="hello_images">HelloImages</string>
+    <string name="date_formate">yyyyMMdd_HHmmss</string>
+    <string name="img_name">IMG_</string>
+    <string name="img_extension">.jpg</string>
+    <string name="file_url">file_uri</string>
+    <string name="fragment_create_account_tv_cancel">Annuller</string>
+    <string name="fragment_create_account_tv_new_account">Ny konto</string>
+    <string name="fragment_create_account_tv_save">Gem</string>
+    <string name="fragment_create_account_tv_check_entries">"Kontrollér poster"</string>
+    <string name="fragment_create_account_tv_show">"<u>Show</u>"</string>
+    <string name="fragment_registration_create_tv_hide">"<u>Hide</u>"</string>
+
+    <string name="fragment_create_account_tv_hint_user_name"><i>Indtast det navn, dine kontakter kender dig under</i></string>
+    <string name="fragment_create_account_custom_et_phone_no_hint">Telefon Nej</string>
+    <string name="fragment_create_account_custom_tv_phone_no_hint"><i>Indtast det telefonnummer, hvor du ønsker at modtage gruppevarsler (Crowd Alerts) fra andre The SoulDefendHER™ brugere. </i></string>
+    <string name="fragment_create_account_custom_tv_email_id_hint"><i>Din e-mailadresse er også dit brugernavn, og adgangskoder og anmodninger om nulstilling af pinkoder sendes til denne e-mailadresse </i></string>
+    <string name="fragment_create_account_custom_et_email_id">e-mail</string>
+    <string name="fragment_create_account_et_user_name">Navn</string>
+    <string name="fragment_login_to_your_account_et_pwd">adgangskode</string>
+    <string name="fragment_login_to_your_account_tv_pwd_hint"><i>Vi anbefaler 7 tegn med brug af tal og store og små bogstaver. MEN vi håndhæver kun minimumskravet på 7 tegn.</i></string>
+    <string name="fragment_login_to_your_account_et_re_password">Re Indtast adgangskode</string>
+    <string name="fragment_login_to_your_account_tv_re_password_hint"><i>Indtast adgangskoden igen for at bekræfte korrekt indtastning</i></string>
+    <string name="TAG_FIRSTNAME_EMPTYMSG">Brugernavn er påkrævet.</string>
+    <string name="TAG_PHONE_NO_EMPTYMSG">Telefon nr er påkrævet.</string>
+    <string name="TAG_EMAIL_ID">E-mail er påkrævet.</string>
+    <string name="TAG_PASSWORD_EMPTYMSG">Skal du indtaste password.</string>
+    <string name="TAG_RE_PASSWORD_EMPTYMSG">Skal indtaste genindtaste password.</string>
+    <string name="TAG_PWD_RE_PWD_EMPTYMSG">Password og Re-enter password mismatch.Please indtaste samme værdier for begge.</string>
+    <string name="TAG_PIN_RE_PIN_EMPTYMSG">New Pin and Confirm Pin mismatch.Please enter same values for both.</string>
+    <string name="TAG_PIN_OLD_PIN_EMPTYMSG">Please enter correct value for Old Pin.</string>
+    <string name="TAG_ENTER_VALID_EMAIL">Indtast gyldig e-mail.</string>
+    <string name="TAG_PASSWORD_LENGTHMSG">Minimum indtaste 7 tegn for Password.</string>
+    <string name="TAG_RESETPASSWORD_TXT">Nulstil adgangskode</string>
+    <string name="TAG_PHONE_NO_Valid_NO">Enter Valid Number</string>
+    <string name="TAG_PHONE_NO_MIN_TEN_MSG">Enter 10 Digit Number.</string>
+    <string name="account_created">\"Your Account Is created\"</string>
+    <string name="account_updated">\"Your Account Is updated\"</string>
+    <string name="reday_to_use">You are ready to use The SoulDefendHER™</string>
+
+    <!--Create Account fragment string has been finished start-->
+
+
+    <!--Forgot fragment string has been start-->
+
+    <!--DashBoad fragment string has been start-->
+    <string name="dashbord_contact">Kontaktpersoner</string>
+    <string name="dashbord_alert">Varsler</string>
+    <!--<string name="dashbord_i_am_ok">I'm ok</string>-->
+    <string name="dashbord_account">Konto</string>
+    <string name="dashbord_i_m_ok">Jeg er OK</string>
+    <string name="fragment_terms_and_condition_cb_accept_license">"<u>Accept</u>"</string>
+    <string name="fragment_terms_and_condition_cb_not_accept_license">"<u>I do NOT accept license</u>"</string>
+    <string name="eula_title">Eula Not Accepted</string>
+    <string name="accepentance_notice">Licensa skal accepters for at anvende appen.Hvis du ikke onsker at acceptere licensaftene,bedes du lukke appen.i modsat fald vil du blive sendt tilbage till skermen med licensaftalen.</string>
+    <!--DashBoad fragment string has been finished-->
+
+    <!--Contact fragment string has been start-->
+    <string name="fragment_contact_tv_title">Kontaktpersoner</string>
+    <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ License</string>
+    <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
+    <string name="error_bluetooth_not_supported">Bluetooth understøttes ikke.</string>
+    <string name="change_password"><u>Skift adgangskode</u></string>
+
+
+    <!--Add More Fragment string has been start-->
+
+    <!--I am OK fragment string has been start-->
+
+    <string name="fragment_i_am_ok_msg">A Pin is required before you can send an I m ok message.Please Create a PIN: </string>
+    <string name="fragment_create_account_tv_reset_pin">"<u>Reset PIN</u>"</string>
+    <string name="fragment_create_account_tv_forgot_pin">"<u>Forgot PIN</u>"</string>
+    <string name="fragment_i_am_et_hint_pin">New PIN</string>
+    <string name="fragment_i_am_et_hint_confirm_pin">Confirm PIN</string>
+
+    <!--I am OK  Account fragment string has been start-->
+    <string name="fragment_account_tv_title">Konto</string>
+    <string name="logout"><u>Log ud</u></string>
+    <string name="fragment_login_to_your_et_hint_email_id">e-mail</string>
+
+    <!-- Change Password fragment string has been start-->
+    <string name="fragment_change_password_tv_title">Skift adgangskode</string>
+    <string name="fragment_change_password_et_old_password">Old Password</string>
+    <string name="fragment_change_password_et_new_password_hint">nyt kodeord</string>
+    <string name="fragment_change_password_et_confirm_password_hint">bekræft password</string>
+    <string name="fragment_change_password_btn_Save">Gem</string>
+    <string name="old_pwd">Indtast Gammel adgangskode</string>
+    <string name="new_pwd">Enter New Password</string>
+    <string name="confirm">Confirm Password</string>
+    <string name="same_value">Indtast den samme værdi.</string>
+    <string name="pwd_change_msg">Password er sket ændringer med succes.</string>
+    <string name="valid_msg">Enter min 7 character with single digit and single special character.</string>
+
+
+    <!-- Edit Profile fragment string has been start-->
+    <string name="fragment_edit_profile_tv_title">Rediger konto</string>
+    <string name="fragment_edit_profil_tv_save">Gem</string>
+    <string name="fragment_edit_profile_msg">Enter the name your contacts known by you.</string>
+    <string name="fragment_edit_profile_tv_phone_alert_msg">Phome number where you want to receive crowd text alerts from the other The SoulDefendHER™ users.</string>
+    <string name="fragment_edit_profile_title_Password">Password.</string>
+    <string name="fragment_edit_profile_title_password_update">Opdatering af adgangskode</string>
+    <string name="fragment_edit_profile_title_Current">Nuværende adgangskode</string>
+    <string name="fragment_edit_profile_title_new">Ny adgangskode </string>
+    <string name="fragment_edit_profile_title_confirm">Gentag ny adgangskode </string>
+    <string name="fragment_edit_profile_et_current_hint">Nuværende adgangskode</string>
+    <string name="fragment_edit_profile_new_hint">Ny adgangskode </string>
+    <string name="fragment_edit_profile_title_forgot_password">"<u>Forgot Password</u>"</string>
+    <string name="fragment_create_account_et_user_ph_no">Mobile Number</string>
+
+    <!-- Create Pin fragment string has been start-->
+    <string name="fragment_create_pin_et_new_pin_hint">Ny pinkode</string>
+    <string name="fragment_create_pin_et_confirm_pin_hint">Bekræft PIN-kode:</string>
+    <string name="fragment_create_pin_btn_save">Gem</string>
+    <string name="fragment_create_pin_tv_title">Opret PIN</string>
+    <string name="fragment_change_password_tv_cancel">Annuller</string>
+    <string name="fragment_i_m_ok_et_new_pin_hint">Gammel / temp Pin</string>
+    <string name="fragment_i_m_ok_et_confirm_pin_hint">enteg ny PIN-kode</string>
+    <string name="fragment_i_m_ok_tv_reset_pin"><u>Reset PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_forgot_pin"><u>Forgot PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_validate_pin">Validate PIN:</string>
+    <string name="fragment_i_m_ok_tv_save_pin">Gem pinkode</string>
+    <string name="send_i_m_ok_message"><u>Send I\'m OK Message</u></string>
+    <string name="pin_required">Der kræves en pinkode for at sende beskeden "Jeg er OK". Opret en pinkode: </string>
+    <string name="old_temporary_pin">Old/Temporary Pin</string>
+    <string name="new_pin">Ny PIN-kode</string>
+    <string name="alert_invalid_pin">Invalid PIN</string>
+    <string name="confirm_pin">Genteg ny PIN-kode</string>
+    <string name="validate_pin"><u>Valider PIN</u></string>
+    <string name="save_pin"><u>Gem PIN</u></string>
+    <string name="USER_ID">userID</string>
+
+    <!-- Contact  fragment string has been start-->
+    <string name="fragment_add_more_tv_user_name_gine"><i>Indtast det navn, der skal vises for din kontakt— Ikke påkrævet. </i></string>
+    <string name="fragment_add_more_tv_phone_no_hint_"><i>Kontaktpersonens mobilenummer-påkrævet.</i></string>
+    <string name="fragment_add_more_et_phone_no_hint">Phone Number</string>
+    <string name="fragment_add_more_et_first_name_hint">Fornavn</string>
+    <string name="fragment_add_more_tv_first_name_hint"><i>Kontaktpersonens fornavn - ikke påkrævet</i></string>
+    <string name="fragment_add_more_et_last_name_hint">Efternavn</string>
+    <string name="fragment_add_more_tv_last_name_hint"><i>Kontaktpersonens efternavn - ikke påkrævet</i></string>
+    <string name="fragment_add_more_et_email_hint">e-mail</string>
+    <string name="fragment_add_more_tv_email_hint"><i>Indtast en The SoulDefendHER™ App-brugerens registrerings-emailadresse, så de vil modtage app-underretninger med enestående lyd. Andre kontakter modtager kun e-mail-advarsler.</i></string>
+    <string name="fragment_add_more_tv_cance">Annuller</string>
+    <string name="fragment_add_more_tv_addressbook">Adressebog</string>
+    <string name="fragment_add_more_tv_save">Gem</string>
+    <string name="show">Vis</string>
+    <string name="hide">Skjul</string>
+    <string name="enter_you_pin">Enter Your PIN</string>
+    <string name="contacts">Contacts</string>
+    <string name="crowd_alerts_msg"> "Gruppevarsler (Crowd Alerts) advarer andre The SoulDefendHER™ brugere inden for 1,5 km, når du sender en \"Jeg er i FARE\"  eller \"Jeg er OK\" besked.</string>
+    <string name="send_danger">"Send \"Jeg er i FARE\"\ "meddelelse</string>
+    <string name="receive_crowd_alerts">Modtag gruppevarsler</string>
+    <string name="empty_alerts">No Alerts Found</string>
+    <string name="test_mode">Testtilstand</string>
+    <string name="danger_alert">Fare alert!</string>
+    <string name="test_alert">Test alert!</string>
+    <string name="ok_alert">OK alarm</string>a
+    <string name="crowd_alert">Crowd alert!</string>
+    <string name="danger">fare fare fare</string>
+    <string name="test_test">test test</string>
+    <string name="dial_100"><u>Ring 112</u></string>
+    <string name="ok_ok">Okay Okay Okay</string>
+
+    <!--custom font-->
+    <string name="font_regular" translatable="false">OpenSans_Regular.ttf</string>
+    <string name="font_semibold" translatable="false">OpenSans_Semibold.ttf</string>
+    <string name="font_bold" translatable="false">OpenSans_Bold.ttf</string>
+    <string name="dialog_dial_title">Nødopkald</string>
+    <string name="dialog_dial_msg">Du er ved at ringe til den lokale alarmnummer. \ N Sørg for at fortælle dem denne indkaldelse er for </string>
+    <string name="located_at">\nPlaceret på</string>
+    <string name="dialog_dial_pos_button">Dial Emergency</string>
+    <string name="dialog_dial_neg_button">Annuller</string>
+    <string name="str_cancel">Annuller</string>
+    <string name="pin">Pinkode</string>
+    <string name="edit_account"><u>Rediger konto</u></string>
+    <string name="need_to_change_your_name_phone_or_password">Vil du ændre navn, telefonnummer, adgangskode eller foretage sprogvalg?</string>
+    <string name="saving_image">Saving image</string>
+    <string name="preparing_card">Preparing card</string>
+    <string name="no_storage_card">No storage card</string>
+    <string name="not_enough_space">Not enough space</string>
+
+    <!--dialog-->
+    <string name="dialog_contact_added_title">Contact Added</string>
+    <string name="dialog_contact_added_msg">You have added a contact that will receive your Alerts.</string>
+
+    <string name="dialog_test_mode_title">Indtastning testtilstand</string>
+    <string name="dialog_test_mode_msg">"I testtilstand ken du testa din enhed. Eneste forskel er, at   \"Jeg er i FARE\" og \" jeg er OK\"varsler kun sendes til dig selv i form of en sms og en mail. Testtilstanden afbrydes, nar du afbryder testtilstanden eller fortader appen."</string>
+    <string name="dialog_test_mode_pos_btn">Aktiver testtilstand </string>
+    <string name="dialog_test_mode_neg_btn">Annuler testtilstand </string>
+
+    <string name="dialog_delete_contact_title">Alert Deleted</string>
+    <string name="dialog_delete_contact_msg">You have deleted a contact. That contact will NOT receive your Alerts.</string>
+
+    <string name="dialog_delete_alert_title">Alert Slettet</string>
+    <string name="dialog_delete_alert_msg">You have deleted an ALert.</string>
+
+    <string name="dialog_crowd_alert_title">Crowd Alerts Status Updated</string>
+    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All The SoulDefendHER™ owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
+
+    <string name="dialog_eula_title"> Licensaftale ikke accepteret </string>
+    <string name="dialog_eula_msg">Licensaftalen skal accepteres for at anvende appen. Hvis du ikke ønsker at acceptere licensaftalen, bedes du lukke appen. I modsat fald vil du blive sendt tilbage til skærmen med licensaftalen. </string>
+    <string name="i_do_not_accept_license"> Licensaftale ikke accepteret </string>
+    <string name="i_accept_license">Jeg accepterer licens</string>
+    <string name="TAG_Loading">Loading...</string>
+    <string name="TAG_REG_SUC_MSG">Du er registreret med succes.</string>
+    <string name="TAG_EXIT_WARN_MSG">Er du sikker på, vil afslutte?</string>
+    <string name="TAG_NOO">Annuller</string>
+    <string name="TAG_YESS">OK</string>
+    <string name="fragment_forgot_password_et_email_hint">Din e-mail vil være din login-brugernavn</string>
+    <string name="SOME_WENT_WRONG_MSG">Noget gik galt, prøv igen senere.</string>
+    <string name="TAG_EMAIL_SENT">En e-mail for at nulstille din adgangskode er blevet sendt.</string>
+    <string name="TAG_IS_SURE_MSG">Er du sikker på, at du vil slette denne kontakt?</string>
+    <string name="TAG_YES">ja</string>
+    <string name="TAG_DATA_NA_MSG">I øjeblikket ingen kontakter.</string>
+    <string name="TAG_SENDING_ALERT">Ineternet er ikke tilsluttet ...</string>
+    <string name="TAG_GPS_ENABLE_MSG">Din GPS synes at være deaktiveret, vil du aktivere det?</string>
+    <string name="TAG_DELETING">Sletning...</string>
+    <string name="TAG_COULD_NOT_DELETE_MSG">Kunne ikke slette.</string>
+    <string name="TAG_ALER_SENT">Fare Alert sendt til dine kontakter</string>
+    <string name="TAG_SOME_WENT_WRONG_MSG">Noget gik galt, prøv venligst igen ..</string>
+    <string name="TAG_IS_SURE_ALERT">Er du sikker på,at du vil slette denne kontakt?</string>
+    <string name="CURRENT_PWD_REQ_MSG">Current Password er påkrævet.</string>
+    <string name="TAG_NEW_PWD_REQ_MSG">Ny adgangskode er påkrævet.</string>
+    <string name="TAG_CONFIRM_PWD_REQ_MSG">Bekræft adgangskode er påkrævet</string>
+    <string name="TAG_ENTER_CURRECT_PWD">Nuværende password er ikke angivet korrekt </string>
+    <string name="TAG_SAME_MSG">Ny adgangskode og Bekræft adgangskode mismatch.Please indtaste samme værdier for begge.</string>
+    <string name="TAG_PROFILE_UPDATED_MSG">Din profil er opdateret</string>
+    <string name="TAG_EMAIL_HAS_SENT_MSG">E-mail er sendt til din konto.Vær tjekke din postkasse</string>
+    <string name="TAG_PWD_UPDATED_MSG">Password er blevet opdateret..</string>
+    <string name="TAG_PING_SHORT_MSG">Stiften felt er for kort. Pin skal være 4 cifre.</string>
+    <string name="TAG_PIN_NOT_EMPTY_MSG">Stiften felt må ikke være tomt.</string>
+    <string name="TAG_NEW_PIN_CREATED_MSG">Ny PIN-kode er oprettet</string>
+    <string name="TAG_IM_OK_ALERT_SENT">"Din" Jeg er OK "alarm er blevet sendt.</string>
+    <string name="TAG_RECORDED_PIN_NOT_MATCH">Din pin ikke matche dine indspillede pin.</string>
+    <string name="TAG_ENTER_NEW_PIN">Indtast ny PIN-kode</string>
+    <string name="TAG_CONFIRM_PINF">Indtast 4-cifret PIN-kode</string>
+    <string name="TAG_PIN_VALIDATION">Indtast 4-cifret PIN-kode</string>
+    <string name="TAG_PIN_NOT_FOUR">PIN lenghth bør ikke overstige 4-cifret</string>
+    <string name="TAG_ENTER_OLD_TEMP_PIN">Nuvaerende PIN-code</string>
+    <string name="TAG_FORGOT_PIN">Glemt PIN-kode</string>
+    <string name="TAG_AUTO_GEN_PIN">Vil du lade systemet generere en ny PIN-kode</string>
+    <string name="TAG_WAIT">vent ...</string>
+    <string name="TAG_PIN_CAN_NOT_GET">Pin kan ikke generere endnu. Prøv igen senere.</string>
+    <string name="TAG_GPS_MSG">Gps aktiveret.</string>
+    <string name="TAG_GPS_ONLINE">Aktiver Gps for at gå online.</string>
+    <string name="TAG_WELCOME">Velkommen</string>
+    <string name="TAG_LOGOUT_CONFIRMATION">Log ud Bekræftelse</string>
+    <string name="TAG_LOGOUT_CONFIRMATION_DES">Hvis du logger ud vil alle kontooplysninger blive slettet fra denne enhed. Du vil blive bedt om at logge ind igen for at bruge din konto. Dine kontakter og tidligere advarsler gemmes på vores servere og vil blive genoprettet ved dit næste login.</string>
+    <string name="TAG_PWD_EMAIL_EROR">E-mail eller adgangskode er forkert.</string>
+    <string name="TAG_PWD_FETCH_EROR">Fejl i hentning af data fra serveren</string>
+    <string name="TAG_GPS_NA">Google spille tjenester ikke er tilgængelige. Du skal logge ind først, at bruge nogen af ​​Google Play-tjenester.</string>
+    <string name="TAG_FET_ERROR">Fejl i hentning af data fra serveren</string>
+    <string name="TAG_SAME_VAL">Indtast samme værdi.</string>
+    <string name="TAG_SEND">sende</string>
+    <string name="TAG_RESET">Reset</string>
+    <string name="TAG_VALIDATE">validere</string>
+    <string name="TAG_MIN_FOUR">Indtast Minimum 4-cifret</string>
+    <string name="TAG_I_AM_ON">Jeg er OK</string>
+    <string name="TAGE_ENTER_YOUR_PIN">Indtast din PIN-kode</string>
+    <string name="TAGE_SEND_OK_MSG">"Send \"Jeg er OK\" meddelelse </string>
+    <string name="TAGE_REQUIRE_PIN">""En PIN-kode er påkrævet, før du kan sende en \"Jeg er OK\" besked.Opret en PIN-kode:"</string>
+    <string name="TAGE_NEW_PIN">Ny PIN-kode</string>
+    <string name="TAGE_CONFIRM_PIN">Bekræft PIN-kode:</string>
+    <string name="TAG_RESEt_PIN">Nulstil PIN-kode</string>
+    <string name="TAG_VALIDATE_PIN">Velider PIN</string>
+    <string name="TAG_SAVE_PIN">Gem PIN</string>
+    <string name="TAG_RE_ENTER_PIN">Bekræft PIN-kode</string>
+    <string name="TAGE_PIN">PIN-kode</string>
+    <string name="TAG_TAKE_PHOTO">Tag Photo</string>
+    <string name="TAG_CHOOSE_FROM_GALLERY">Vælg fra Galleri</string>
+    <string name="choose_option">Choose</string>
+    <string name="TAG_CONFIRM">Gentag ny adgangskode </string>
+    <string name="TAG_ADD_Photo">Tilføj foto</string>
+    <string name="TAG_READY_TO_GO">Klar til at gå</string>
+    <string name="TAF_DEVICE_NOT_SUPPORT">Enheden har ikke kamera.</string>
+    <string name="TAG_COULD_LOGOUT">Kan ikke at logge ud</string>
+    <string name="TAG_UNABLE_CREATE_ACCOUNT">Kan ikke oprette konto</string>
+    <string name="TAG_CONT_ADDED_SUCCESS">Kontakt er blevet tilføjet.</string>
+    <string name="TAG_CONT_UNABLE_ADDED">Kan ikke tilføje Kontakt</string>
+    <string name="change_language"><u>Skift sprog</u></string>
+    <string name="TAG_SWEDISH">Swedish</string>
+    <string name="TAG_DA">dansk</string>
+    <string name="TAG_NA">Svensk</string>
+    <string name="TAG_SV">Svensk</string>
+    <string name="TAG_Choose_Language">Vælg sprog</string>
+    <string name="default_english"><u>engelsk</u></string>
+
+    <string name="TAG_ENG">engelsk</string>
+    <string name="TAG_TEST_MODE_ON">Test Mode er aktiveret</string>
+    <string name="TAG_TEST_MODE_OFF">Test Mode er blevet slukket</string>
+    <string name="TAG_CROWD_ALERT_ON"> Gruppevarsel (Crolvd Alert) er tændt </string>
+    <string name="TAG_CROWD_ALERT_OFF">Clowd Alert er blevet slukket</string>
+    <string name="TAG_CORRECT_PIN">Du har indtastet korrekt PIN-kode</string>
+    <string name="TAG_INCORRECT_PIN">Du har indtastet forkert PIN</string>
+    <string name="dial_in">Dial 100</string>
+    <string name="dial_us">Ring 911</string>
+    <string name="dial_fr">Ring 112</string>
+    <string name="is_safe">Det er sikkert!</string>
+    <string name="is_danger">er i fare!</string>
+    <string name="custom_dialog_da_lang">Dansk</string>
+    <string name="custom_dialog_nb_lang">Norsk</string>
+    <string name="custom_dialog_sv_lang">Svensk</string>
+    <string name="TAG_forgot_pwd">Glemt adgangskode</string>
+    <string name="TAG_ENTER_FIRST_NAME">Indtast fornavn.</string>
+    <string name="TAG_ENTER_LAST_NAME">Indtast efternavn.</string>
+    <string name="TAG_HAS_BEEN_ON">
+Har været på</string>
+    <string name="dial_991">Ring 991</string>
+    <string name="custom_dialog_eng_lang">English</string>
+    <string name="dial_112">Ring 112</string>
+    <string name="custom_progess_dialog_tv_msg">Send en advarsel om "fare" til dine kontakter.</string>
+    <string name="battery_level_good">GOOD BATTERY</string>
+    <string name="battery_level_low">LAV BATTERI</string>
+    <string name="battery_level_replace">Udskift D.A.D BATTERI</string>
+    <string name="test_message_title">Testmeddelelse sendt</string>
+    <string name="test_message_body">Testmeddelelser er blevet sendt tilbage til dig via e-mail, sms og app notifikation</string>
+    <string name="nice">Pæn</string>
+
+</resources>

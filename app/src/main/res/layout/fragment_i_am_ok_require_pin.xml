@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:padding="@dimen/padding_10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/TAGE_REQUIRE_PIN"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/font_15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+
+        android:gravity="center"
+
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:text="@string/TAGE_NEW_PIN"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_15sp"
+                android:maxLength="4"
+                android:textStyle="bold"
+
+
+                />
+
+
+            <EditText
+                android:id="@+id/fragment_i_m_ok_requiew_pin_et_new_pin"
+                style="@style/style_et_login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="0.4"
+                android:hint="@string/fragment_i_m_ok_et_new_pin_hint"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:text="@string/TAGE_CONFIRM_PIN"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold"
+
+                />
+
+
+            <EditText
+                android:id="@+id/fragment_i_m_ok_requiew_pin_et_confirm_pin"
+                style="@style/style_et_login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="0.40"
+                android:hint="@string/fragment_i_m_ok_et_confirm_pin_hint"
+                android:inputType="number"
+                android:textAlignment="viewStart"
+
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/fragment_i_m_ok_requiew_pin_tv_validate_pin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+
+                android:text="@string/TAG_VALIDATE_PIN"
+                android:textColor="@color/colorInckNevyLight"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                android:id="@+id/fragment_i_m_ok_requiew_pin_tv_save_pin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="@string/TAG_SAVE_PIN"
+                android:textColor="@color/colorInckNevyLight"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold"
+
+                />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/fragment_i_m_ok_requiew_pin_tv_reset_pin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/TAG_RESEt_PIN"
+                android:textColor="@color/colorInckNevyLight"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fragment_i_m_ok_requiew_pin_tv_forgot_pin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/TAG_FORGOT_PIN"
+                android:textColor="@color/colorInckNevyLight"
+                android:textSize="@dimen/font_15sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+

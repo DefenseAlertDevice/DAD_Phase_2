@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorGray"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorGray"
+            android:text="@string/dashbord_alert"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_20sdp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crowd_alerts_msg"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/_13sdp" />
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:id="@+id/fragment_alert_tvSendDanger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/send_danger"
+            android:textColor="@color/color_blue"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
+            <net.tigerlight.dad.util.CustomTextViewBold
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:text="@string/receive_crowd_alerts"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/fragment_alert_swCrowdAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:checked="false"
+                android:switchMinWidth="@dimen/_15sdp"
+                android:thumb="@drawable/drawable_switch_thumb"
+                android:track="@drawable/drawable_switch_track" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
+            <net.tigerlight.dad.util.CustomTextViewBold
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:text="@string/test_mode"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/fragment_alert_swTestMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:checked="false"
+                android:switchMinWidth="@dimen/_15sdp"
+                android:thumb="@drawable/drawable_switch_thumb"
+                android:track="@drawable/drawable_switch_track" />
+
+        </LinearLayout>
+
+        <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/fragment_alert_rvAlerts"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/fragment_alert_tvEmptyAlert"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="@dimen/_15sdp"-->
+        <!--android:visibility="gone"-->
+        <!--android:textColor="@color/colorBlack"-->
+        <!--android:text="@string/empty_alerts"/>-->
+
+        <!--<ListView-->
+        <!--android:id="@+id/fragment_alert_lvAlerts"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:divider="#b5b5b5"-->
+        <!--android:dividerHeight="1dp" />-->
+
+        <net.tigerlight.dad.swipemenulistview.SwipeMenuListView
+            android:id="@+id/fragment_alert_lvAlerts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@android:color/transparent"
+            android:clickable="true"
+            android:listSelector="@android:color/transparent"
+            android:overScrollMode="never"
+
+            tools:listitem="@layout/row_alert_listing" />
+
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
+            android:id="@+id/fragment_alert_tvEmptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+
+            android:textColor="@color/color_gray"
+            android:textSize="@dimen/_14sdp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

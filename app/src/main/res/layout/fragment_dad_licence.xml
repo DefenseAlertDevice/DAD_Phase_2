@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <WebView
+        android:id="@+id/fragment_dad_license_wvTerms"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
+            android:id="@+id/fragment_dad_license_tvDoNotAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/i_do_not_accept_license"
+            android:textColor="@color/tab_selected_text"
+            android:textSize="@dimen/_12sdp"
+            android:layout_weight="0.5"
+            android:gravity="start"
+            android:textStyle="bold" />
+
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
+            android:id="@+id/fragment_dad_license_tvAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/i_accept_license"
+            android:gravity="end"
+            android:layout_weight="0.5"
+            android:textColor="@color/tab_selected_text"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</LinearLayout>

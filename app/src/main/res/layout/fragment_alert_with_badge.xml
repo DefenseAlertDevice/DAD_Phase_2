@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="3dp">
+
+    <ImageView
+        android:id="@+id/framgent_alert_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="1"
+        android:src="@drawable/img_alerts_dis"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/tab_text_color"
+        android:textSize="@dimen/font_10sp" />
+
+    <TextView
+        android:id="@+id/framgent_alert_tv_badge_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/framgent_alert_iv"
+        android:layout_alignTop="@id/framgent_alert_iv"
+        android:background="@drawable/draw_badge_circle"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_6sdp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/framgent_alert_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/framgent_alert_iv"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/tab_text_color"
+        android:textSize="@dimen/font_10sp"
+        android:textStyle="bold"
+
+        />
+
+
+</RelativeLayout>
