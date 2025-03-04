@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:orientation="vertical"
+        android:background="@color/colorWhite">
+
+        <WebView
+            android:id="@+id/webView_tearms"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_300sdp" />
+
+        <TextView
+            android:id="@+id/fragment_terms_and_condition_tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:gravity="center"
+            android:background="@color/colorOrange"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/fragment_create_account_tv_cancel"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/font_15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</FrameLayout>
+
+    <!--<LinearLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="0dp"--><!--android:layout_weight="0.1"--><!--android:orientation="horizontal">-->
+
+    <!--<RelativeLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:layout_marginTop="20dp">-->
+
+    <!--<TextView--><!--android:id="@+id/fragment_terms_and_condition_cb_accept"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:text="@string/fragment_terms_and_condition_cb_accept_license"--><!--android:layout_centerVertical="true"--><!--android:textStyle="bold"--><!--android:layout_gravity="end"--><!--android:textColor="@color/colorInckNevyLight"--><!--android:textSize="@dimen/font_15sp"--><!--android:layout_alignParentTop="true"--><!--android:layout_alignParentEnd="true"--><!--android:layout_marginEnd="29dp" />-->
+
+    <!--<TextView--><!--android:id="@+id/fragment_terms_and_condition_cb_not_accept"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:text="@string/fragment_terms_and_condition_cb_not_accept_license"--><!--android:textStyle="bold"--><!--android:layout_gravity="end"--><!--android:textColor="@color/colorInckNevyLight"--><!--android:textSize="@dimen/font_15sp"--><!--android:layout_marginStart="27dp"--><!--android:layout_alignParentTop="true"--><!--android:layout_alignParentStart="true" />--><!--</RelativeLayout>-->
+
+    <!--</LinearLayout>-->
+
+

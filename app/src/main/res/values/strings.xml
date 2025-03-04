@@ -1,0 +1,419 @@
+<resources>
+    <string name="app_name">The SoulDefendHER™</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--Common start-->
+    <string name="ok">OK</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="cancel">CANCEL</string>
+    <string name="cancel_ul">Cancel</string>
+    <!--<string name="done">DONE</string>-->
+    <string name="next">NEXT</string>
+    <string name="back" translatable="false">Back</string>
+    <!--<string name="submit">SUBMIT</string>-->
+    <string name="update">UPDATE</string>
+    <string name="settings">SETTINGS</string>
+    <string name="loading">Loading&#8230;</string>
+
+    <!--Common Alert Msg-->
+    <string name="alert_some_error">An error occurred, please try again later</string>
+    <string name="alert_something_wrong">Something went wrong, please try again later</string>
+    <string name="alert_network_error">Network error, please try again later</string>
+    <string name="alert_check_connection">Please check you connection and try again</string>
+    <string name="alert_check_gps">Geolocation is turned OFF. Please turn it ON.</string>
+    <string name="alert_max_upload_image_size">Uploaded files must be less than 10MB</string>
+    <string name="alert_invalid_credentials">Username or Password is invalid.</string>
+    <string name="alert_invalid_login">Email or Password is invalid.</string>
+    <string name="alert_not_registered">No account is associated with this Email ID, Please enter valid email ID or Register new account.</string>
+    <string name="alert_valid_email">Enter Valid Email ID.</string>
+    <string name="alert_password_required">Please enter password to login in account.</string>
+    <string name="alert_"></string>
+
+
+    <!-- Forgot password string has been start -->
+    <string name="alert_forgot_password_success">A temporary password has been sent to your registered email ID.</string>
+    <string name="forgor_password_email_not_found">No account is associated with this Email ID, Please enter valid email ID or Register new account.</string>
+    <string name="alert_forgot_password_error">There was an problem to sending email. Please try again or later.</string>
+
+    <!-- Forgot password string has been finish -->
+
+    <!--Registration fragment string has been start-->
+
+    <string name="fragment_registration_first_time_user">First Time User ?</string>
+    <string name="fragment_registration_create_account">Create Account</string>
+    <string name="fragment_registration_setting_up_another_device">Setting Up another device ?</string>
+    <string name="fragment_registration_login_to_your_account">Login To Your Account</string>
+    <string name="fragment_registration_show_eula" translatable="false">"<u>Show EULA</u>"</string>
+
+    <string name="your_string_here">This is an <u>underline</u>.</string>
+    <string name="sample"> <u>your data</u></string>
+
+    <!--Login To Your Account fragment has been start-->
+    <string name="fragment_login_to_your_tv_remember_me">"<u>Remember Me</u>"</string>
+    <string name="fragment_login_to_your_tv_login">Login</string>
+    <string name="fragment_login_to_your_et_hint_pwd">Password</string>
+    <string name="fragment_login_to_your_et_hint_user_name">User Name</string>
+    <string name="fragment_login_to_your_tv_forgot_pws">Forgot Password</string>
+    <string name="fragment_login_to_your_tv_title_login_credentials">Login Credentials</string>
+    <!-- Validation Strings for login -->
+    <string name="TAG_VALID_USERNAME">Email is required.</string>
+    <string name="TAG_VALID_PASSWORD">Password is required.</string>
+    <string name="TAG_OK">OK</string>
+    <string name="TAG_INTERNET_AVAILABILITY">Please check internet connectivity.</string>
+
+
+    <!-- Registration String start -->
+    <!--<string name="alert_registration_success">You are registered successfully.</string>-->
+
+    <!--&lt;!&ndash; TODO: Remove or change this placeholder text &ndash;&gt;-->
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+
+
+    <!-- Registration String finish -->
+
+
+    <!--Create Account fragment string has been start-->
+    <string name="hello_images">HelloImages</string>
+    <string name="date_formate">yyyyMMdd_HHmmss</string>
+    <string name="img_name">IMG_</string>
+    <string name="img_extension">.jpg</string>
+    <string name="file_url">file_uri</string>
+    <string name="fragment_create_account_tv_cancel">Cancel</string>
+    <string name="fragment_create_account_tv_new_account">New Account</string>
+    <string name="fragment_create_account_tv_save">Save</string>
+    <string name="fragment_create_account_tv_check_entries">"Check Enteries"</string>
+    <string name="fragment_create_account_tv_show">"<u>Show</u>"</string>
+    <string name="fragment_registration_create_tv_hide">"<u>Hide</u>"</string>
+
+    <string name="fragment_create_account_tv_hint_user_name">Enter the name your contacts know you by.</string>
+    <string name="fragment_create_account_custom_et_phone_no_hint">Phone</string>
+    <string name="fragment_create_account_custom_tv_phone_no_hint">phone number where you want to receive crowd text alerts from other The SoulDefendHER™ users</string>
+    <string name="fragment_create_account_custom_tv_email_id_hint">Your email will be your Login username, and will receive password and pin reset requests</string>
+    <string name="fragment_create_account_custom_et_email_id">Email Address</string>
+    <string name="fragment_create_account_et_user_name">Name</string>
+    <string name="fragment_login_to_your_account_et_pwd">Password</string>
+    <string name="fragment_login_to_your_account_tv_pwd_hint">We recommend 7 characters using numbers, upper and lowercase letters. HOWEVER we only enforce 7 character minimum</string>
+    <string name="fragment_login_to_your_account_et_re_password">Verify Password</string>
+    <string name="fragment_login_to_your_account_tv_re_password_hint">Enter the password again to verify correct typing</string>
+    <string name="TAG_FIRSTNAME_EMPTYMSG">Name is required.</string>
+    <string name="TAG_PHONE_NO_EMPTYMSG">Phone number is required.</string>
+    <string name="TAG_EMAIL_ID">Email Address is required.</string>
+    <string name="TAG_PASSWORD_EMPTYMSG">Password is required.</string>
+    <string name="TAG_RE_PASSWORD_EMPTYMSG">Verify Password is required..</string>
+    <string name="TAG_PWD_RE_PWD_EMPTYMSG">Password and Verify password mismatch.Please enter same values for both.</string>
+    <string name="TAG_PIN_RE_PIN_EMPTYMSG">New Pin and Confirm Pin mismatch.Please enter same values for both.</string>
+    <string name="TAG_PIN_OLD_PIN_EMPTYMSG">Please enter correct value for Old Pin.</string>
+    <string name="TAG_ENTER_VALID_EMAIL">Enter valid email.</string>
+    <string name="TAG_PASSWORD_LENGTHMSG">Minimum enter 7 character for Password.</string>
+    <string name="TAG_RESETPASSWORD_TXT">Reset Password</string>
+    <string name="TAG_PHONE_NO_Valid_NO">Enter Valid Number</string>
+    <string name="TAG_PHONE_NO_MIN_TEN_MSG">Enter 10 Digit Number.</string>
+    <string name="account_created">\"Your Account Is created\"</string>
+    <string name="account_updated">\"Your Account Is updated\"</string>
+    <string name="reday_to_use">You are ready to use The SoulDefendHER™</string>
+
+    <!--Create Account fragment string has been finished start-->
+
+
+    <!--Forgot fragment string has been start-->
+
+    <!--DashBoad fragment string has been start-->
+    <string name="dashbord_contact">Contact</string>
+    <string name="dashbord_alert">Alerts</string>
+    <!--<string name="dashbord_i_am_ok">I'm ok</string>-->
+    <string name="dashbord_account">Account</string>
+    <string name="dashbord_i_m_ok">I"'"m OK</string>
+    <string name="fragment_terms_and_condition_cb_accept_license">"<u>Accept</u>"</string>
+    <string name="fragment_terms_and_condition_cb_not_accept_license">"<u>I do NOT accept license</u>"</string>
+    <string name="eula_title">Eula Not Accepted</string>
+    <string name="accepentance_notice">The EULA must be accepted to use this app.if you do not want to accept the EULA please qute the app.Otherwise you will be returned to the EULA screen.</string>
+    <!--DashBoad fragment string has been finished-->
+
+    <!--Contact fragment string has been start-->
+    <string name="fragment_contact_tv_title">Contacts</string>
+    <string name="fragment_dad_licence_tv_title">The SoulDefendHER™ License</string>
+    <string name="fragment_contact_tv_restore_from_the_server">Restore From The Server</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+    <string name="change_password">Change Password</string>
+
+
+    <!--Add More Fragment string has been start-->
+
+    <!--I am OK fragment string has been start-->
+
+    <string name="fragment_i_am_ok_msg">A Pin is required before you can send an I m ok message.Please Create a PIN: </string>
+    <string name="fragment_create_account_tv_reset_pin">"<u>Reset PIN</u>"</string>
+    <string name="fragment_create_account_tv_forgot_pin">"<u>Forgot PIN</u>"</string>
+    <string name="fragment_i_am_et_hint_pin">New PIN</string>
+    <string name="fragment_i_am_et_hint_confirm_pin">Confirm PIN</string>
+
+    <!--I am OK  Account fragment string has been start-->
+    <string name="fragment_account_tv_title">Account</string>
+    <string name="logout">Logout</string>
+    <string name="fragment_login_to_your_et_hint_email_id">Email</string>
+
+    <!-- Change Password fragment string has been start-->
+    <string name="fragment_change_password_tv_title">Change Password</string>
+    <string name="fragment_change_password_et_old_password">Old Password</string>
+    <string name="fragment_change_password_et_new_password_hint">New Password</string>
+    <string name="fragment_change_password_et_confirm_password_hint">Confirm Password</string>
+    <string name="fragment_change_password_btn_Save">Save</string>
+    <string name="old_pwd">Enter Old Password</string>
+    <string name="new_pwd">Enter New Password</string>
+    <string name="confirm">Confirm Password</string>
+    <string name="same_value">Enter the same value.</string>
+    <string name="pwd_change_msg">Password has been changes successfully.</string>
+    <string name="valid_msg">Enter min 7 character with single digit and single special character.</string>
+
+
+    <!-- Edit Profile fragment string has been start-->
+    <string name="fragment_edit_profile_tv_title">Edit Account</string>
+    <string name="fragment_edit_profil_tv_save">Save</string>
+    <string name="fragment_edit_profile_msg">Enter the name your contacts known by you.</string>
+    <string name="fragment_edit_profile_tv_phone_alert_msg">Phone number where you want to receive crowd text alerts from the other The SoulDefendHER™ users.</string>
+    <string name="fragment_edit_profile_title_Password">Password.</string>
+    <string name="fragment_edit_profile_title_password_update">Password Update</string>
+    <string name="fragment_edit_profile_title_Current">Current</string>
+    <string name="fragment_edit_profile_title_new">New</string>
+    <string name="fragment_edit_profile_title_confirm">Confirm Password</string>
+    <string name="fragment_edit_profile_et_current_hint">Current Password</string>
+    <string name="fragment_edit_profile_new_hint">New Password</string>
+    <string name="fragment_edit_profile_title_forgot_password">"<u>Forgot Password</u>"</string>
+    <string name="fragment_create_account_et_user_ph_no">Mobile Number</string>
+
+    <!-- Create Pin fragment string has been start-->
+    <string name="fragment_create_pin_et_new_pin_hint">New Pin</string>
+    <string name="fragment_create_pin_et_confirm_pin_hint">Confirm PIN</string>
+    <string name="fragment_create_pin_btn_save">Save</string>
+    <string name="fragment_create_pin_tv_title">Create PIN</string>
+    <string name="fragment_change_password_tv_cancel">Cancel</string>
+    <string name="fragment_i_m_ok_et_new_pin_hint">Old/temp Pin</string>
+    <string name="fragment_i_m_ok_et_confirm_pin_hint">reenter Pin</string>
+    <string name="fragment_i_m_ok_tv_reset_pin"><u>Reset PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_update_pin" translatable="false"><u>Update PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_forgot_pin"><u>Forgot PIN</u>"</string>
+    <string name="fragment_i_m_ok_tv_validate_pin">Validate PIN:</string>
+    <string name="fragment_i_m_ok_tv_save_pin">Save PIN</string>
+    <string name="send_i_m_ok_message"><u>Send I\'m OK Message</u></string>
+    <string name="pin_required">A PIN is required before you can send an I\'m ok message. Please create a PIN:</string>
+    <string name="old_temporary_pin">Old/Temporary Pin</string>
+    <string name="new_pin">New PIN</string>
+    <string name="alert_invalid_pin">Invalid PIN</string>
+    <string name="confirm_pin">Confirm Pin</string>
+    <string name="validate_pin"><u>Validate Pin</u></string>
+    <string name="save_pin">Save Pin</string>
+    <string name="USER_ID">userID</string>
+
+    <!-- Contact  fragment string has been start-->
+    <string name="fragment_add_more_tv_user_name_gine">Enter the nick name of your contact</string>
+    <string name="fragment_add_more_tv_phone_no" translatable="false">Phone Number (Required)</string>
+    <string name="fragment_add_more_tv_phone_no_hint_"><i>Contact Phone is REQUIRED.</i></string>
+    <string name="fragment_add_more_et_phone_no_hint">Phone Number</string>
+    <string name="fragment_add_more_et_first_name_hint">First Name</string>
+    <string name="fragment_add_more_tv_first_name_hint"><i>Contacts first name, not required</i></string>
+    <string name="fragment_add_more_et_last_name_hint">Last Name</string>
+    <string name="fragment_add_more_tv_last_name_hint"><i>Contact last name, not required</i></string>
+    <string name="fragment_add_more_et_email_hint">Email</string>
+    <string name="fragment_add_more_tv_email_hint"><i>Enter a The SoulDefendHER™ app user’s registration email address so they will receive app notifications with unique sound.  Other contacts will receive only email alerts.</i></string>
+    <string name="fragment_add_more_tv_cance">Cancel</string>
+    <string name="fragment_add_more_tv_addressbook">Address Book</string>
+    <string name="fragment_add_more_tv_save">Save</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="enter_you_pin">Enter Your PIN</string>
+    <string name="contacts">Contacts</string>
+    <string name="crowd_alerts_msg">Crowd Alerts go out to other The SoulDefendHER™ users within 1 mile of your location when you send out a \"Danger\" or \"I\'m OK\" alerts.</string>
+    <string name="send_danger">Send Danger</string>
+    <string name="receive_crowd_alerts">Receive Crowd Alerts</string>
+    <string name="empty_alerts">No Alerts Found</string>
+    <string name="test_mode">Test Mode</string>
+    <string name="danger_alert">Danger alert!</string>
+    <string name="test_alert">Test alert!</string>
+    <string name="ok_alert">OK alert!</string>a
+    <string name="crowd_alert">Crowd alert!</string>
+    <string name="danger">danger danger danger</string>
+    <string name="test_test">test test</string>
+    <string name="dial_100"><u>Dial 911</u></string>
+    <string name="ok_ok">ok ok ok</string>
+
+
+    <!--custom font-->
+    <string name="font_regular" translatable="false">OpenSans_Regular.ttf</string>
+    <string name="font_semibold" translatable="false">OpenSans_Semibold.ttf</string>
+    <string name="font_bold" translatable="false">OpenSans_Bold.ttf</string>
+    <string name="dialog_dial_title">Emergency Dial</string>
+    <string name="dialog_dial_msg">You are about to dial the local emergency number.\n Be sure to tell them this call is for </string>
+    <string name="located_at">\nLocated at </string>
+    <string name="dialog_dial_pos_button">Dial Emergency</string>
+    <string name="dialog_dial_neg_button">Cancel</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="pin">Pin</string>
+    <string name="edit_account">Edit Account</string>
+    <string name="need_to_change_your_name_phone_or_password">Need to Change your Name, Phone or Password?</string>
+    <string name="saving_image">Saving image</string>
+    <string name="preparing_card">Preparing card</string>
+    <string name="no_storage_card">No storage card</string>
+    <string name="not_enough_space">Not enough space</string>
+
+    <!--dialog-->
+    <string name="dialog_contact_added_title">Contact Added</string>
+    <string name="dialog_contact_added_msg">You have added a contact that will receive your Alerts.</string>
+
+    <string name="dialog_test_mode_title">Entering Test Mode</string>
+    <string name="dialog_test_mode_msg">Test Mode turns off contacts &amp; crowd alerts.\n Start Test with device or app. \n Test Mode exits when off, completed, or leaving app.\n \n  A successful test sends you an email, an SMS message and a notification to the app. \n This tests your device and the complete delivery process, the only difference between the test and sending a real alert is where the Alert messages are delivered. </string>
+    <string name="dialog_test_mode_pos_btn">Test Mode On</string>
+    <string name="dialog_test_mode_neg_btn">Cancel Test Mode</string>
+
+    <string name="dialog_delete_contact_title">Alert Deleted</string>
+    <string name="dialog_delete_contact_msg">You have deleted a contact. That contact will NOT receive your Alerts.</string>
+
+    <string name="dialog_delete_alert_title">Alert Deleted</string>
+    <string name="dialog_delete_alert_msg">You have deleted an ALert.</string>
+
+    <string name="dialog_crowd_alert_title">Crowd Alerts Status Updated</string>
+    <string name="dialog_crowd_alert_msg">Crowd Alerts are now ON. All The SoulDefendHER™ owners within 1 mile will receive an alert if you send a \"Danger\" or \"I\'m OK\' alert.</string>
+
+    <string name="dialog_eula_title">EULA Not Accepted</string>
+    <string name="dialog_eula_msg">The EULA must be accepted to use this app. If you do not want to accept the EULA please quit the app. Otherwise you will be returned to the EULA screen.</string>
+    <string name="i_do_not_accept_license">I do NOT accept License</string>
+    <string name="i_accept_license">I Accept License</string>
+    <string name="TAG_Loading">Loading...</string>
+    <string name="TAG_REG_SUC_MSG">You are registered successfully.</string>
+    <string name="TAG_EXIT_WARN_MSG">Are you sure want to exit?</string>
+    <string name="TAG_NO" translatable="false">No</string>
+    <string name="TAG_YES">yes</string>
+    <string name="fragment_forgot_password_et_email_hint">Email Address</string>
+    <string name="SOME_WENT_WRONG_MSG">Something went wrong, Please try again later.</string>
+    <string name="TAG_EMAIL_SENT">An email to reset your password has been sent.</string>
+    <string name="TAG_IS_SURE_MSG">Are you sure you want to delete this contact?</string>
+    <string name="TAG_DATA_NA_MSG">No Contacts Added</string>
+    <string name="TAG_ALERTS_NA_MSG" translatable="false">No Alerts found</string>
+    <string name="TAG_SENDING_ALERT">Sending Alert..</string>
+    <string name="TAG_GPS_ENABLE_MSG">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="TAG_DELETING">Deleting...</string>
+    <string name="TAG_COULD_NOT_DELETE_MSG">Could not delete.</string>
+    <string name="TAG_ALER_SENT">Danger Alert sent to your contacts</string>
+    <string name="TAG_SOME_WENT_WRONG_MSG">Something went wrong, Please try again..</string>
+    <string name="TAG_IS_SURE_ALERT">Are you sure you want to delete this Alert?</string>
+    <string name="CURRENT_PWD_REQ_MSG">Current Password is Required.</string>
+    <string name="TAG_NEW_PWD_REQ_MSG">New Password is Required.</string>
+    <string name="TAG_CONFIRM_PWD_REQ_MSG">Confirm Password is Required</string>
+    <string name="TAG_ENTER_CURRECT_PWD">Please enter correct value for Current Password.</string>
+    <string name="TAG_SAME_MSG">New password and Confirm Password mismatch.Please enter same values for both.</string>
+    <string name="TAG_PROFILE_UPDATED_MSG">Profile has been updated successfully.</string>
+    <string name="TAG_EMAIL_HAS_SENT_MSG">Email Has Been Sent To your Account.please check your mail box</string>
+    <string name="TAG_PWD_UPDATED_MSG">Password has been updated successfully.</string>
+    <string name="TAG_PING_SHORT_MSG">The pin field is too short. Pin must be 4 digits.</string>
+    <string name="TAG_PIN_NOT_EMPTY_MSG">The pin field must not be empty.</string>
+    <string name="TAG_NEW_PIN_CREATED_MSG">New PIN has been created successfully</string>
+    <string name="TAG_IM_OK_ALERT_SENT">\"Your \"I\'m OK\" alert has been sent.</string>
+    <string name="TAG_RECORDED_PIN_NOT_MATCH">Your pin does not match your recorded pin.</string>
+    <string name="TAG_ENTER_NEW_PIN">Enter New PIN</string>
+    <string name="TAG_CONFIRM_PINF">Connfirm New PIN</string>
+    <string name="TAG_PIN_VALIDATION">Enter 4 digit PIN</string>
+    <string name="TAG_PIN_NOT_FOUR">PIN Lenghth Should Not Exceed 4 digit</string>
+    <string name="TAG_ENTER_OLD_TEMP_PIN">Current PIN</string>
+    <string name="TAG_FORGOT_PIN">Forgot PIN</string>
+    <string name="TAG_AUTO_GEN_PIN">Do you want to auto generate a new Pin?</string>
+    <string name="TAG_WAIT">Wait...</string>
+    <string name="TAG_PIN_CAN_NOT_GET">Pin cannot be generate yet. Please try again later.</string>
+    <string name="TAG_GPS_MSG">Gps enabled.</string>
+    <string name="TAG_GPS_ONLINE">Enable Gps in order to go online.</string>
+    <string name="TAG_WELCOME">Welcome</string>
+    <string name="TAG_LOGOUT_CONFIRMATION">Logout Confirmation</string>
+    <string name="TAG_LOGOUT_CONFIRMATION_DES">When you logout All of your account information will be purged from this device. You will be required to Login again to use your account. Your contacts and previous alerts are stored on our servers and will be restored on your next login.</string>
+    <string name="TAG_PWD_EMAIL_EROR">Email or password is incorrect.</string>
+    <string name="TAG_PWD_FETCH_EROR">Error in fetching data from server</string>
+    <string name="TAG_GPS_NA">Google play services not available. You need to log in first, to use any of google play services.</string>
+    <string name="TAG_FET_ERROR">Error in fetching data from server</string>
+    <string name="TAG_SAME_VAL">Enter Same Value.</string>
+    <string name="TAG_SEND">send</string>
+    <string name="TAG_RESET">Reset</string>
+    <string name="TAG_VALIDATE">validate</string>
+    <string name="TAG_MIN_FOUR">Enter Minimum 4 digit</string>
+    <string name="TAG_I_AM_ON">"I'm OK"</string>
+    <string name="TAGE_ENTER_YOUR_PIN">Enter Your PIN</string>
+    <string name="TAGE_SEND_OK_MSG">Send I"'"m OK Message:</string>
+    <string name="TAGE_REQUIRE_PIN">A PIN is required before you can send an i\'m ok message. Please create PIN :</string>
+    <string name="TAGE_NEW_PIN">New PIN:</string>
+    <string name="TAGE_CONFIRM_PIN">Confirm PIN:</string>
+    <string name="TAG_RESEt_PIN">Change PIN</string>
+    <string name="TAG_VALIDATE_PIN">Validate PIN</string>
+    <string name="TAG_SAVE_PIN">Save PIN</string>
+    <string name="TAG_RE_ENTER_PIN">Verify PIN</string>
+    <string name="TAGE_PIN">PIN</string>
+    <string name="TAG_TAKE_PHOTO">Take Photo</string>
+    <string name="TAG_CHOOSE_FROM_GALLERY">Choose from Gallery</string>
+    <string name="choose_option">Choose</string>
+    <string name="TAG_CONFIRM">Confirm</string>
+    <string name="TAG_ADD_Photo">Add Photo</string>
+    <string name="TAG_READY_TO_GO">Ready to go</string>
+    <string name="TAF_DEVICE_NOT_SUPPORT">Device does not have camera.</string>
+    <string name="TAG_COULD_LOGOUT">Unable To Logout</string>
+    <string name="TAG_UNABLE_CREATE_ACCOUNT">Unable To Create Account</string>
+    <string name="TAG_CONT_ADDED_SUCCESS">Contact has been added successfully.</string>
+    <string name="TAG_CONT_UNABLE_ADDED">Unable To Add Contact</string>
+    <string name="change_language"><u>Change Language</u></string>
+    <string name="TAG_SWEDISH">Swedish</string>
+    <string name="TAG_DA">Danish</string>
+    <string name="TAG_NA">Norwegian</string>
+    <string name="TAG_SV">Swedish</string>
+    <string name="TAG_Choose_Language">Choose Language</string>
+    <string name="default_english"><u>English</u></string>
+    <string name="build_no" translatable="false">%1$d build:%2$s </string>
+    <string name="TAG_ENG">English</string>
+    <string name="TAG_TEST_MODE_ON">Test Mode has been turned on</string>
+    <string name="TAG_TEST_MODE_OFF">Test Mode has been turned off</string>
+    <string name="TAG_CROWD_ALERT_ON">Crowd Alert has been turned on</string>
+    <string name="TAG_CROWD_ALERT_OFF">Clowd Alert has been turned off</string>
+    <string name="TAG_CORRECT_PIN">You have entered correct PIN</string>
+    <string name="TAG_INCORRECT_PIN">You have entered incorrect PIN</string>
+    <string name="dial_in">Dial 100</string>
+    <string name="dial_us">Dial 911</string>
+    <string name="dial_fr">Dial 112</string>
+    <string name="is_safe">is safe!</string>
+    <string name="is_danger">is in Danger!</string>
+    <string name="custom_dialog_da_lang">Danis</string>
+    <string name="custom_dialog_nb_lang">Norwegian</string>
+    <string name="custom_dialog_sv_lang">Swedish</string>
+    <string name="TAG_forgot_pwd">Forgot Password</string>
+    <string name="TAG_delete_account" translatable="false">Delete Account</string>
+    <string name="TAG_ENTER_FIRST_NAME">Enter First Name.</string>
+    <string name="TAG_ENTER_LAST_NAME">Enter Last Name.</string>
+    <string name="TAG_HAS_BEEN_ON">Has Been On</string>
+    <string name="dial_991">Dial 991</string>
+    <string name="custom_dialog_eng_lang">English</string>
+    <string name="dial_112">Dial 112</string>
+
+    <string-array name="take_photo_option">
+        <item>Camera</item>
+        <item>Gallery</item>
+
+        <item>Cancel</item>
+    </string-array>
+    <string name="test" translatable="false">\u00D4</string>
+    <string name="custom_progess_dialog_tv_title" translatable="false">Danger Alert Sent</string>
+    <string name="custom_progess_dialog_tv_msg">Send out a "danger" alert to your contacts.</string>
+    <string name="custom_progess_dialog_tv_ok" translatable="false">Ok</string>
+    <string name="battery_level_good">GOOD BATTERY</string>
+    <string name="battery_level_low">LOW BATTERY</string>
+    <string name="battery_level_replace">REPLACE BATTERY</string>
+    <string name="test_message_title">Test Message Sent</string>
+    <string name="test_message_body">Test messages have been sent back to you via email, sms and app notification</string>
+    <string name="nice">Ok</string>
+    <string name="gcm_defaultSenderId" translatable="false">32989397760</string>
+    <string name="default_notification_channel_id" translatable="false">default</string>
+    <string name="toggle_password_visibility" translatable="false">Show Password</string>
+    <string name="TAG_EMAIL_IN_USE" translatable="false">The email %s is already in use.</string>
+    <string name="TAG_GO_TO_LOGIN" translatable="false">Go to Login</string>
+    <string name="TAG_TRY_AGAIN" translatable="false">Try Again</string>
+    <string name="TAG_EMAIL_NOT_FOUND" translatable="false">User not found. Please create a new account or try with a different email address.</string>
+    <string name="TAG_INVALID_LOGIN_PASSWORD" translatable="false">Incorrect Password. Please reset your password or try again.</string>
+    <string name="fragment_add_contact_tv_title" translatable="false">Add Contact</string>
+    <string name="fragment_update_contact_tv_title" translatable="false">Update Contact</string>
+    <string name="enter_valid_email">Enter valid email!</string>
+    <string name="enter_valid_phone_number">Enter valid phone number!</string>
+</resources>

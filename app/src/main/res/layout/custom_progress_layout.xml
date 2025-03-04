@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/drawable_rounded_margin_et"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <net.tigerlight.dad.util.CustomTextViewBold
+        android:id="@+id/dialog_tvTitlee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="@dimen/_5sdp"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/_12sdp" />
+
+    <net.tigerlight.dad.util.CustomTextViewSemiBold
+        android:id="@+id/dialog_tvMessagee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_8sdp" />
+
+    <net.tigerlight.dad.util.CustomTextViewSemiBold
+        android:id="@+id/dialog_tvMsgLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_8sdp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/color_separater" />
+
+    <net.tigerlight.dad.util.CustomTextViewSemiBold
+        android:id="@+id/dialog_tvPosButtonn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/_12sdp" />
+
+
+</LinearLayout>

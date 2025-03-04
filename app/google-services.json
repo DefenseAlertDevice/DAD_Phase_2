@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "32989397760",
+    "firebase_url": "https://defense-alert-device.firebaseio.com",
+    "project_id": "defense-alert-device",
+    "storage_bucket": "defense-alert-device.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32989397760:android:b69d67d59bcd4ba9",
+        "android_client_info": {
+          "package_name": "net.tigerlight.dad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXSPvUbpw3wxdE-Ex9T_7OdTebkH7pmFI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

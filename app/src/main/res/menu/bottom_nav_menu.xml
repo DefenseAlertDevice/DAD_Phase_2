@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_contact"
+        android:icon="@drawable/img_contact"
+        android:title="@string/dashbord_contact" />
+    <item
+        android:id="@+id/menu_alerts"
+        android:icon="@drawable/img_alerts"
+        android:title="@string/dashbord_alert" />
+    <item
+        android:id="@+id/menu_im_ok"
+        android:icon="@drawable/img_iamok"
+        android:title="@string/dashbord_i_m_ok" />
+    <item
+        android:id="@+id/menu_account"
+        android:icon="@drawable/img_account"
+        android:title="@string/dashbord_account" />
+</menu>

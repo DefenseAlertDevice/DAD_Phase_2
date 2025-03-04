@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorGray">
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/fragment_add_more_dialog_title"
+            android:text="@string/fragment_add_contact_tv_title"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/font_20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:background="@color/colorWhite"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bottom_5dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:orientation="vertical">
+
+
+                        <EditText
+                            android:id="@+id/fragment_add_more_et_user_name"
+                            style="@style/style_et_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/fragment_create_account_et_user_name"
+                            android:inputType="text"
+                            android:textColor="@color/colorBlack"
+                            android:textStyle="bold" />
+
+                        <net.tigerlight.dad.util.CustomTextViewBold
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fragment_add_more_tv_user_name_gine"
+                            android:textSize="@dimen/font_12sp"
+                            android:textStyle="normal"
+                            />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/fragment_add_more_iv_user_profile"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.3"
+                        android:src="@drawable/user" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/fragment_add_more_et_phone_no"
+                    style="@style/style_et_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fragment_add_more_tv_phone_no"
+                    android:inputType="phone"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    />
+
+                <EditText
+                    android:id="@+id/fragment_add_more_et_first_name"
+                    style="@style/style_et_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fragment_add_more_et_first_name_hint"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:inputType="text"
+                    android:textColor="@color/colorBlack"
+                    />
+
+                <EditText
+                    android:id="@+id/fragment_add_more_et_last_name"
+                    style="@style/style_et_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fragment_add_more_et_last_name_hint"
+                    android:inputType="text"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    />
+
+                <EditText
+                    android:id="@+id/fragment_add_more_et_email"
+                    style="@style/style_et_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fragment_add_more_et_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/colorBlack"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/fragment_add_more_tv_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_add_more_tv_save"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_15sdp"
+            android:background="@drawable/button_bg_orange"
+        />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_15sdp"
+        >
+            <net.tigerlight.dad.util.CustomTextViewSemiBold
+                android:id="@+id/fragment_add_more_tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_arrow_back_ios_24"
+                android:drawableTint="@color/colorOrange_new"
+                android:text="@string/back"
+                android:textAllCaps="false"
+                android:textColor="@color/colorOrange_new"
+                android:textSize="@dimen/font_15sp"
+                android:layout_alignParentStart="true"
+            />
+            <net.tigerlight.dad.util.CustomTextViewBold
+                android:id="@+id/fragment_add_more_tv_addressbook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_add_more_tv_addressbook"
+                android:textColor="@color/colorOrange_new"
+                android:textSize="@dimen/font_15sp"
+                android:layout_alignParentEnd="true"
+                android:drawableEnd="@drawable/baseline_contact_phone_24"
+                android:drawableTint="@color/colorOrange_new"
+                android:drawablePadding="@dimen/_10sdp"
+            />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+
+
+
+
+

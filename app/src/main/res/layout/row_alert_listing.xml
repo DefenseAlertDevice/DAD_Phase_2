@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/elemntpiclayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/elementPicAlert"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/pf_pic"
+            android:contentDescription="@string/app_name"
+            android:focusable="false" />
+
+        <!-- <RelativeLayout -->
+        <!-- android:layout_width="wrap_content" -->
+        <!-- android:layout_height="wrap_content" > -->
+
+
+        <!-- <ImageView -->
+        <!-- android:id="@+id/elementPicAlert" -->
+        <!-- android:layout_width="80dp" -->
+        <!-- android:layout_height="80dp" -->
+        <!-- android:layout_gravity="center" -->
+        <!-- android:layout_marginLeft="20dp" -->
+        <!-- android:layout_marginTop="20dp" -->
+        <!-- android:background="@drawable/pf_pic" -->
+        <!-- android:scaleType="centerCrop" /> -->
+
+
+        <!-- <ImageView -->
+        <!-- android:layout_width="120dp" -->
+        <!-- android:layout_height="120dp" -->
+        <!-- android:layout_gravity="center" -->
+        <!-- android:background="@drawable/round_button_white" -->
+        <!-- android:scaleType="center" /> -->
+        <!-- </RelativeLayout> -->
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <net.tigerlight.dad.util.CustomTextViewBold
+            android:id="@+id/elementNameAlert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:focusable="false"
+            android:textAllCaps="false"
+
+            android:textSize="@dimen/_15sdp"
+
+            android:textStyle="bold" />
+
+        <net.tigerlight.dad.util.CustomTextViewRegular
+            android:id="@+id/elementAdressAlert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/elementNameAlert"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:lineSpacingExtra="0dp"
+            android:maxLines="2"
+            android:textAllCaps="false"
+
+            android:textSize="@dimen/_13sdp" />
+
+        <net.tigerlight.dad.util.CustomTextViewRegular
+            android:id="@+id/elementTimeAlert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/elementAdressAlert"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:focusable="false"
+
+            android:textAllCaps="false"
+            android:textSize="@dimen/_13sdp" />
+
+        <ImageView
+            android:id="@+id/btnEditAlert"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:contentDescription="@string/app_name"
+            android:focusable="false"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/btnDeleteAlert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/img_cancel"
+            android:contentDescription="@string/app_name"
+            android:focusable="false"
+            android:padding="@dimen/_5sdp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</LinearLayout>

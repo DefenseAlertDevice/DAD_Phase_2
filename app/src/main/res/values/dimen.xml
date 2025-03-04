@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fragment_registration_margin_top">30dp</dimen>
+
+
+    <!-- Font size -->
+
+    <dimen name="font_8sp">8sp</dimen>
+    <dimen name="font_10sp">10sp</dimen>
+    <dimen name="font_12sp">12sp</dimen>
+    <dimen name="font_14sp">14sp</dimen>
+    <dimen name="font_15sp">15sp</dimen>
+    <dimen name="font_16sp">16sp</dimen>
+    <dimen name="font_17sp">17sp</dimen>
+    <dimen name="font_18sp">18sp</dimen>
+    <dimen name="font_20sp">20sp</dimen>
+    <dimen name="font_22sp">22sp</dimen>
+    <dimen name="font_24sp">24sp</dimen>
+    <dimen name="font_25sp">25sp</dimen>
+    <dimen name="font_26sp">26sp</dimen>
+    <dimen name="font_28sp">28sp</dimen>
+    <dimen name="font_30sp">30sp</dimen>
+    <dimen name="font_35sp">35sp</dimen>
+    <dimen name="font_45sp">45sp</dimen>
+
+
+    <!-- Margine Top dp -->
+    <dimen name="margin_top_5dp">5dp</dimen>
+    <dimen name="margin_top_8dp">8dp</dimen>
+    <dimen name="margin_top_10dp">10dp</dimen>
+    <dimen name="margin_top_15dp">15dp</dimen>
+    <dimen name="margin_top_16dp">16dp</dimen>
+    <dimen name="margin_top_20dp">20dp</dimen>
+    <dimen name="margin_top_30dp">30dp</dimen>
+
+    <!-- Margine Bottom dp -->
+    <dimen name="margin_bottom_5dp">5dp</dimen>
+    <dimen name="margin_bottom_8dp">8dp</dimen>
+    <dimen name="margin_bottom_10dp">10dp</dimen>
+    <dimen name="margin_bottom_15dp">15dp</dimen>
+    <dimen name="margin_bottom_20dp">20dp</dimen>
+
+    <!-- Margine left dp -->
+    <dimen name="margin_left_2dp">2dp</dimen>
+    <dimen name="margin_left_5dp">5dp</dimen>
+    <dimen name="margin_left_8dp">8dp</dimen>
+    <dimen name="margin_left_10dp">10dp</dimen>
+    <dimen name="margin_left_14dp">14dp</dimen>
+    <dimen name="margin_left_15dp">15dp</dimen>
+    <dimen name="margin_left_20dp">20dp</dimen>
+    <dimen name="margin_left_30dp">30dp</dimen>
+    <dimen name="margin_left_50dp">50dp</dimen>
+    <dimen name="margin_left_100dp">100dp</dimen>
+
+    <dimen name="margin_right_5dp">5dp</dimen>
+    <dimen name="margin_right_10dp">10dp</dimen>
+    <dimen name="margin_right_15dp">15dp</dimen>
+    <dimen name="margin_right_20dp">20dp</dimen>
+    <dimen name="margin_right_40dp">40dp</dimen>
+    <dimen name="margin_right_90dp">90dp</dimen>
+
+    <dimen name="commenspacing_10">12dp</dimen>
+    <dimen name="commenspacing_05">5dp</dimen>
+
+
+
+
+
+
+</resources>
