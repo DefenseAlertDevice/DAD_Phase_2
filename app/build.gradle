@@ -44,6 +44,8 @@ android {
 
     buildTypes {
         debug {
+            minifyEnabled false
+            shrinkResources false
             buildConfigField "String", "API_URL", '"https://dev.api.defensealertdevice.com/"'
             buildConfigField "String", "ASSETS_URL", '"https://dev.assets.defensealertdevice.com/"'
         }

@@ -45,6 +45,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import net.tigerlight.dad.LocationService;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
 import net.tigerlight.dad.registration.activity.MainActivity;
@@ -54,6 +55,7 @@ import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.registration.webservices.WsCallForgotPassword;
 import net.tigerlight.dad.simplecropping.CameraUtil;
 import net.tigerlight.dad.simplecropping.Constants;
+import net.tigerlight.dad.util.AlarmUtils;
 import net.tigerlight.dad.util.CircleTransform;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.webservices.WsCallChangePassword;
@@ -773,6 +775,10 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
                 if (wsCallDeleteAccount.isSuccess()) {
                     // TODO: add logout action here
                     dismiss();
+
+                    AlarmUtils.cancelPeriodicService(requireContext());
+                    final var locationServiceIntent= new Intent(requireContext(), LocationService.class);
+                    requireContext().stopService(locationServiceIntent);
 
                     final Preference preference = Preference.getInstance();
                     preference.clearPreferenceData();
