@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -18,7 +17,6 @@ import androidx.core.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -114,7 +112,7 @@ public class AmOkFragmentI extends BaseFragment {
         tvSavePin = view.findViewById(R.id.fragment_iamok_tvSavePin);
         tvMainSavePin = view.findViewById(R.id.fragment_iamok_llMain_tvSavePin);
 
-        TextView tvCancel = view.findViewById(R.id.fragment_iamok_tvCancel);
+        final TextView tvCancel = view.findViewById(R.id.fragment_iamok_tvCancel);
 
         isPinCreated = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_PIN_CREATED, false);
         setupInitialView();
@@ -138,7 +136,7 @@ public class AmOkFragmentI extends BaseFragment {
         super.onClick(v);
         final int fragmentId = v.getId();
         if (fragmentId == R.id.fragment_iamok_llMain_tvSavePin) {
-            ValidateNewAndConfirmFeild(true);
+            ValidateNewAndConfirmField(true);
         } else if (fragmentId == R.id.fragment_iamok_tvSendIamokMsg) {
             if (!TextUtils.isEmpty(etPin.getText().toString())) {
                 if (etPin.getText().length() == 4) {
@@ -156,8 +154,8 @@ public class AmOkFragmentI extends BaseFragment {
         } else if (fragmentId == R.id.fragment_iamok_tvForgotPin) {
             forgotPin();
         } else if (fragmentId == R.id.fragment_iamok_tvSavePin) {
-            ValidateOldNewAndConfirmFeild();
-            callCreatePinService(false);
+            ValidateOldNewAndConfirmField();
+//            callCreatePinService(false);
         } else if (getActivity() != null && fragmentId == R.id.fragment_iamok_tvCancel) {
             etOldPin.setText("");
             etNewPin.setText("");
@@ -431,7 +429,7 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
-    private void ValidateNewAndConfirmFeild(boolean b) {
+    private void ValidateNewAndConfirmField(final boolean b) {
         if (etMainNewPin.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_NEW_PIN), getString(R.string.ok), "", false, false);
             etMainNewPin.requestFocus();
@@ -476,44 +474,62 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
-    private void ValidateOldNewAndConfirmFeild() {
-        if (etOldPin.getText().toString().trim().equalsIgnoreCase("")) {
+    private void ValidateOldNewAndConfirmField() {
+        if (etOldPin.getText().toString().trim().isBlank()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_OLD_TEMP_PIN), getString(R.string.ok), "", false, false);
             etOldPin.requestFocus();
+            return;
+        }
 
-        } else if (etNewPin.getText().toString().trim().equalsIgnoreCase("")) {
+        if (etNewPin.getText().toString().trim().isBlank()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_NEW_PIN), getString(R.string.ok), "", false, false);
             etNewPin.requestFocus();
+            return;
+        }
 
-        } else if (etReEnterPin.getText().toString().trim().equalsIgnoreCase("")) {
+        if (etReEnterPin.getText().toString().trim().isBlank()) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CONFIRM_PINF), getString(R.string.ok), "", false, false);
             etReEnterPin.requestFocus();
+            return;
+        }
 
-        } else if (etOldPin.getText().toString().length() < 4) {
+        if (etOldPin.getText().toString().length() < 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_VALIDATION), getString(R.string.ok), "", false, false);
             etOldPin.requestFocus();
+            return;
+        }
 
-        } else if (etNewPin.getText().toString().length() < 4) {
+        if (etNewPin.getText().toString().length() < 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_VALIDATION), getString(android.R.string.ok), "", false, false);
             etNewPin.requestFocus();
+            return;
+        }
 
-        } else if (etReEnterPin.getText().toString().length() < 4) {
+        if (etReEnterPin.getText().toString().length() < 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_NOT_FOUR), getString(R.string.ok), "", false, false);
             etReEnterPin.requestFocus();
+            return;
+        }
 
-        } else if (etOldPin.getText().toString().length() > 4) {
+        if (etOldPin.getText().toString().length() > 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_NOT_FOUR), getString(R.string.ok), "", false, false);
             etOldPin.requestFocus();
+            return;
+        }
 
-        } else if (etNewPin.getText().toString().length() > 4) {
+        if (etNewPin.getText().toString().length() > 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_NOT_FOUR), getString(R.string.ok), "", false, false);
             etNewPin.requestFocus();
+            return;
+        }
 
-        } else if (etReEnterPin.getText().toString().length() > 4) {
+        if (etReEnterPin.getText().toString().length() > 4) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PIN_NOT_FOUR), getString(R.string.ok), "", false, false);
             etReEnterPin.requestFocus();
+            return;
+        }
 
-        } else if (!etNewPin.getText().toString().trim().equalsIgnoreCase("") && !etReEnterPin.getText().toString().trim().equalsIgnoreCase("")) {
+        if (!etNewPin.getText().toString().trim().isBlank() && !etReEnterPin.getText().toString().trim().isBlank()) {
             if (checkPassWordAndConfirmPassword(etNewPin.getText().toString().trim(), etReEnterPin.getText().toString().trim())) {
                 if (getActivity() != null && Utills.isOnline(getActivity(), true)) {
                     callCreatePinService(false);
@@ -526,7 +542,6 @@ public class AmOkFragmentI extends BaseFragment {
             }
         }
     }
-
 
     public boolean checkPassWordAndConfirmPassword(String password, String confirmPassword) {
         boolean pstatus = false;

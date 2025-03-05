@@ -1,8 +1,28 @@
 package net.tigerlight.dad.registration.fragment;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.InputType;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import net.tigerlight.dad.LocationBroadcastServiceNew;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.blework.AlarmReceiver;
 import net.tigerlight.dad.blework.BleReceiver;
@@ -13,38 +33,8 @@ import net.tigerlight.dad.registration.model.GetUserInfoModel;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.registration.webservices.WsCallLogin;
-import net.tigerlight.dad.webservices.WsGetUserData;
 import net.tigerlight.dad.util.Preference;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.SystemClock;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import android.provider.Settings;
-import android.text.InputType;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.autofill.AutofillManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.TextView;
+import net.tigerlight.dad.webservices.WsGetUserData;
 
 public class LoginToYourAccountFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener {
 
@@ -342,7 +332,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 //                        getActivity().startService(intent);
 //                    }
 
-                    long time = 1000 * 5;  //For repiting 30 second
+                    long time = 1000 * 5;  //For repeating 30 second
 
 //                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
 

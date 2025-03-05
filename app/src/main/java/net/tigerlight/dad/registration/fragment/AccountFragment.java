@@ -1,15 +1,5 @@
 package net.tigerlight.dad.registration.fragment;
 
-import net.tigerlight.dad.R;
-import net.tigerlight.dad.home.BaseFragment;
-import net.tigerlight.dad.registration.activity.MainActivity;
-import net.tigerlight.dad.registration.util.Constant;
-import net.tigerlight.dad.registration.util.Utills;
-import net.tigerlight.dad.webservices.WsLogout;
-import net.tigerlight.dad.webservices.WsResetCount;
-import net.tigerlight.dad.util.Constants;
-import net.tigerlight.dad.util.Preference;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -29,7 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
+
+import net.tigerlight.dad.LocationService;
+import net.tigerlight.dad.R;
+import net.tigerlight.dad.home.BaseFragment;
+import net.tigerlight.dad.registration.activity.MainActivity;
+import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.Utills;
+import net.tigerlight.dad.util.AlarmUtils;
+import net.tigerlight.dad.util.Constants;
+import net.tigerlight.dad.util.Preference;
+import net.tigerlight.dad.webservices.WsLogout;
+import net.tigerlight.dad.webservices.WsResetCount;
 
 import java.util.Locale;
 
@@ -53,7 +54,6 @@ public class AccountFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-
         callResetCount();
         tvWelcome = view.findViewById(R.id.fragment_settings_tvWelcome);
         tvEditAccount = view.findViewById(R.id.fragment_settings_tvEditAccount);
@@ -69,8 +69,8 @@ public class AccountFragment extends BaseFragment {
 
         TextView tvBuildVersion = view.findViewById(R.id.tvBuild);
         try {
-            Context context = getContext();
-            Activity activity = getActivity();
+            final Context context = getContext();
+            final Activity activity = getActivity();
             if (activity != null && context != null) {
                 PackageInfo packageInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
 
@@ -97,7 +97,12 @@ public class AccountFragment extends BaseFragment {
         }
     }
 
-    private void openEditProfileFragment(EditProfileFragment editProfileFragment) {
+    private void openEditProfileFragment(final EditProfileFragment editProfileFragment) {
+        editProfileFragment.setOnEditProfileListener(() -> {
+            currentUserName = Preference.getInstance().mSharedPreferences.getString(Constant.USER_NAME, "");
+            tvWelcome.setText(getString(R.string.TAG_WELCOME) + " " + currentUserName);
+        });
+
         editProfileFragment.show(getParentFragmentManager(), EditProfileFragment.class.getSimpleName());
     }
 
@@ -197,7 +202,6 @@ public class AccountFragment extends BaseFragment {
             progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
             progressDialog.show();
             progressDialog.setCancelable(false);
-
         }
 
         @Override
@@ -215,6 +219,10 @@ public class AccountFragment extends BaseFragment {
             }
             if (!isCancelled()) {
                 if (wsLogout.isSuccess()) {
+                    AlarmUtils.cancelPeriodicService(requireContext());
+                    final var locationServiceIntent= new Intent(requireContext(), LocationService.class);
+                    requireContext().stopService(locationServiceIntent);
+
                     Preference.getInstance().savePreferenceData(Constant.IS_PIN_CREATED, true);
                     final Preference preference = Preference.getInstance();
                     boolean isRemember = preference.mSharedPreferences.getBoolean(Constant.IS_REMEMBER, false);

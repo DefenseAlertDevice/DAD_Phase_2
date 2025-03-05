@@ -7,12 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import net.tigerlight.dad.LocationService;
+import net.tigerlight.dad.registration.util.Constant;
 
 public class AlarmUtils {
     private static final long INTERVAL = 30 * 1000; // 30 seconds
 
     @SuppressLint("ShortAlarm")
-    public static void setupPeriodicService(Context context) {
+    public static void setupPeriodicService(final Context context) {
+        final boolean isLogin = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_LOGIN, false);
+        if (!isLogin) return;
+
         Intent serviceIntent = new Intent(context, LocationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
 
@@ -28,7 +32,7 @@ public class AlarmUtils {
         }
     }
 
-    public static void cancelPeriodicService(Context context) {
+    public static void cancelPeriodicService(final Context context) {
         Intent serviceIntent = new Intent(context, LocationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

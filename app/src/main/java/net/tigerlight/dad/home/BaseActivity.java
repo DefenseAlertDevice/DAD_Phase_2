@@ -405,7 +405,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @return object of {@link FragmentManager} or {@link FragmentManager}
      */
-    public FragmentManager getLocalFragmentManager() {
+    protected FragmentManager getLocalFragmentManager() {
         return this.getSupportFragmentManager();
     }
 

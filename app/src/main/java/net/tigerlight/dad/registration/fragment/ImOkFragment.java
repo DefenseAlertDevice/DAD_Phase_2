@@ -101,12 +101,11 @@ public class ImOkFragment extends BaseFragment {
         } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin) {
             Toast.makeText(getActivity(), getString(R.string.TAG_VALIDATE), Toast.LENGTH_SHORT).show();
         } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_save_pin) {
-            ValidateNewAndConfirmFeild();
+            ValidateNewAndConfirmField();
         }
     }
 
-    private void ValidateNewAndConfirmFeild() {
-
+    private void ValidateNewAndConfirmField() {
         if (etNewPin.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_NEW_PIN), getString(R.string.ok), "", false, false);
             etNewPin.requestFocus();
@@ -134,7 +133,6 @@ public class ImOkFragment extends BaseFragment {
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.ok), "", false, false);
                 }
-
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PWD_RE_PWD_EMPTYMSG), getString(R.string.ok), "", false, false);
                 etNewPin.requestFocus();
@@ -152,12 +150,11 @@ public class ImOkFragment extends BaseFragment {
         return pstatus;
     }
 
-
     private void callForgotPinService() {
 
         if (Utills.isInternetAvailable(requireActivity())) {
 
-            Log.d("START", "internet availavble");
+            Log.d("START", "internet available");
 
             if (asyncTaskCreatePinn != null && asyncTaskCreatePinn.getStatus() == AsyncTask.Status.PENDING) {
 

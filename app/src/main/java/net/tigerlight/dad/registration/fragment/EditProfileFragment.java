@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -100,6 +101,12 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
     private File imageFile;
     private String isPhotoEdited;
 
+    private EditProfileListener listener;
+
+    public interface EditProfileListener {
+        void onProfileUpdated();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +125,10 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
                     }
                 }
         );
-        getUserInfo();
+    }
+
+    public void setOnEditProfileListener(final EditProfileListener listener) {
+        this.listener = listener;
     }
 
     private String getRealPathFromURI(Uri uri) {
@@ -162,18 +172,23 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        initView(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
 
-    public void initView(View view) {
-        if (getActivity() == null) {
-            return;
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+
+        getUserInfo();
+    }
+
+    public void initView(final View view) {
+        if (getActivity() == null) return;
+
         profileModel = new GetUserInfoModel();
         TextView tvCancel = view.findViewById(R.id.fragment_edit_profile_tv_cancel);
-        Button tvsave = view.findViewById(R.id.fragment_edit_profile_tv_save);
+        final Button tvsave = view.findViewById(R.id.fragment_edit_profile_tv_save);
         Button tvChangePassword = view.findViewById(R.id.fragment_edit_profile_tv_change_password);
         TextView tvForgotPassword = view.findViewById(R.id.fragment_edit_profile_tv_forgot_password);
         TextView tvDeleteAccount = view.findViewById(R.id.fragment_edit_profile_tv_delete_account);
@@ -193,9 +208,9 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         tvForgotPassword.setOnClickListener(this);
         tvDeleteAccount.setOnClickListener(this);
 
-        final String uset_id = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "") + ".png";
+        final String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "") + ".png";
 
-        imgUrl = imgUrl + uset_id;
+        imgUrl = imgUrl + userId;
 
         Glide.with(EditProfileFragment.this)
                 .load(imgUrl)
@@ -588,7 +603,6 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskGetUserInfo extends AsyncTask<Void, Void, Void> {
 
         private WsGetUserData wsGetUserData;
@@ -599,8 +613,8 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-            progressDialog.show();
             progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -629,7 +643,6 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskEditProfile extends AsyncTask<Void, Void, Void> {
 
         private WsCallUpdateAccount wsCallUpdateAccount;
@@ -775,7 +788,6 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
 
     }
 
-    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskUpdatePassword extends AsyncTask<Void, Void, Void> {
 
         private WsCallChangePassword wsCallChangePassword;
@@ -856,6 +868,7 @@ public class EditProfileFragment extends DialogFragment implements View.OnClickL
         dialog.setCancelable(false);
         dialog.setMessage(msg);
         dialog.setPositiveButton(strPositiveText, (dialog1, id) -> {
+            listener.onProfileUpdated();
             dialog1.dismiss();
             dismiss();
         });

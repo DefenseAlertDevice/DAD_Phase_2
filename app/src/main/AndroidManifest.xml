@@ -61,7 +61,9 @@
 
     <application
         android:name=".DADApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -127,7 +129,7 @@
 <!--            android:foregroundServiceType="location" />-->
 
         <receiver
-            android:name=".AlarmServiceBroadcastReciever"
+            android:name=".AlarmServiceBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

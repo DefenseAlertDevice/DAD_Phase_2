@@ -31,9 +31,9 @@
         <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_20sdp"
             android:text="@string/fragment_create_pin_tv_title"
             android:textAlignment="center"
-            android:layout_marginVertical="@dimen/_20sdp"
             android:textColor="@color/color_black"
             android:textSize="@dimen/font_25sp" />
 
@@ -45,6 +45,7 @@
                 android:id="@+id/fragment_iamok_llMain_etNewPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:background="@drawable/drawable_grey_rounded_margin_et"
                 android:hint="@string/TAGE_NEW_PIN"
                 android:inputType="numberPassword"
@@ -52,15 +53,15 @@
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_20sp"
-                android:layout_centerVertical="true"
                 android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/fragment_iamok_llMain_etNewPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -72,24 +73,23 @@
                 android:id="@+id/fragment_iamok_llMain_etReenterPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_10sdp"
                 android:background="@drawable/drawable_grey_rounded_margin_et"
                 android:hint="@string/TAG_RE_ENTER_PIN"
-                android:layout_marginVertical="@dimen/_10sdp"
                 android:inputType="numberPassword"
                 android:maxLength="6"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_20sp"
-                android:textStyle="bold"
-            />
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/fragment_iamok_llMain_etReenterPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -97,11 +97,11 @@
             android:id="@+id/fragment_iamok_llMain_tvSavePin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:background="@drawable/button_bg_orange"
-            android:textColor="@color/colorWhite"
+            android:gravity="center"
             android:text="@string/TAG_SAVE_PIN"
             android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/font_20sp" />
     </LinearLayout>
 
@@ -110,8 +110,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="@dimen/_20sdp"
         android:orientation="vertical"
+        android:paddingHorizontal="@dimen/_20sdp"
         android:visibility="gone">
 
         <net.tigerlight.dad.util.CustomTextViewSemiBold
@@ -119,8 +119,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/TAGE_ENTER_YOUR_PIN"
-            android:textColor="@color/color_black"
             android:textAlignment="center"
+            android:textColor="@color/color_black"
             android:textSize="@dimen/_17sdp"
             android:textStyle="bold" />
 
@@ -132,24 +132,25 @@
                 android:id="@+id/fragment_iamok_etPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginVertical="@dimen/_15sdp"
                 android:background="@drawable/drawable_grey_rounded_margin_et"
                 android:hint="@string/TAGE_PIN"
                 android:inputType="numberPassword"
                 android:maxLength="4"
-                android:layout_marginVertical="@dimen/_15sdp"
                 android:padding="@dimen/_12sdp"
                 android:textAlignment="viewStart"
-                android:layout_centerVertical="true"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/font_20sp"
                 android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/fragment_iamok_etPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -183,8 +184,8 @@
                 android:id="@+id/fragment_iamok_tvForgotPin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
                 android:text="@string/TAG_FORGOT_PIN"
                 android:textColor="@color/color_blue"
                 android:textSize="@dimen/_14sdp"
@@ -204,9 +205,9 @@
         <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_marginVertical="@dimen/_20sdp"
             android:text="@string/TAG_RESEt_PIN"
+            android:textAlignment="center"
             android:textColor="@color/color_black"
             android:textSize="@dimen/font_25sp" />
 
@@ -226,13 +227,14 @@
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_20sp"
                 android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/fragment_iamok_etOldPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -253,13 +255,14 @@
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_20sp"
                 android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/fragment_iamok_etNewPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -279,13 +282,14 @@
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_20sp"
                 android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/fragment_iamok_etReEnterPinIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:src="@drawable/ic_eye_off" />
         </RelativeLayout>
 
@@ -293,23 +297,22 @@
             android:id="@+id/fragment_iamok_tvSavePin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginVertical="@dimen/_15sdp"
-            android:text="@string/save_pin"
-            android:textColor="@color/colorWhite"
             android:background="@drawable/button_bg_orange"
+            android:gravity="center"
+            android:text="@string/save_pin"
             android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/_20sdp" />
 
         <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:id="@+id/fragment_iamok_tvCancel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_gravity="center"
             android:text="@string/cancel_ul"
             android:textColor="@color/color_blue"
-            android:textSize="@dimen/_15sdp"
-        />
+            android:textSize="@dimen/_15sdp" />
 
     </LinearLayout>
 

@@ -1,5 +1,27 @@
 package net.tigerlight.dad.registration.activity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import net.tigerlight.dad.LocationService;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseActivity;
 import net.tigerlight.dad.home.BaseFragment;
@@ -10,30 +32,6 @@ import net.tigerlight.dad.registration.fragment.RegistartionFragment;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.Util;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.bluetooth.le.AdvertiseData;
-import android.bluetooth.le.AdvertiseSettings;
-
-import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends BaseActivity {
 
@@ -58,7 +56,7 @@ public class MainActivity extends BaseActivity {
         boolean isLogin = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_LOGIN, false);
 
         final Intent intent = getIntent();
-        String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
+        final String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
         // boolean openAlertFragmentDirectly = intent.getBooleanExtra("OPEN_ALERT_FRAGMENT_DIRECTLY", false);
         Log.d("notification", "oncreate ----json object:" + intent.getStringExtra(Constant.JSON_OBJECT));
         if (jsonObject != null) {
@@ -89,6 +87,8 @@ public class MainActivity extends BaseActivity {
             if (isLogin) {
                 //if (isAccepted) {
                 replaceFragment(new DashBoardWithSwipableFragment());
+                final var locationServiceIntent= new Intent(this, LocationService.class);
+                ContextCompat.startForegroundService(this, locationServiceIntent);
                 //}
 //            else if (!isAccepted) {
 //                replaceFragment(new TermAndConditionFragment());
@@ -139,6 +139,18 @@ public class MainActivity extends BaseActivity {
             // For API < 31, initialize directly
             initializeBluetooth();
         }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    Util.getInstance().hideSoftKeyboard(MainActivity.this);
+                    getSupportFragmentManager().popBackStack();
+                } else {
+                    buildAlertMessageExit();
+                }
+            }
+        });
     }
 
     @Override
@@ -157,14 +169,14 @@ public class MainActivity extends BaseActivity {
 
     @SuppressLint("MissingPermission")
     private void initializeBluetooth() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
 
-        BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+        final BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
         if (advertiser == null) {
             Log.e("BLE", "BLE advertising not supported on this device");
             return;
@@ -173,13 +185,13 @@ public class MainActivity extends BaseActivity {
         String uuidString = "FD8C0AA6D40411E5AB30625662870761";
         byte[] uuidBytes = hexStringToByteArray(uuidString);
 
-        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+        final AdvertiseSettings settings = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
                 .setConnectable(false)
                 .build();
 
-        AdvertiseData data = new AdvertiseData.Builder()
+        final AdvertiseData data = new AdvertiseData.Builder()
                 .addManufacturerData(0x004C, uuidBytes) // 0x004C is Apple's manufacturer ID, for example
                 .build();
 
@@ -209,17 +221,6 @@ public class MainActivity extends BaseActivity {
         alertDetailFragment.setArguments(bundle);
         Log.d("notification", " ifcalled" + intent.getStringExtra(Constant.JSON_OBJECT));
         addFragment(alertDetailFragment);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            Util.getInstance().hideSoftKeyboard(this);
-            getSupportFragmentManager().popBackStack();
-        } else {
-            buildAlertMessageExit();
-        }
     }
 
     /**
@@ -256,7 +257,6 @@ public class MainActivity extends BaseActivity {
                 .addToBackStack(newFragment.getClass().getSimpleName()) // Add the new fragment to the back stack
                 .commit();
     }
-
 
     public void addFragment(final BaseFragment newFragment) {
         Util.getInstance().hideSoftKeyboard(this);

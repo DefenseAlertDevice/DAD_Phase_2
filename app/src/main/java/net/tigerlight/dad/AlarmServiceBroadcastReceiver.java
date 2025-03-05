@@ -1,7 +1,5 @@
 package net.tigerlight.dad;
 
-import static net.tigerlight.dad.util.AlarmUtils.cancelPeriodicService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +10,13 @@ import net.tigerlight.dad.util.AlarmUtils;
  * Created by indianic on 03/03/17.
  */
 
-public class AlarmServiceBroadcastReciever extends BroadcastReceiver {
+public class AlarmServiceBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String TAG = AlarmServiceBroadcastReciever.class.getSimpleName();
+    private static final String TAG = AlarmServiceBroadcastReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        cancelPeriodicService(context);
+        AlarmUtils.cancelPeriodicService(context);
         AlarmUtils.setupPeriodicService(context);
 //        try {
 //            Log.d(TAG, "Starting AlarmServiceBroadcastReciever");

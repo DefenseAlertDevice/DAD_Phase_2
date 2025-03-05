@@ -1,33 +1,8 @@
 package net.tigerlight.dad.registration.fragment;
 
-import net.tigerlight.dad.registration.activity.MainActivity;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import net.tigerlight.dad.R;
-import net.tigerlight.dad.home.BaseFragment;
-import net.tigerlight.dad.registration.model.CountryModel;
-import net.tigerlight.dad.registration.util.Constant;
-import net.tigerlight.dad.registration.util.Utills;
-import net.tigerlight.dad.sqlite.SqlLiteDbHelper;
-import net.tigerlight.dad.util.CircleTransform;
-import net.tigerlight.dad.util.Preference;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import static net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
+import static net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
+import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -35,20 +10,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -61,16 +28,47 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import net.tigerlight.dad.R;
+import net.tigerlight.dad.home.BaseFragment;
+import net.tigerlight.dad.registration.activity.MainActivity;
+import net.tigerlight.dad.registration.model.CountryModel;
+import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.Utills;
+import net.tigerlight.dad.sqlite.SqlLiteDbHelper;
+import net.tigerlight.dad.util.CircleTransform;
+import net.tigerlight.dad.util.Preference;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import static net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
-import static net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
-import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 public class AlertDetailFragment extends BaseFragment implements OnClickListener, OnGestureListener, OnMapReadyCallback {
 
@@ -98,6 +96,69 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     SqlLiteDbHelper dbHelper;
     CountryModel contacts;
     private JSONObject jsonobjectToChange;
+
+    private ActivityResultLauncher<String[]> readPhonePermissionLauncher;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        readPhonePermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                permissions -> {
+                    var isGranted = false;
+                    for (int i = 0; i < permissions.size(); i++) {
+                        final var readPhonePermissionGranted = permissions.getOrDefault(Manifest.permission.READ_PHONE_STATE, false);
+                        final var callPermissionGranted = permissions.getOrDefault(Manifest.permission.CALL_PHONE, false);
+                        isGranted = Boolean.TRUE.equals(readPhonePermissionGranted) && Boolean.TRUE.equals(callPermissionGranted);
+                    }
+                    if (isGranted) {
+                        final Dialog dialog = new Dialog(requireContext(), R.style.AppDialogTheme);
+                        dialog.setContentView(R.layout.custom_dialog);
+
+                        final TextView tvTitle = dialog.findViewById(R.id.dialog_tvTitle);
+                        final TextView tvMessage = dialog.findViewById(R.id.dialog_tvMessage);
+                        final TextView tvPosButton = dialog.findViewById(R.id.dialog_tvPosButton);
+                        final TextView tvNegButton = dialog.findViewById(R.id.dialog_tvNegButton);
+                        tvTitle.setText(getString(R.string.dialog_dial_title));
+                        tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
+                        tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
+                        tvNegButton.setText(getString(R.string.fragment_create_account_tv_cancel));
+
+                        tvPosButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+
+                                if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("US")) {
+                                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 911));
+                                    callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                                    startActivity(callIntent);
+                                } else if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("FR")) {
+                                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
+                                    callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                                    startActivity(callIntent);
+                                } else {
+                                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
+                                    callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                                    startActivity(callIntent);
+                                }
+
+                            }
+                        });
+                        tvNegButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                    } else {
+                        Toast.makeText(requireContext(), "Please grant Phone permission!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -332,46 +393,52 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     public void onClick(View v) {
         final int fragmentId = v.getId();
         if (getActivity() != null && fragmentId == fragment_alert_detail_tvDial911 && jsonobjectToChange != null) {
-            final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-            dialog.setContentView(R.layout.custom_dialog);
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+            ) {
+                final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
+                dialog.setContentView(R.layout.custom_dialog);
 
-            final TextView tvTitle = dialog.findViewById(R.id.dialog_tvTitle);
-            final TextView tvMessage = dialog.findViewById(R.id.dialog_tvMessage);
-            final TextView tvPosButton = dialog.findViewById(R.id.dialog_tvPosButton);
-            final TextView tvNegButton = dialog.findViewById(R.id.dialog_tvNegButton);
-            tvTitle.setText(getString(R.string.dialog_dial_title));
-            tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
-            tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
-            tvNegButton.setText(getString(R.string.fragment_create_account_tv_cancel));
+                final TextView tvTitle = dialog.findViewById(R.id.dialog_tvTitle);
+                final TextView tvMessage = dialog.findViewById(R.id.dialog_tvMessage);
+                final TextView tvPosButton = dialog.findViewById(R.id.dialog_tvPosButton);
+                final TextView tvNegButton = dialog.findViewById(R.id.dialog_tvNegButton);
+                tvTitle.setText(getString(R.string.dialog_dial_title));
+                tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
+                tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
+                tvNegButton.setText(getString(R.string.fragment_create_account_tv_cancel));
 
-            tvPosButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
+                tvPosButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
 
-                    if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("US")) {
-                        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 911));
-                        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-                        startActivity(callIntent);
-                    } else if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("FR")) {
-                        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
-                        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-                        startActivity(callIntent);
-                    } else {
-                        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
-                        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-                        startActivity(callIntent);
+                        if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("US")) {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 911));
+                            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                            startActivity(callIntent);
+                        } else if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("FR")) {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
+                            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                            startActivity(callIntent);
+                        } else {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 112));
+                            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                            startActivity(callIntent);
+                        }
+
                     }
-
-                }
-            });
-            tvNegButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+                });
+                tvNegButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            } else {
+                readPhonePermissionLauncher.launch(new String[] {Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE});
+            }
         } else if (fragmentId == R.id.fragment_alert_detail_tvBackAlerts) {
             if (getActivity() != null && getContext() != null) {
                 getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorGray));

@@ -119,8 +119,7 @@ public class WsGetUserData {
      * @return {@link String} that will store all the parameters to be passed to the server for execultion.
      */
     private String generateLoginRequest() {
-        final Constant mConstants = new Constant();
-        String user_id = Preference.getInstance().mSharedPreferences.getString(mConstants.USER_ID, "");
+        String user_id = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
 
         final WsConstants wsConstants = new WsConstants();
         StringBuilder builder = new StringBuilder();

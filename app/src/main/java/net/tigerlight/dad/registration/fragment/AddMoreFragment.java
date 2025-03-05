@@ -1,5 +1,6 @@
 package net.tigerlight.dad.registration.fragment;
 
+import static android.app.Activity.RESULT_OK;
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 import android.Manifest;
@@ -20,6 +21,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,34 +43,22 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.DialogFragment;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.firebase.installations.Utils;
 
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.registration.util.Utills;
+import net.tigerlight.dad.simplecropping.CameraUtil;
+import net.tigerlight.dad.simplecropping.Constants;
+import net.tigerlight.dad.util.BitMapHelper;
 import net.tigerlight.dad.util.CircleTransform;
 import net.tigerlight.dad.util.Util;
 import net.tigerlight.dad.webservices.WsCallAddreceiver;
 import net.tigerlight.dad.webservices.WsCallUpdateContact;
-import net.tigerlight.dad.simplecropping.CameraUtil;
-import net.tigerlight.dad.simplecropping.Constants;
-import net.tigerlight.dad.util.BitMapHelper;
 import net.tigerlight.dad.webservices.WsUploadContactImage;
 
 import org.json.JSONException;
@@ -106,6 +105,10 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
     private String isPhotoEdited;
     private boolean isUploadingPhoto = false;
 
+    private ActivityResultLauncher<String> contactsPermissionLauncher;
+
+    private ActivityResultLauncher<Intent> contactPickerLauncher;
+
     public void setOnContactUpdatedListener(OnContactUpdatedListener listener) {
         this.contactUpdatedListener = listener;
     }
@@ -117,13 +120,38 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
         photoPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri selectedImageUri = result.getData().getData();
                         if (selectedImageUri != null) {
                             handleSelectedImage(selectedImageUri);
                         } else {
                             Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                }
+        );
+
+        contactsPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        final Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                        contactPickerLauncher.launch(intent);
+//                        startActivityForResult(intent, Constants.REQUEST_CONTACT_NUMBER);
+                    } else {
+                        Toast.makeText(requireContext(), "Please grant Contacts permission!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        
+        contactPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        toSetContactSelectedAjay(result.getData());
+                        Log.d(TAG, "contactPickerLauncher: contact pick success");
+                    } else  {
+                        Log.e(TAG, "contactPickerLauncher: contact pick failed");
                     }
                 }
         );
@@ -279,7 +307,7 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.d(TAG, "onActivityResult: " + data);
-        if (resultCode != Activity.RESULT_OK) {
+        if (resultCode != RESULT_OK) {
             Toast.makeText(getActivity(), "Error: No file selected or action canceled.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -413,8 +441,13 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
 
     //Content Provider Method
     private void showContacts() {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intent, Constants.REQUEST_CONTACT_NUMBER);
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            final Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            contactPickerLauncher.launch(intent);
+//            startActivityForResult(intent, Constants.REQUEST_CONTACT_NUMBER);
+        } else  {
+            contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
+        }
     }
 
     @SuppressLint({"Range", "UseCompatLoadingForDrawables"})
@@ -467,15 +500,12 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
             if (contactID != null) {
                 openPhoto = openPhoto(Long.parseLong(contactID));
                 Bitmap bitmap = BitmapFactory.decodeStream(openPhoto);
-                if (bitmap == null) {
-                    ivProfilePic.setBackgroundDrawable(getResources().getDrawable(R.drawable.pf_pic));
-                } else {
+                if (bitmap != null) {
                     Bitmap circleBitmap = BitMapHelper.getCircleBitmap(bitmap);
                     ivProfilePic.setImageBitmap(circleBitmap);
                     isImportedPhoto = BitMapHelper.saveImageAndGetPath(bitmap, getContext(), userId);
                 }
             }
-
 
             // Bitmap thumbnailID = new QuickContactHelper(this,
             // contactNumber).addThumbnail(this);
@@ -523,8 +553,9 @@ public class AddMoreFragment extends DialogFragment implements View.OnClickListe
                 }
                 out.close();
             }
-        } catch (Exception ex) {
-            Log.e(TAG, "openPhoto error");
+        } catch (final Exception ex) {
+            Log.e(TAG, "openPhoto: " + ex.getMessage(), ex);
+            return null;
         }
 // finally {
 //

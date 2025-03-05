@@ -369,7 +369,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.d(TAG, "Service destroyed");
         // Clean up resources here
         try {
@@ -380,6 +379,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Receiver not registered", e);
         }
+        stopForeground(STOP_FOREGROUND_REMOVE);
+
+        super.onDestroy();
     }
 
     @Override
@@ -527,8 +529,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
     }
 
-    private void sendAlertBroadcast()
-    {
+    private void sendAlertBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.Actions.SENT_ALERT_ACTION);
         JSONObject jsonObject = new JSONObject();
