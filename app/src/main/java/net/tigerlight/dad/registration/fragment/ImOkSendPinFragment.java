@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 /**
  * Created by indianic on 24/10/16.

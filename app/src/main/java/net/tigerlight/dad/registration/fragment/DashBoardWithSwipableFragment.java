@@ -22,7 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.recievers.BLEHelper;
 import net.tigerlight.dad.registration.adapter.ViewPagerAdapter;

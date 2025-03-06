@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.webservices.WsCreatePin;

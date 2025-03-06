@@ -23,7 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.blework.AlarmReceiver;
 import net.tigerlight.dad.blework.BleReceiver;
 import net.tigerlight.dad.home.BaseActivity;

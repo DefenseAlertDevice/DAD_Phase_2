@@ -5,7 +5,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.util.CheckForeground;
 import net.tigerlight.dad.util.Util;
 

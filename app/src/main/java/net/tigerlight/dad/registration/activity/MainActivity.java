@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import net.tigerlight.dad.LocationService;
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseActivity;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.fragment.AlertDetailFragment;

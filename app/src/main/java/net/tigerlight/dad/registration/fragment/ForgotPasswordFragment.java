@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.util.Utills;
 import net.tigerlight.dad.registration.webservices.WsCallForgotPassword;

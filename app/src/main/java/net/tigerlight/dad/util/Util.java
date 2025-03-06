@@ -2,7 +2,7 @@ package net.tigerlight.dad.util;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

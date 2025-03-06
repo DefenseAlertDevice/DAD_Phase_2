@@ -1,13 +1,6 @@
 package net.tigerlight.dad;
 
-import net.tigerlight.dad.registration.activity.MainActivity;
-import net.tigerlight.dad.registration.fragment.AlertDetailFragment;
-import net.tigerlight.dad.registration.util.Constant;
-import net.tigerlight.dad.util.CheckForeground;
-import net.tigerlight.dad.util.Util;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import static net.tigerlight.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -18,12 +11,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+
 import androidx.core.app.NotificationCompat;
 
-import static net.tigerlight.dad.registration.fragment.AlertFragment.jsonobjectToChange;
+import com.net.tigerlight.dad.R;
+
+import net.tigerlight.dad.registration.activity.MainActivity;
+import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.util.CheckForeground;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 

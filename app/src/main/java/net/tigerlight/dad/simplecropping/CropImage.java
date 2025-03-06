@@ -43,7 +43,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;

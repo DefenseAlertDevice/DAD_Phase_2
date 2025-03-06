@@ -46,7 +46,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import net.tigerlight.dad.LocationService;
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
 import net.tigerlight.dad.registration.activity.MainActivity;
 import net.tigerlight.dad.registration.model.GetUserInfoModel;

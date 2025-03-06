@@ -1,7 +1,7 @@
 package net.tigerlight.dad.registration.fragment;
 
-import static net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
-import static net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
+import static com.net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
+import static com.net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 import android.Manifest;
@@ -53,7 +53,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.activity.MainActivity;
 import net.tigerlight.dad.registration.model.CountryModel;

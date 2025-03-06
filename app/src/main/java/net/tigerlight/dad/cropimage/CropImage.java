@@ -16,7 +16,7 @@
 
 package net.tigerlight.dad.cropimage;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 import android.app.Activity;
 import android.content.ContentResolver;

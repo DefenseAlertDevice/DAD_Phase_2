@@ -13,6 +13,8 @@ import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.net.tigerlight.dad.R;
+
 public class GcmIntentService extends IntentService {
 
     public static final int NOTIFICATION_ID = 1;

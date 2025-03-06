@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 public class CustomTextViewSemiBold extends androidx.appcompat.widget.AppCompatTextView {
 

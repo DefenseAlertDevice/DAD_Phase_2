@@ -3,7 +3,7 @@ package net.tigerlight.dad.registration.webservices;
 import android.content.Context;
 import android.util.Log;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.WSUtil;

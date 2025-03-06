@@ -1,6 +1,6 @@
 package net.tigerlight.dad.util;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.util.Constant;
 
 import org.json.JSONArray;

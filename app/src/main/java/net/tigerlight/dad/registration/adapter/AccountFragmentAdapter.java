@@ -1,6 +1,6 @@
 package net.tigerlight.dad.registration.adapter;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.activity.MainActivity;
 import net.tigerlight.dad.registration.fragment.ChangPassWordFragment;
 import net.tigerlight.dad.registration.fragment.CreatePinFragment;

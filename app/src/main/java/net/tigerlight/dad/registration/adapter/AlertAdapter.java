@@ -2,7 +2,7 @@ package net.tigerlight.dad.registration.adapter;
 
 import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.fragment.AlertFragment;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.BitMapHelper;

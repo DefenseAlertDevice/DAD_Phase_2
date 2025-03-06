@@ -25,7 +25,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 import java.io.File;
 import java.io.IOException;

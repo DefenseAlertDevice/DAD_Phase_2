@@ -1,6 +1,6 @@
 package net.tigerlight.dad.registration.fragment;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.adapter.AlertAdapter;
 import net.tigerlight.dad.registration.util.Constant;

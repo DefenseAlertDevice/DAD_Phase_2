@@ -9,7 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 
 
 /**

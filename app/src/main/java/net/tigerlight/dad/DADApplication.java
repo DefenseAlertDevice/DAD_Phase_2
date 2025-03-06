@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.util.Log;
 
 import com.farimarwat.grizzly.GrizzlyMonitorBuilder;
+import com.net.tigerlight.dad.R;
 
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;

@@ -1,6 +1,6 @@
 package net.tigerlight.dad.util;
 
-import net.tigerlight.dad.BuildConfig;
+import com.net.tigerlight.dad.BuildConfig;
 
 public class WsConstants {
 

@@ -3,7 +3,7 @@ package net.tigerlight.dad.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import net.tigerlight.dad.DADApplication;
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 

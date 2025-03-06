@@ -11,7 +11,7 @@
 //import android.widget.BaseAdapter;
 //import android.widget.ImageView;
 //import android.widget.TextView;
-//import net.tigerlight.dad.R;
+//import com.net.tigerlight.dad.R;
 //import net.tigerlight.dad.registration.fragment.ContactFragment;
 //import net.tigerlight.dad.util.BitMapHelper;
 //import net.tigerlight.dad.util.Preference;

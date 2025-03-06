@@ -26,7 +26,7 @@
 //import android.widget.ImageView;
 //import android.widget.TextView;
 //import android.widget.Toast;
-//import net.tigerlight.dad.R;
+//import com.net.tigerlight.dad.R;
 //import net.tigerlight.dad.home.BaseActivity;
 //import net.tigerlight.dad.settings.webservices.WsCallAddreceiver;
 //import net.tigerlight.dad.util.BitMapHelper;

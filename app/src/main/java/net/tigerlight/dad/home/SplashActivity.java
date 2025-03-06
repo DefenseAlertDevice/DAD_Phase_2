@@ -5,7 +5,7 @@ import static net.tigerlight.dad.util.AlarmUtils.setupPeriodicService;
 
 import android.Manifest;
 
-import net.tigerlight.dad.R;
+import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.registration.activity.MainActivity;
 import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;
