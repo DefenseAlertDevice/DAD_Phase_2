@@ -15,8 +15,7 @@ public class GetUserInfoModel implements Parcelable {
     private String phone_no="";
     private String user_id="";
 
-    public GetUserInfoModel()
-    {
+    public GetUserInfoModel() {
 
     }
 

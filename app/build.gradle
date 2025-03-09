@@ -73,6 +73,8 @@ android {
             versionCode 1
             versionName "3.0.1"
             dimension "version"
+
+            setProperty("archivesBaseName", "The SoulDefendHER_v$versionName($versionCode)")
         }
     }
 
