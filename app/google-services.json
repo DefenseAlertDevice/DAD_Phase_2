@@ -3,14 +3,14 @@
     "project_number": "32989397760",
     "firebase_url": "https://defense-alert-device.firebaseio.com",
     "project_id": "defense-alert-device",
-    "storage_bucket": "defense-alert-device.appspot.com"
+    "storage_bucket": "defense-alert-device.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:32989397760:android:b69d67d59bcd4ba9",
+        "mobilesdk_app_id": "1:32989397760:android:8da563cea39d627c0569e5",
         "android_client_info": {
-          "package_name": "net.tigerlight.dad"
+          "package_name": "com.net.tigerlight.dad"
         }
       },
       "oauth_client": [
@@ -25,15 +25,108 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32989397760:android:1f672e85b3ad9aa10569e5",
+        "android_client_info": {
+          "package_name": "com.tigerlight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXSPvUbpw3wxdE-Ex9T_7OdTebkH7pmFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32989397760:android:b69d67d59bcd4ba9",
+        "android_client_info": {
+          "package_name": "com.tigerlight.dad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXSPvUbpw3wxdE-Ex9T_7OdTebkH7pmFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32989397760:android:f3317451a88475930569e5",
+        "android_client_info": {
+          "package_name": "net.tigerlight.dad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32989397760-4d8a39br9r7an3mr7gue8fh7g8igdbf6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.tigerlight.dad",
+            "certificate_hash": "377a0ae719bcb79fd92c063ea4f3d074306e6f1b"
+          }
         },
-        "ads_service": {
-          "status": 2
+        {
+          "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXSPvUbpw3wxdE-Ex9T_7OdTebkH7pmFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32989397760-nah0etcddlg4srdkthp8fe01t1fpligk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

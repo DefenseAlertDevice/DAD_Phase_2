@@ -31,6 +31,8 @@ android {
         versionName "3.0.1"
         setProperty("archivesBaseName", "The SoulDefendHER_v$versionName($versionCode)")
 
+        signingConfig signingConfigs.getByName("debug")
+
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
@@ -46,12 +48,14 @@ android {
 
     buildTypes {
         debug {
+            _isDebuggable true
             minifyEnabled false
             shrinkResources false
             buildConfigField "String", "API_URL", '"https://dev.api.defensealertdevice.com/"'
             buildConfigField "String", "ASSETS_URL", '"https://dev.assets.defensealertdevice.com/"'
         }
         release {
+            _isDebuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -60,8 +64,6 @@ android {
             buildConfigField "String", "ASSETS_URL", '"https://assets.defensealertdevice.com/"'
         }
     }
-
-
 
     productFlavors {
         theme1 {
