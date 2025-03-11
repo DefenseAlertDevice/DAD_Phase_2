@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
-import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.DadConstant;
 import net.tigerlight.dad.util.Preference;
 
 import java.io.File;
@@ -135,7 +135,7 @@ public class CameraUtil {
         }
 
         // Create a media file name
-        String timeStamp = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
+        String timeStamp = Preference.getInstance().mSharedPreferences.getString(DadConstant.KEY_EMAIL, "");
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + timeStamp + IMG_POSTFIX);

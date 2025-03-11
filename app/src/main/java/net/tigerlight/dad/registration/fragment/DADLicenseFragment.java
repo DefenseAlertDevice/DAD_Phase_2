@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
-import net.tigerlight.dad.registration.activity.MainActivity;
-import net.tigerlight.dad.registration.util.Constant;
-import net.tigerlight.dad.registration.util.Utills;
+import net.tigerlight.dad.registration.activity.DadMainActivity;
+import net.tigerlight.dad.registration.util.DadConstant;
+import net.tigerlight.dad.registration.util.DadUtils;
 import net.tigerlight.dad.util.Preference;
 
 import java.util.Locale;
@@ -65,10 +65,10 @@ public class DADLicenseFragment extends BaseFragment {
         final int fragmentId = v.getId();
 
         if (fragmentId == R.id.fragment_dad_license_tvDoNotAccept) {
-            Utills.displayDialog(getActivity(), getString(R.string.dialog_eula_title), getString(R.string.dialog_eula_msg), getString(R.string.ok), "", false, false);
+            DadUtils.displayDialog(getActivity(), getString(R.string.dialog_eula_title), getString(R.string.dialog_eula_msg), getString(R.string.ok), "", false, false);
         } else if (fragmentId == R.id.fragment_dad_license_tvAccept) {
-            Preference.getInstance().savePreferenceData(Constant.IS_ACCEPT, true);
-            ((MainActivity) getActivity()).replaceFragment(new RegistartionFragment());
+            Preference.getInstance().savePreferenceData(DadConstant.IS_ACCEPT, true);
+            ((DadMainActivity) getActivity()).replaceFragment(new DadRegistrationFragment());
         }
     }
 }

@@ -25,8 +25,8 @@ android {
     namespace "com.net.tigerlight.dad"
     defaultConfig {
         applicationId "com.net.tigerlight.dad"
-        minSdkVersion 26
-        targetSdkVersion 34
+        minSdk 26
+        targetSdk 34
         versionCode 1
         versionName "3.0.1"
         setProperty("archivesBaseName", "The SoulDefendHER_v$versionName($versionCode)")
@@ -68,13 +68,34 @@ android {
     productFlavors {
         theme1 {
             applicationId "com.net.tigerlight.dad"
-            minSdkVersion 26
-            targetSdkVersion 34
+            minSdk 26
+            targetSdk 34
             versionCode 1
             versionName "3.0.1"
             dimension "version"
 
             setProperty("archivesBaseName", "The SoulDefendHER_v$versionName($versionCode)")
+
+            signingConfig signingConfigs.getByName("debug")
+
+            buildTypes {
+                debug {
+                    _isDebuggable true
+                    minifyEnabled false
+                    shrinkResources false
+                    buildConfigField "String", "API_URL", '"https://dev.api.defensealertdevice.com/"'
+                    buildConfigField "String", "ASSETS_URL", '"https://dev.assets.defensealertdevice.com/"'
+                }
+                release {
+                    _isDebuggable false
+                    minifyEnabled true
+                    shrinkResources true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    signingConfig signingConfigs.debug
+                    buildConfigField "String", "API_URL", '"https://api.defensealertdevice.com/"'
+                    buildConfigField "String", "ASSETS_URL", '"https://assets.defensealertdevice.com/"'
+                }
+            }
         }
     }
 
@@ -85,6 +106,12 @@ android {
     }
     compileSdk 34
     buildToolsVersion '34.0.0'
+
+    bundle {
+        language {
+            enableSplit false
+        }
+    }
 }
 
 dependencies {

@@ -9,7 +9,7 @@ import androidx.work.WorkerParameters;
 
 public class PushAlertWorker extends Worker {
     private static final String TAG = "LocationUpdateWorker";
-    private Context mContext;
+    private final Context mContext;
 
     public PushAlertWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -38,7 +38,7 @@ public class PushAlertWorker extends Worker {
         // Your logic to update the location
         Log.d(TAG, "Sending push alert: lat=" + latitude + ", long=" + longitude);
         // Simulate network call or database operation
-        WsCallSendDanger wsCall = new WsCallSendDanger(mContext);
+        CallSendDanger wsCall = new CallSendDanger(mContext);
         wsCall.executeService(latitude, longitude, timezoneId, accuracy, uuid, identifier);
         return wsCall.isSuccess();
     }

@@ -1,7 +1,7 @@
 package net.tigerlight.dad.util;
 
 import com.net.tigerlight.dad.R;
-import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.DadConstant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +14,6 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -31,7 +30,7 @@ public class WSUtil {
     private Context mContext;
 
     private String getValidAccessToken(Context context) throws IOException {
-        String accessToken = Preference.getInstance().getEncryptedPreferenceData(Constant.ACCESS_TOKEN);
+        String accessToken = Preference.getInstance().getEncryptedPreferenceData(DadConstant.ACCESS_TOKEN);
         if (TextUtils.isEmpty(accessToken) || isAccessTokenExpired(context)) {
             accessToken = refreshAccessToken(context);
         }
@@ -39,14 +38,14 @@ public class WSUtil {
     }
 
     private boolean isAccessTokenExpired(Context context) {
-        long expiresIn = Preference.getInstance().mSharedPreferences.getLong(Constant.EXPIRES_IN, 0);
+        long expiresIn = Preference.getInstance().mSharedPreferences.getLong(DadConstant.EXPIRES_IN, 0);
         return System.currentTimeMillis() > expiresIn;
     }
 
     private String refreshAccessToken(Context context) throws IOException {
         // Assuming refreshToken is stored in SharedPreferences
-        String refreshToken = Preference.getInstance().getEncryptedPreferenceData(Constant.REFRESH_TOKEN);
-        String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
+        String refreshToken = Preference.getInstance().getEncryptedPreferenceData(DadConstant.REFRESH_TOKEN);
+        String userId = Preference.getInstance().mSharedPreferences.getString(DadConstant.USER_ID, "");
         if (TextUtils.isEmpty(refreshToken)) {
             return null; // No refresh token available
         }
@@ -72,14 +71,14 @@ public class WSUtil {
             throw new RuntimeException(e);
         }
 
-        String newAccessToken = jsonObject.optString(Constant.ACCESS_TOKEN);
-        String newRefreshToken = jsonObject.optString(Constant.REFRESH_TOKEN);
-        long expiresIn  = jsonObject.optLong(Constant.EXPIRES_IN);
+        String newAccessToken = jsonObject.optString(DadConstant.ACCESS_TOKEN);
+        String newRefreshToken = jsonObject.optString(DadConstant.REFRESH_TOKEN);
+        long expiresIn  = jsonObject.optLong(DadConstant.EXPIRES_IN);
 
         // Save the new access token and expiry time in SharedPreferences
-        Preference.getInstance().saveEncryptedPreferenceData(Constant.ACCESS_TOKEN, newAccessToken);
-        Preference.getInstance().saveEncryptedPreferenceData(Constant.REFRESH_TOKEN, newRefreshToken);
-        Preference.getInstance().mSharedPreferences.edit().putLong(Constant.EXPIRES_IN, expiresIn).apply();
+        Preference.getInstance().saveEncryptedPreferenceData(DadConstant.ACCESS_TOKEN, newAccessToken);
+        Preference.getInstance().saveEncryptedPreferenceData(DadConstant.REFRESH_TOKEN, newRefreshToken);
+        Preference.getInstance().mSharedPreferences.edit().putLong(DadConstant.EXPIRES_IN, expiresIn).apply();
 
         return newAccessToken;
     }
@@ -157,7 +156,7 @@ public class WSUtil {
                     .get();
 //            Request request = new Request.Builder().url(url).head().build();
             String accessToken = getValidAccessToken(mContext);
-            String refreshToken = Preference.getInstance().getEncryptedPreferenceData(Constant.REFRESH_TOKEN);
+            String refreshToken = Preference.getInstance().getEncryptedPreferenceData(DadConstant.REFRESH_TOKEN);
             final WsConstants wsConstants = new WsConstants();
             if (url.contains(wsConstants.PARAMS_COMMAND + "=" + WsConstants.METHOD_LOGOUT)) {
                 if (!TextUtils.isEmpty(refreshToken)) {

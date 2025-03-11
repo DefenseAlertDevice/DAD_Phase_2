@@ -1,0 +1,131 @@
+package net.tigerlight.dad.webservices;
+
+import android.content.Context;
+
+import com.net.tigerlight.dad.R;
+import net.tigerlight.dad.registration.model.UserInfoModel;
+import net.tigerlight.dad.registration.util.DadConstant;
+import net.tigerlight.dad.util.Preference;
+import net.tigerlight.dad.util.WSUtil;
+import net.tigerlight.dad.util.WsConstants;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/**
+ * Created by M.T. on 7 Oct, 2016.
+ * This class is making api call for user login
+ */
+public class GetUserData {
+    private Context context;
+    private String message;
+    private boolean success;
+    private String user_id;
+    private UserInfoModel userInfoModel;
+//    private ArrayList<GetUserInfoModel> listProfileModel;
+
+
+    public GetUserData(final Context context) {
+        this.context = context;
+        userInfoModel = new UserInfoModel();
+    }
+
+
+    public UserInfoModel getGetUserInfoModel() {
+        return userInfoModel;
+    }
+
+    public void setGetUserInfoModel(UserInfoModel userInfoModel) {
+        this.userInfoModel = userInfoModel;
+    }
+
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    /**
+     * Calls the api user Login.
+     *
+     * @return
+     */
+    public JSONObject executeService() {
+        final String url;
+        url = WsConstants.MAIN_URL;
+        final String response = new WSUtil().callServiceHttpGet(context, url + generateLoginRequest());
+        return parseResponse(response);
+    }
+
+    /**
+     * Parse the json response from {@link String} to {@link JSONArray}.
+     *
+     * @param response {@link String} response that is recived from the api request.
+     * @return {@link JSONArray} for success or failure response of request
+     */
+    private JSONObject parseResponse(final String response) {
+        if (response != null && response.trim().length() > 0) {
+            try {
+                final JSONObject jsonObject = new JSONObject(response);
+                final WsConstants wsConstants = new WsConstants();
+                if (jsonObject.length() > 0) {
+                    success = jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("1");
+                    final JSONObject jsonObject1 = jsonObject.optJSONObject(wsConstants.PARAMS_DATA);
+                    final String address = jsonObject1.optString("address");
+                    final String email = jsonObject1.optString("email");
+                    final String username = jsonObject1.optString("username");
+                    final String phonenumber = jsonObject1.optString("phonenumber");
+                    final String id = jsonObject1.optString("id");
+
+                    userInfoModel.setUser_id(address);
+                    userInfoModel.setEmail(email);
+                    userInfoModel.setUsername(username);
+                    userInfoModel.setPhone_no(phonenumber);
+                    userInfoModel.setUser_id(id);
+
+                    setGetUserInfoModel(userInfoModel);
+//                    sectionsModel.setId(id);
+
+                    if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("0")) {
+                        message = context.getString(R.string.alert_invalid_credentials);
+                    } else if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("2")) {
+                        message = context.getString(R.string.alert_not_registered);
+                    } else {
+                        message = jsonObject.optString(wsConstants.PARAMS_MESSAGE);
+                    }
+
+                    if (success) {
+                        return jsonObject;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Generates RequestBody for making api call for okhttp
+     *
+     * @return {@link String} that will store all the parameters to be passed to the server for execultion.
+     */
+    private String generateLoginRequest() {
+        String user_id = Preference.getInstance().mSharedPreferences.getString(DadConstant.USER_ID, "");
+
+        final WsConstants wsConstants = new WsConstants();
+        StringBuilder builder = new StringBuilder();
+        builder.append(wsConstants.PARAMS_COMMAND + "=" + WsConstants.METHOD_GET_USER_DATA);
+//        builder.append("&userid" + "=" + Preference.getInstance().mSharedPreferences.getString(Constantss.USER_ID, ""));
+        builder.append("&userid" + "=" + user_id);
+        return builder.toString();
+    }
+}

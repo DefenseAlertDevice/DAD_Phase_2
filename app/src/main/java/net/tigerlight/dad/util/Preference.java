@@ -2,7 +2,7 @@ package net.tigerlight.dad.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import net.tigerlight.dad.DADApplication;
+import net.tigerlight.dad.MainApplication;
 import com.net.tigerlight.dad.R;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
@@ -30,15 +30,15 @@ public class Preference {
     public final static String PREFERENCE_IS_LOGIN = "isLogIn";
 
     private Preference() {
-        mSharedPreferences = DADApplication.mAppInstance.getSharedPreferences(DADApplication.mAppInstance.getString(R.string.app_name), Context.MODE_PRIVATE);
+        mSharedPreferences = MainApplication.mAppInstance.getSharedPreferences(MainApplication.mAppInstance.getString(R.string.app_name), Context.MODE_PRIVATE);
 
         try {
-            MasterKey masterKey = new MasterKey.Builder(DADApplication.mAppInstance)
+            MasterKey masterKey = new MasterKey.Builder(MainApplication.mAppInstance)
                     .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                     .build();
 
             mEncryptedSharedPreferences = EncryptedSharedPreferences.create(
-                    DADApplication.mAppInstance,
+                    MainApplication.mAppInstance,
                     "secure_prefs", // Name for encrypted prefs file
                     masterKey,
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

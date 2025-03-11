@@ -8,7 +8,7 @@ import androidx.work.WorkerParameters;
 
 public class UpdateLocationWorker extends Worker {
     private static final String TAG = "LocationUpdateWorker";
-    private Context mContext;
+    private final Context mContext;
 
     public UpdateLocationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -33,8 +33,8 @@ public class UpdateLocationWorker extends Worker {
         // Your logic to update the location
         Log.d(TAG, "Updating location: lat=" + latitude + ", long=" + longitude);
         // Simulate network call or database operation
-        WsCallUpdateLocation wsCallUpdateLocation = new WsCallUpdateLocation(mContext);
-        wsCallUpdateLocation.executeService(latitude, longitude);
-        return wsCallUpdateLocation.isSuccess();
+        CallUpdateLocation callUpdateLocation = new CallUpdateLocation(mContext);
+        callUpdateLocation.executeService(latitude, longitude);
+        return callUpdateLocation.isSuccess();
     }
 }

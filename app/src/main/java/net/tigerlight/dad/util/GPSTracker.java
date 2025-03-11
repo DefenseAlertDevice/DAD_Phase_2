@@ -1,6 +1,6 @@
 package net.tigerlight.dad.util;
 
-import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.DadConstant;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -96,9 +96,9 @@ public class GPSTracker extends Service implements LocationListener {
 
                 if (location != null)
                 {
-                    Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
-                    Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
-                    Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
+                    Preference.getInstance().savePreferenceData(DadConstant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
+                    Preference.getInstance().savePreferenceData(DadConstant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
+                    Preference.getInstance().savePreferenceData(DadConstant.COMMON_ACCURACY, (int) location.getAccuracy());
                 }
             }
 

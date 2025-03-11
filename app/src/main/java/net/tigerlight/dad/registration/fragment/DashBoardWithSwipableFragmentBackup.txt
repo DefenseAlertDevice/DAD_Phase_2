@@ -18,11 +18,11 @@ import com.google.android.material.tabs.TabLayout;
 
 import com.net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
-import net.tigerlight.dad.registration.adapter.ViewPagerAdapter;
-import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.adapter.DadViewPagerAdapter;
+import net.tigerlight.dad.registration.util.DadConstant;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.Util;
-import net.tigerlight.dad.webservices.WsCallGetAlertCount;
+import net.tigerlight.dad.webservices.CallGetAlertCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -243,10 +243,10 @@ public class DashBoardWithSwipableFragmentBackup extends BaseFragment implements
         @Override
         public void run() {
             try {
-                final WsCallGetAlertCount wsCallGetAlertCount;
-                wsCallGetAlertCount = new WsCallGetAlertCount(getActivity());
+                final WsCallGetAlertCount callGetAlertCount;
+                callGetAlertCount = new WsCallGetAlertCount(getActivity());
                 String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
-                JSONObject jsonRecieved = wsCallGetAlertCount.executeService(email, "" + 0);
+                JSONObject jsonRecieved = callGetAlertCount.executeService(email, "" + 0);
                 if (jsonRecieved != null) {
 
                     if (jsonRecieved.getInt(SUCCESS) == 1) {
@@ -325,10 +325,10 @@ public class DashBoardWithSwipableFragmentBackup extends BaseFragment implements
 //        @Override
 //        public void run() {
 //            try {
-//                final WsCallGetAlertCount wsCallGetAlertCount;
-//                wsCallGetAlertCount = new WsCallGetAlertCount(getActivity());
+//                final WsCallGetAlertCount callGetAlertCount;
+//                callGetAlertCount = new WsCallGetAlertCount(getActivity());
 //                String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
-//                JSONObject jsonRecieved = wsCallGetAlertCount.executeService(email, "" + 0);
+//                JSONObject jsonRecieved = callGetAlertCount.executeService(email, "" + 0);
 //                if (jsonRecieved != null) {
 //
 //

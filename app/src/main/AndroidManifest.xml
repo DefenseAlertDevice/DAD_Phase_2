@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Accessing camera hardware -->
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -31,8 +27,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
     <uses-feature
@@ -61,11 +58,11 @@
         android:required="false" />
 
     <application
-        android:name="net.tigerlight.dad.DADApplication"
+        android:name="net.tigerlight.dad.MainApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -82,7 +79,7 @@
         </provider>
 
         <activity
-            android:name="net.tigerlight.dad.home.SplashActivity"
+            android:name="net.tigerlight.dad.home.DadSplashActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
@@ -95,7 +92,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.tigerlight.dad.registration.activity.MainActivity"
+            android:name="net.tigerlight.dad.registration.activity.DadMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
@@ -108,7 +105,7 @@
             android:name="net.tigerlight.dad.simplecropping.CropImage" />
 
         <receiver
-            android:name="net.tigerlight.dad.MyFirebaseMessagingReceiver"
+            android:name="net.tigerlight.dad.NewFirebaseMessagingReceiver"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
@@ -161,13 +158,13 @@
         <!-- android:process=":LocationService" /> -->
 
         <service
-            android:name="net.tigerlight.dad.LocationService"
+            android:name="net.tigerlight.dad.LocationUpdateService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location|connectedDevice|shortService" />
 
         <service
-            android:name="net.tigerlight.dad.MyFirebaseMessagingService"
+            android:name="net.tigerlight.dad.NewFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -201,7 +198,7 @@
         <!--            android:value="@xml/asset_statements" />-->
 
         <receiver
-            android:name="net.tigerlight.dad.recievers.AlertSentReceiver"
+            android:name="net.tigerlight.dad.recievers.DadAlertSentReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

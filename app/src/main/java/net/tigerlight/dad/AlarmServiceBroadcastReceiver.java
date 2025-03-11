@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import net.tigerlight.dad.util.AlarmUtils;
+import net.tigerlight.dad.registration.util.DadConstant;
+import net.tigerlight.dad.util.Preference;
+import net.tigerlight.dad.util.ServiceAlarmUtils;
 
 /**
  * Created by indianic on 03/03/17.
@@ -16,8 +18,11 @@ public class AlarmServiceBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AlarmUtils.cancelPeriodicService(context);
-        AlarmUtils.setupPeriodicService(context);
+        ServiceAlarmUtils.cancelPeriodicService(context);
+        final boolean isLogin = Preference.getInstance().mSharedPreferences.getBoolean(DadConstant.IS_LOGIN, false);
+        if (isLogin) {
+            ServiceAlarmUtils.setupPeriodicService(context);
+        }
 //        try {
 //            Log.d(TAG, "Starting AlarmServiceBroadcastReciever");
 //            Intent serviceIntent = new Intent(context, LocationBroadcastServiceNew.class);

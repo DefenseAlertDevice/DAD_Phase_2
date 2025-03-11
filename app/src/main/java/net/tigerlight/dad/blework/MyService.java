@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
-import net.tigerlight.dad.registration.util.Constant;
+import net.tigerlight.dad.registration.util.DadConstant;
 import net.tigerlight.dad.util.Preference;
 
 public class MyService extends IntentService {
@@ -25,11 +25,11 @@ public class MyService extends IntentService {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-        if (Preference.getInstance().mSharedPreferences.getInt(Constant.KEY_REFRESH_LOC, 0) == 0) {
+        if (Preference.getInstance().mSharedPreferences.getInt(DadConstant.KEY_REFRESH_LOC, 0) == 0) {
             return;
         }
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
+            userId = Preference.getInstance().mSharedPreferences.getString(DadConstant.USER_ID, "");
             new LoactionUpdateThread().start();
         }
     }

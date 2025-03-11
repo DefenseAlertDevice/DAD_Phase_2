@@ -23,12 +23,6 @@ build/
 /release/
 /app/build/
 /app/release/
-gradle.properties
-version.properties
-version-codes.properties
-gradle/
-gradlew.bat
-gradlew
 
 # Local configuration file (sdk path, etc)
 local.properties

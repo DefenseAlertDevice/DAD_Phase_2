@@ -33,7 +33,7 @@ public class TestAlertWorker extends Worker {
         // Your logic to update the location
         Log.d(TAG, "Sending test alert");
         // Simulate network call or database operation
-        WsCallDADTest wsCall = new WsCallDADTest(mContext);
+        CallDADTest wsCall = new CallDADTest(mContext);
         wsCall.executeService(uuid, identifier);
         return wsCall.isSuccess();
     }

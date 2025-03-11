@@ -6,13 +6,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import net.tigerlight.dad.registration.model.CountryModel;
+import net.tigerlight.dad.registration.model.DadCountryModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by indianic on 28/03/17.
@@ -26,11 +27,13 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "DAD_DB.db";
     private static final String DB_PATH_SUFFIX = "/databases/";
-    static Context ctx;
+    private final Context context;
+    private static WeakReference<Context> contextRef;
 
-    public SqlLiteDbHelper(Context context) {
+    public SqlLiteDbHelper(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        ctx = context;
+        this.context = context;
+        contextRef = new WeakReference<>(context);
     }
 
     @Override
@@ -45,13 +48,13 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 
     public void CopyDataBaseFromAsset() throws IOException {
 
-        InputStream myInput = ctx.getAssets().open(DATABASE_NAME);
+        InputStream myInput = context.getAssets().open(DATABASE_NAME);
 
-// Path to the just created empty db
+        // Path to the just created empty db
         String outFileName = getDatabasePath();
 
-// if the path doesn't exist first, create it
-        File f = new File(ctx.getApplicationInfo().dataDir + DB_PATH_SUFFIX);
+        // if the path doesn't exist first, create it
+        File f = new File(context.getApplicationInfo().dataDir + DB_PATH_SUFFIX);
         if (!f.exists())
             f.mkdir();
 
@@ -73,12 +76,12 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
     }
 
     private static String getDatabasePath() {
-        return ctx.getApplicationInfo().dataDir + DB_PATH_SUFFIX
+        return contextRef.get().getApplicationInfo().dataDir + DB_PATH_SUFFIX
                 + DATABASE_NAME;
     }
 
-    public SQLiteDatabase openDataBase() throws SQLException {
-        File dbFile = ctx.getDatabasePath(DATABASE_NAME);
+    public SQLiteDatabase openDatabase() throws SQLException {
+        File dbFile = context.getDatabasePath(DATABASE_NAME);
 
         if (!dbFile.exists()) {
             try {
@@ -94,7 +97,7 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 
 
     // Getting single contact
-    public CountryModel Get_ContactDetails(String cc) {
+    public DadCountryModel Get_ContactDetails(String cc) {
 
 
         final SQLiteDatabase db = this.getReadableDatabase();
@@ -102,7 +105,7 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
         final Cursor cursor = db.rawQuery("SELECT * FROM Country where c_code = '" + cc + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            final CountryModel cont = new CountryModel(cursor.getInt(cursor.getColumnIndex("id")), cursor.getString(cursor.getColumnIndex("c_code")), cursor.getString(cursor.getColumnIndex("c_name")), cursor.getString(cursor.getColumnIndex("c_e_no")));
+            final DadCountryModel cont = new DadCountryModel(cursor.getInt(cursor.getColumnIndex("id")), cursor.getString(cursor.getColumnIndex("c_code")), cursor.getString(cursor.getColumnIndex("c_name")), cursor.getString(cursor.getColumnIndex("c_e_no")));
             cursor.close();
             db.close();
 
